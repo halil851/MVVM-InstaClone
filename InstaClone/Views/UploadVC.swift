@@ -11,8 +11,6 @@ import Firebase
 
 class UploadVC: UIViewController {
     
-    let vc = ViewController()
-
     @IBOutlet weak var commentText: UITextField!
     @IBOutlet weak var image: UIImageView!
     @IBOutlet weak var uploadOutlet: UIButton!
@@ -20,7 +18,7 @@ class UploadVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        commentText.delegate = self
         setImageInteractable()
         
     }
@@ -118,4 +116,16 @@ extension UploadVC: UIImagePickerControllerDelegate & UINavigationControllerDele
         image.image = info[.editedImage] as? UIImage
         self.dismiss(animated: true)
     }
+    
+}
+
+extension UploadVC: UITextFieldDelegate {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        commentText.endEditing(true)
+    }
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        commentText.endEditing(true)
+    }
+    
+    
 }

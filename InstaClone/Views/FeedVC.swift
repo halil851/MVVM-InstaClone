@@ -17,6 +17,7 @@ class FeedVC: UIViewController {
     var comments = [String]()
     var likes = [Int]()
     var imageURLs = [String]()
+    var ids = [String]()
     
     
 
@@ -27,7 +28,7 @@ class FeedVC: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         
-        tableView.rowHeight = (view.window?.windowScene?.screen.bounds.height ?? 800) / 1.75
+        tableView.rowHeight = (view.window?.windowScene?.screen.bounds.height ?? 800) / 1.7
         getDataFromFirestore()
     }
     
@@ -40,14 +41,25 @@ extension FeedVC {
     func getDataFromFirestore() {
         let db = Firestore.firestore()
         
-        db.collection("Posts").addSnapshotListener { snapshot, err in
+        db.collection("Posts")
+            .order(by: "date", descending: true)
+            .addSnapshotListener { snapshot, err in
             if err != nil {
                 print(err.debugDescription)
             } else {
                 if snapshot?.isEmpty != true, let snapshotSafe = snapshot {
                     
+                    self.emails.removeAll()
+                    self.comments.removeAll()
+                    self.likes.removeAll()
+                    self.imageURLs.removeAll()
+                    self.ids.removeAll()
+                    
+                    
                     for document in snapshotSafe.documents {
-//                        let id = document.documentID
+                        
+                        let id = document.documentID
+                        self.ids.append(id)
                         
                         if let postedBy = document.get("postedBy") as? String {
                             self.emails.append(postedBy)
@@ -97,11 +109,12 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         cell.commentLabel.text = comments[indexPath.row]
         cell.likeCounter.text = String(likes[indexPath.row])
         cell.userImage.sd_setImage(with: URL(string: imageURLs[indexPath.row]))
-        
-        
+        cell.getInfo(index: indexPath.row, ids: ids)
         
         return cell
     }
+    
+    
     
     
 }
