@@ -19,17 +19,22 @@ class FeedVC: UIViewController {
     var imageURLs = [String]()
     var ids = [String]()
     
-    
+    var lastTabBarIndex = 0
 
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        initialSetup()
+        getDataFromFirestore()
+    }
+
+    
+    func initialSetup() {
+        tabBarController?.delegate = self
         tableView.delegate = self
         tableView.dataSource = self
-        
         tableView.rowHeight = (view.window?.windowScene?.screen.bounds.height ?? 800) / 1.7
-        getDataFromFirestore()
     }
     
 
@@ -114,7 +119,16 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
+}
+
+//MARK: - Tab Bar Operations
+extension FeedVC: UITabBarControllerDelegate {
     
-    
-    
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        // Go to top with animation if user at Feed
+        if lastTabBarIndex == 0, tabBarController.selectedIndex == 0 {
+            tableView.setContentOffset(CGPointZero, animated: true)
+        }
+        lastTabBarIndex = tabBarController.selectedIndex
+    }
 }

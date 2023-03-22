@@ -16,6 +16,9 @@
 		A91B4FAE29BB1D19002CF7E9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A91B4FAD29BB1D19002CF7E9 /* GoogleService-Info.plist */; };
 		A9B5979429C49B2C009ED305 /* FeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B5979329C49B2C009ED305 /* FeedCell.swift */; };
 		A9B5979929C8702E009ED305 /* SDWebImageSVGCoder in Frameworks */ = {isa = PBXBuildFile; productRef = A9B5979829C8702E009ED305 /* SDWebImageSVGCoder */; };
+		A9B5979E29C9F226009ED305 /* PostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B5979D29C9F226009ED305 /* PostModel.swift */; };
+		A9B597A129C9F9E2009ED305 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B597A029C9F9E2009ED305 /* Constants.swift */; };
+		A9B597A329C9FCD7009ED305 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B597A229C9FCD7009ED305 /* Extensions.swift */; };
 		A9DFEE1029BB7E9D0059C3A7 /* FeedVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DFEE0F29BB7E9D0059C3A7 /* FeedVC.swift */; };
 		A9DFEE1429BB7F010059C3A7 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DFEE1329BB7F010059C3A7 /* SettingsVC.swift */; };
 		A9DFEE1629BB7F1C0059C3A7 /* UploadVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DFEE1529BB7F1C0059C3A7 /* UploadVC.swift */; };
@@ -36,6 +39,9 @@
 		A91B4FA729BB19F0002CF7E9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A91B4FAD29BB1D19002CF7E9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A9B5979329C49B2C009ED305 /* FeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCell.swift; sourceTree = "<group>"; };
+		A9B5979D29C9F226009ED305 /* PostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostModel.swift; sourceTree = "<group>"; };
+		A9B597A029C9F9E2009ED305 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		A9B597A229C9FCD7009ED305 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		A9DFEE0F29BB7E9D0059C3A7 /* FeedVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedVC.swift; sourceTree = "<group>"; };
 		A9DFEE1329BB7F010059C3A7 /* SettingsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
 		A9DFEE1529BB7F1C0059C3A7 /* UploadVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadVC.swift; sourceTree = "<group>"; };
@@ -78,6 +84,8 @@
 			children = (
 				A91B4F9929BB19EF002CF7E9 /* AppDelegate.swift */,
 				A91B4F9B29BB19EF002CF7E9 /* SceneDelegate.swift */,
+				A9B5979F29C9F9BE009ED305 /* Support */,
+				A9B5979C29C9F13B009ED305 /* Model */,
 				A9DFEE1129BB7ED20059C3A7 /* Views */,
 				A91B4F9F29BB19EF002CF7E9 /* Main.storyboard */,
 				A91B4FA229BB19F0002CF7E9 /* Assets.xcassets */,
@@ -86,6 +94,23 @@
 				A91B4FAD29BB1D19002CF7E9 /* GoogleService-Info.plist */,
 			);
 			path = InstaClone;
+			sourceTree = "<group>";
+		};
+		A9B5979C29C9F13B009ED305 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				A9B5979D29C9F226009ED305 /* PostModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		A9B5979F29C9F9BE009ED305 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				A9B597A029C9F9E2009ED305 /* Constants.swift */,
+				A9B597A229C9FCD7009ED305 /* Extensions.swift */,
+			);
+			path = Support;
 			sourceTree = "<group>";
 		};
 		A9DFEE1129BB7ED20059C3A7 /* Views */ = {
@@ -184,12 +209,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				A9B5979429C49B2C009ED305 /* FeedCell.swift in Sources */,
+				A9B5979E29C9F226009ED305 /* PostModel.swift in Sources */,
 				A9DFEE1029BB7E9D0059C3A7 /* FeedVC.swift in Sources */,
 				A9DFEE1629BB7F1C0059C3A7 /* UploadVC.swift in Sources */,
 				A91B4F9E29BB19EF002CF7E9 /* ViewController.swift in Sources */,
+				A9B597A329C9FCD7009ED305 /* Extensions.swift in Sources */,
 				A91B4F9A29BB19EF002CF7E9 /* AppDelegate.swift in Sources */,
 				A91B4F9C29BB19EF002CF7E9 /* SceneDelegate.swift in Sources */,
 				A9DFEE1429BB7F010059C3A7 /* SettingsVC.swift in Sources */,
+				A9B597A129C9F9E2009ED305 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -23,7 +23,7 @@ class SettingsVC: UIViewController {
             performSegue(withIdentifier: "toViewController", sender: nil)
             
         } catch {
-            print(error.localizedDescription)
+            showAlert(mainTitle: "Error!", message: error.localizedDescription, actionButtonTitle: "OK")
         }
     }
    

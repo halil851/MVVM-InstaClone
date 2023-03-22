@@ -23,13 +23,6 @@ class UploadVC: UIViewController {
         
     }
     
-    func showAlert(title: String, message: String, _ style: UIAlertController.Style, actionTitle: String, actionStyle: UIAlertAction.Style){
-        let alert = UIAlertController(title: title, message: message, preferredStyle: style)
-        let okButton = UIAlertAction(title: actionTitle, style: actionStyle)
-        alert.addAction(okButton)
-        self.present(alert, animated: true, completion: nil)
-    }
-    
     func setImageInteractable() {
         image.isUserInteractionEnabled = true
         let imageTap = UITapGestureRecognizer(target: self, action: #selector(selectImage))
@@ -40,7 +33,7 @@ class UploadVC: UIViewController {
     @IBAction func uploadTap(_ sender: UIButton) {
         
         if image.image == UIImage(named: "select3") {
-            showAlert(title: "Select image", message: "Select an image before update!", .alert, actionTitle: "OK", actionStyle: .default)
+            showAlert(mainTitle: "Select image", message: "Select an image before update!", actionButtonTitle: "OK")
             return
         }
 
@@ -61,7 +54,7 @@ class UploadVC: UIViewController {
         imageRef.putData(data, metadata: nil) { metaData, err in
             guard err == nil else {
                 print(err?.localizedDescription ?? "Error in metadata")
-                self.showAlert(title: "Error!", message: err?.localizedDescription ?? "Error", .alert, actionTitle: "deneee", actionStyle: .default)
+                self.showAlert(mainTitle: "Error!", message: err?.localizedDescription ?? "Error", actionButtonTitle: "OK")
                 return
             }
             
@@ -73,16 +66,16 @@ class UploadVC: UIViewController {
                 //DATABASE
                 let firestoreDatabase = Firestore.firestore()
                 var firestoreRef: DocumentReference? = nil
-                var firestorePost = ["imageUrl": imageUrl!,
-                                     "postedBy": Auth.auth().currentUser!.email!,
-                                     "postComment": self.commentText.text!,
-                                     "date": FieldValue.serverTimestamp(),
-                                     "likes": 0]
+                var firestorePost = [K.Document.imageUrl   : imageUrl!,
+                                     K.Document.postedBy   : Auth.auth().currentUser!.email!,
+                                     K.Document.postComment: self.commentText.text!,
+                                     K.Document.date       : FieldValue.serverTimestamp(),
+                                     K.Document.likes      : 0]
                 
                 //Saving to Firestore Database
-                firestoreRef = firestoreDatabase.collection("Posts").addDocument(data: firestorePost, completion: { err in
+                firestoreRef = firestoreDatabase.collection(K.Posts).addDocument(data: firestorePost, completion: { err in
                     guard err == nil else {
-                        self.showAlert(title: "Error", message: err?.localizedDescription ?? "Error", .alert, actionTitle: "Error", actionStyle: .default)
+//                        self.showAlert(title: "Error", message: err?.localizedDescription ?? "Error", .alert, actionTitle: "Error", actionStyle: .default)
                         return
                     }
                     //Go to Feed
