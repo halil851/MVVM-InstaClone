@@ -37,14 +37,13 @@ class UploadVC: UIViewController {
             return
         }
 
-        
         let storage = Storage.storage()
         let storageRef = storage.reference()
         
         let mediaFolder = storageRef.child("media")
         
         guard let data = image.image?.jpegData(compressionQuality: 0.4) else {
-            print("nil")
+            print("While compresing an error occur.")
             return}
         
         // File name in server
@@ -53,8 +52,7 @@ class UploadVC: UIViewController {
         
         imageRef.putData(data, metadata: nil) { metaData, err in
             guard err == nil else {
-                print(err?.localizedDescription ?? "Error in metadata")
-                self.showAlert(mainTitle: "Error!", message: err?.localizedDescription ?? "Error", actionButtonTitle: "OK")
+                self.showAlert(mainTitle: "Error!", message: err?.localizedDescription ?? "Error in metadata", actionButtonTitle: "OK")
                 return
             }
             
@@ -75,10 +73,10 @@ class UploadVC: UIViewController {
                 //Saving to Firestore Database
                 firestoreRef = firestoreDatabase.collection(K.Posts).addDocument(data: firestorePost, completion: { err in
                     guard err == nil else {
-//                        self.showAlert(title: "Error", message: err?.localizedDescription ?? "Error", .alert, actionTitle: "Error", actionStyle: .default)
+                        self.showAlert(mainTitle: "Error", message: err?.localizedDescription ?? "Error", actionButtonTitle: "OK")
                         return
                     }
-                    //Go to Feed
+                    //Go to Feed when uploading is done
                     self.commentText.text = ""
                     self.image.image = UIImage(named: "select3")
                     self.tabBarController?.selectedIndex = 0

@@ -6,9 +6,10 @@
 //
 
 import UIKit
-import Firebase
 
-class ViewController: UIViewController {
+class LogInVC: UIViewController {
+    
+    var viewModel = LogInViewModel()
     
     @IBOutlet weak var eMailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
@@ -16,38 +17,32 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        
     }
-    
+
     @IBAction func logInTap(_ sender: UIButton) {
         // If Textfields are empty then return with an alert.
         guard textFields().isItEmpty == false else {return}
         
-        Auth.auth().signIn(withEmail: textFields().email, password: textFields().password) { authData, err in
+        viewModel.logInManager(email: textFields().email, password: textFields().password) { err, autData in
             
             if err != nil {
-                self.showAlert(mainTitle: "Error", message: err?.localizedDescription ?? "Error", actionButtonTitle: "OK")
+                self.showAlert(mainTitle: "Error Log In", message: err?.localizedDescription ?? "Error", actionButtonTitle: "OK")
                 return
             }
-            
             self.performSegue(withIdentifier: "toFeedVC", sender: nil)
         }
     }
-    
-    
-    
+
     
     @IBAction func signUpTap(_ sender: UIButton) {
         // If Textfields are empty then return with an alert.
         guard textFields().isItEmpty == false else {return}
         
-        Auth.auth().createUser(withEmail: textFields().email, password: textFields().password) { authData, err in
-            
+        viewModel.signUpManager(email: textFields().email, password: textFields().password) { err, authData in
             if err != nil {
-                self.showAlert(mainTitle: "Error", message: err?.localizedDescription ?? "Error", actionButtonTitle: "OK")
+                self.showAlert(mainTitle: "Error Sign Up", message: err?.localizedDescription ?? "Error", actionButtonTitle: "OK")
                 return
             }
-            
             self.performSegue(withIdentifier: "toFeedVC", sender: nil)
         }
     }
@@ -64,6 +59,5 @@ class ViewController: UIViewController {
         }
         return (false, email, password)
     }
-    
 }
 
