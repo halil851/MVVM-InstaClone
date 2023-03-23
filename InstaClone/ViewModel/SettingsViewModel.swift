@@ -11,7 +11,7 @@ protocol SettingVCProtocol {
     func signOut(completionHandler: @escaping(_ success: Bool, Error?)->())
 }
 
-struct SettingsViewModel {
+struct SettingsViewModel: SettingVCProtocol {
     
     func signOut(completionHandler: @escaping(_ success: Bool, Error?)->()) {
         do {
@@ -22,7 +22,5 @@ struct SettingsViewModel {
             completionHandler(false, error)
         }
     }
-    
-    
-    
+
 }

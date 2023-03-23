@@ -11,7 +11,7 @@ class SettingsVC: UIViewController {
     //MARK: - IBOutlets
 
     //MARK: - Properties
-    var viewModel = SettingsViewModel()
+    var viewModel: SettingVCProtocol = SettingsViewModel()
     
     //MARK: - Life Cycles
     override func viewDidLoad() {
