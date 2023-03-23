@@ -6,13 +6,13 @@
 //
 
 import UIKit
-import Firebase
 
 class SettingsVC: UIViewController {
     //MARK: - IBOutlets
 
     //MARK: - Properties
-
+    var viewModel = SettingsViewModel()
+    
     //MARK: - Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,13 +22,14 @@ class SettingsVC: UIViewController {
     
     
     //MARK: - IBActions
-    @IBAction func logoutTap(_ sender: UIButton) {
-        do {
-            try Auth.auth().signOut()
-            performSegue(withIdentifier: "toViewController", sender: nil)
+    @IBAction func signOut(_ sender: UIButton) {
+        viewModel.signOut { success, err in
+            if err != nil {
+                self.showAlert(mainTitle: "Error!", message: err?.localizedDescription ?? "Error while signing out.", actionButtonTitle: "OK")
+                return
+            }
+            self.performSegue(withIdentifier: "toViewController", sender: nil)
             
-        } catch {
-            showAlert(mainTitle: "Error!", message: error.localizedDescription, actionButtonTitle: "OK")
         }
     }
     //MARK: - Functions

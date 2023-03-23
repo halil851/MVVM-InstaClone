@@ -9,20 +9,20 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Log InVC-->
+        <!--Sign InVC-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="LogInVC" customModule="InstaClone" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="SignInVC" customModule="InstaClone" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EOg-MK-bJ3">
-                                <rect key="frame" x="67" y="408.66666666666669" width="70.666666666666686" height="35"/>
+                                <rect key="frame" x="67" y="408.66666666666669" width="75.666666666666686" height="35"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Log In"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Sign In"/>
                                 <connections>
-                                    <action selector="logInTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="DsI-xc-Y0y"/>
+                                    <action selector="signInTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="rph-Kj-9xv"/>
                                 </connections>
                             </button>
                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="KpN-vR-syB">
@@ -41,20 +41,20 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lFW-Ms-5oV">
-                                <rect key="frame" x="242" y="408.66666666666669" width="84" height="35"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Sign Up"/>
-                                <connections>
-                                    <action selector="signUpTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="P0t-j0-xxi"/>
-                                </connections>
-                            </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Instagram Clone" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lGY-bc-UOg">
                                 <rect key="frame" x="0.0" y="118" width="393" height="29"/>
                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="24"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lFW-Ms-5oV">
+                                <rect key="frame" x="242" y="409" width="84" height="35"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Sign Up"/>
+                                <connections>
+                                    <action selector="signUpTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="P0t-j0-xxi"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -160,20 +160,19 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2Wt-wd-0nT">
-                                <rect key="frame" x="147" y="409" width="96" height="34"/>
+                                <rect key="frame" x="151.66666666666666" y="409" width="90" height="34"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Logout"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Sign Out"/>
                                 <connections>
-                                    <action selector="logoutTap:" destination="RYB-Vn-461" eventType="touchUpInside" id="YgX-oE-yXA"/>
+                                    <action selector="signOut:" destination="RYB-Vn-461" eventType="touchUpInside" id="o4p-vk-keJ"/>
                                 </connections>
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="HM5-bU-9dY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="2Wt-wd-0nT" firstAttribute="leading" secondItem="HM5-bU-9dY" secondAttribute="leading" constant="147" id="IAZ-wB-c8I"/>
-                            <constraint firstItem="2Wt-wd-0nT" firstAttribute="centerY" secondItem="ePv-aI-j7B" secondAttribute="centerY" id="JgZ-u4-1qg"/>
-                            <constraint firstItem="HM5-bU-9dY" firstAttribute="trailing" secondItem="2Wt-wd-0nT" secondAttribute="trailing" constant="150" id="sh2-76-nPC"/>
+                            <constraint firstItem="2Wt-wd-0nT" firstAttribute="centerX" secondItem="ePv-aI-j7B" secondAttribute="centerX" id="OET-Yv-O5s"/>
+                            <constraint firstItem="2Wt-wd-0nT" firstAttribute="centerY" secondItem="ePv-aI-j7B" secondAttribute="centerY" id="gZp-Pr-xTc"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Settings" image="square.and.arrow.down.on.square" catalog="system" id="pfj-Gu-1QR"/>
