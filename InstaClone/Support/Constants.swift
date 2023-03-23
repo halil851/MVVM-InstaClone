@@ -10,6 +10,8 @@ import Foundation
 struct K {
     static let Posts = "Posts"
     
+    static let media = "media"
+    
     struct Document {
         static let date = "date"
         static let imageUrl = "imageUrl"

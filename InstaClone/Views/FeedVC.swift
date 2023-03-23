@@ -9,18 +9,24 @@ import UIKit
 import SDWebImage
 
 class FeedVC: UIViewController {
-    
-    var viewModel: FeedVCProtocol = FeedViewModel()
-    var lastTabBarIndex = 0
-
+    //MARK: - IBOutlets
     @IBOutlet weak var tableView: UITableView!
     
+    //MARK: - Properties
+    var viewModel: FeedVCProtocol = FeedViewModel()
+    var lastTabBarIndex = 0
+    
+    //MARK: - Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         initialSetup()
         viewModel.getDataFromFirestore(tableView: tableView)
     }
     
+    //MARK: - IBActions
+    
+    
+    //MARK: - Functions
     func initialSetup() {
         tabBarController?.delegate = self
         tableView.delegate = self
@@ -34,7 +40,6 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.emails.count
     }
-    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as? FeedCell else {

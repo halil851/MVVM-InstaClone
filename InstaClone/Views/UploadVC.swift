@@ -6,22 +6,48 @@
 //
 
 import UIKit
-import FirebaseStorage
-import Firebase
 
 class UploadVC: UIViewController {
-    
+    //MARK: - IBOutlets
     @IBOutlet weak var commentText: UITextField!
     @IBOutlet weak var image: UIImageView!
     @IBOutlet weak var uploadOutlet: UIButton!
     
+    //MARK: - Properties
+    var viewModel = UploadViewModel()
     
+    //MARK: - Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         commentText.delegate = self
         setImageInteractable()
-        
     }
+    
+    //MARK: - IBActions
+    @IBAction func uploadTap(_ sender: UIButton) {
+        
+        if image.image == UIImage(named: "select3") {
+            showAlert(mainTitle: "Select image", message: "Select an image before update!", actionButtonTitle: "OK")
+            return
+        }
+        
+        viewModel.uploadData(image: image, comment: commentText.text ?? "") { err in
+            if err != nil {
+                self.showAlert(mainTitle: "Error!", message: err?.localizedDescription ?? "Error in metadata", actionButtonTitle: "OK")
+            }
+        }
+        
+        //Go to Feed when uploading is done
+        self.commentText.text = ""
+        self.image.image = UIImage(named: "select3")
+        self.tabBarController?.selectedIndex = 0
+    }
+    
+    @IBAction func cancelTap(_ sender: UIButton) {
+        self.image.image = UIImage(named: "select3")
+        self.commentText.text = ""
+    }
+    //MARK: - Functions
     
     func setImageInteractable() {
         image.isUserInteractionEnabled = true
@@ -29,71 +55,9 @@ class UploadVC: UIViewController {
         image.addGestureRecognizer(imageTap)
         image.image = UIImage(named: "select3")
     }
-    
-    @IBAction func uploadTap(_ sender: UIButton) {
-        
-        if image.image == UIImage(named: "select3") {
-            showAlert(mainTitle: "Select image", message: "Select an image before update!", actionButtonTitle: "OK")
-            return
-        }
-
-        let storage = Storage.storage()
-        let storageRef = storage.reference()
-        
-        let mediaFolder = storageRef.child("media")
-        
-        guard let data = image.image?.jpegData(compressionQuality: 0.4) else {
-            print("While compresing an error occur.")
-            return}
-        
-        // File name in server
-        let uuid = UUID().uuidString
-        let imageRef = mediaFolder.child("\(uuid).jpg")
-        
-        imageRef.putData(data, metadata: nil) { metaData, err in
-            guard err == nil else {
-                self.showAlert(mainTitle: "Error!", message: err?.localizedDescription ?? "Error in metadata", actionButtonTitle: "OK")
-                return
-            }
-            
-            imageRef.downloadURL { url, error in
-                guard error == nil else{return}
-                
-                let imageUrl = url?.absoluteString
-                
-                //DATABASE
-                let firestoreDatabase = Firestore.firestore()
-                var firestoreRef: DocumentReference? = nil
-                var firestorePost = [K.Document.imageUrl   : imageUrl!,
-                                     K.Document.postedBy   : Auth.auth().currentUser!.email!,
-                                     K.Document.postComment: self.commentText.text!,
-                                     K.Document.date       : FieldValue.serverTimestamp(),
-                                     K.Document.likes      : 0]
-                
-                //Saving to Firestore Database
-                firestoreRef = firestoreDatabase.collection(K.Posts).addDocument(data: firestorePost, completion: { err in
-                    guard err == nil else {
-                        self.showAlert(mainTitle: "Error", message: err?.localizedDescription ?? "Error", actionButtonTitle: "OK")
-                        return
-                    }
-                    //Go to Feed when uploading is done
-                    self.commentText.text = ""
-                    self.image.image = UIImage(named: "select3")
-                    self.tabBarController?.selectedIndex = 0
-                })
-                
-            }
-        }
-        
-    }
-    
-    @IBAction func cancelTap(_ sender: UIButton) {
-        self.image.image = UIImage(named: "select3")
-        self.commentText.text = ""
-    }
-    
 }
 
+//MARK: - Image Picking
 extension UploadVC: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
     @objc func selectImage() {
         let picker = UIImagePickerController()
@@ -110,6 +74,7 @@ extension UploadVC: UIImagePickerControllerDelegate & UINavigationControllerDele
     
 }
 
+//MARK: - Text Field
 extension UploadVC: UITextFieldDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         commentText.endEditing(true)

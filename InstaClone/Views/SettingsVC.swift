@@ -9,7 +9,11 @@ import UIKit
 import Firebase
 
 class SettingsVC: UIViewController {
+    //MARK: - IBOutlets
 
+    //MARK: - Properties
+
+    //MARK: - Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -17,6 +21,7 @@ class SettingsVC: UIViewController {
     }
     
     
+    //MARK: - IBActions
     @IBAction func logoutTap(_ sender: UIButton) {
         do {
             try Auth.auth().signOut()
@@ -26,6 +31,16 @@ class SettingsVC: UIViewController {
             showAlert(mainTitle: "Error!", message: error.localizedDescription, actionButtonTitle: "OK")
         }
     }
-   
+    //MARK: - Functions
 
 }
+
+
+
+
+
+
+
+
+
+

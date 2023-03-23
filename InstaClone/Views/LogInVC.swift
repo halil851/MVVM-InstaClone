@@ -8,17 +8,19 @@
 import UIKit
 
 class LogInVC: UIViewController {
-    
-    var viewModel: LogInVCProtocol = LogInViewModel()
-    
+    //MARK: - IBOutlets
     @IBOutlet weak var eMailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
     
+    //MARK: - Properties
+    var viewModel: LogInVCProtocol = LogInViewModel()
+    
+    //MARK: - Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
     }
-    
+    //MARK: - IBActions
     @IBAction func logInTap(_ sender: UIButton) {
         // If Textfields are empty then return with an alert.
         guard textFields().isItEmpty == false else {return}
@@ -32,7 +34,6 @@ class LogInVC: UIViewController {
             self.performSegue(withIdentifier: "toFeedVC", sender: nil)
         }
     }
-
     
     @IBAction func signUpTap(_ sender: UIButton) {
         // If Textfields are empty then return with an alert.
@@ -47,7 +48,7 @@ class LogInVC: UIViewController {
         }
     }
     
-    
+    //MARK: - Functions
     // If Textfields are empty then return with an alert.
     func textFields() -> (isItEmpty: Bool, email: String, password: String) {
         guard let email = eMailField.text,
