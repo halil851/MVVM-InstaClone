@@ -9,7 +9,7 @@ import UIKit
 
 class LogInVC: UIViewController {
     
-    var viewModel = LogInViewModel()
+    var viewModel: LogInVCProtocol = LogInViewModel()
     
     @IBOutlet weak var eMailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
@@ -18,7 +18,7 @@ class LogInVC: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
     }
-
+    
     @IBAction func logInTap(_ sender: UIButton) {
         // If Textfields are empty then return with an alert.
         guard textFields().isItEmpty == false else {return}

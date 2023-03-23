@@ -6,9 +6,10 @@
 //
 
 import UIKit
-import Firebase
 
 class FeedCell: UITableViewCell {
+    
+    var viewModel: FeedCellProtocol = FeedViewModel()
 
     @IBOutlet weak var userEmailLabel: UILabel!
     @IBOutlet weak var commentLabel: UILabel!
@@ -18,10 +19,8 @@ class FeedCell: UITableViewCell {
     var ids = [String]()
     var index = 0
     
-    
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
         
     }
     
@@ -32,20 +31,11 @@ class FeedCell: UITableViewCell {
     }
     
     @IBAction func likeTap(_ sender: UIButton) {
-        
-        let db = Firestore.firestore()
 
         guard let likeCount = Int(likeCounter.text!) else {return}
-        let likeManager = ["likes": likeCount + 1] as [String: Any]
+        let numberOfLikes = ["likes": likeCount + 1] as [String: Any]
         
-        db.collection("Posts").document(ids[index]).setData(likeManager, merge: true)
-
-    }
-    
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+        viewModel.likeManager(id: ids[index], numberOfLikes)
     }
 
 }

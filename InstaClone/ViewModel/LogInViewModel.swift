@@ -5,15 +5,18 @@
 //  Created by halil dikişli on 22.03.2023.
 //
 
-import Foundation
 import Firebase
 
-protocol LogInViewModelDelegate: AnyObject {
-    func getInfo(email: String, password: String) -> (Error?, AuthDataResult?)
+protocol LogInVCProtocol {
+    func logInManager(email: String, password: String, completionHandler: @escaping(Error?, AuthDataResult?)->() )
+    
+    func signUpManager(email: String, password: String, completionHandler: @escaping(Error?, AuthDataResult?)->() )
 }
 
-struct LogInViewModel {
 
+
+
+struct LogInViewModel: LogInVCProtocol {
     func logInManager(email: String, password: String, completionHandler: @escaping(Error?, AuthDataResult?)->() ) {
         Auth.auth().signIn(withEmail: email, password: password) { authData, err in
             completionHandler(err, authData)
@@ -25,7 +28,6 @@ struct LogInViewModel {
             completionHandler(err, authData)
         }
     }
-    
-    
-    
 }
+
+
