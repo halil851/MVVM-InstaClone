@@ -18,6 +18,7 @@ class FeedCell: UITableViewCell {
     var viewModel: FeedCellProtocol = FeedViewModel()
     var ids = [String]()
     var index = 0
+    var likeCounting = 0
     
     //MARK: - Life Cycles
     override func awakeFromNib() {
@@ -28,9 +29,7 @@ class FeedCell: UITableViewCell {
     //MARK: - IBActions
     @IBAction func likeTap(_ sender: UIButton) {
         
-        guard let likeCount = Int(likeCounter.text!) else {return}
-        let numberOfLikes = ["likes": likeCount + 1] as [String: Any]
-        
+        let numberOfLikes = ["likes": likeCounting + 1] as [String: Any]
         viewModel.likeManager(id: ids[index], numberOfLikes)
     }
     

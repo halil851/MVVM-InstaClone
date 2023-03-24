@@ -31,7 +31,7 @@ class FeedVC: UIViewController {
         tabBarController?.delegate = self
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.rowHeight = (view.window?.windowScene?.screen.bounds.height ?? 800) / 1.7
+        tableView.rowHeight = (view.window?.windowScene?.screen.bounds.height ?? 800) / 1.5
     }
 }
 
@@ -48,7 +48,16 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         
         cell.userEmailLabel.text = viewModel.emails[indexPath.row]
         cell.commentLabel.text = viewModel.comments[indexPath.row]
-        cell.likeCounter.text = String(viewModel.likes[indexPath.row])
+        
+        let likesCount = viewModel.likes[indexPath.row]
+        cell.likeCounting = likesCount
+        if likesCount > 1 {
+            cell.likeCounter.text = "\(cell.likeCounting) likes"
+        } else {
+            cell.likeCounter.text = "\(cell.likeCounting) like"
+        }
+        
+        
         cell.userImage.sd_setImage(with: URL(string: viewModel.imageURLs[indexPath.row] ))
         cell.getInfo(index: indexPath.row, ids: viewModel.ids)
         
