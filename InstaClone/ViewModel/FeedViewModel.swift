@@ -7,6 +7,7 @@
 
 import Firebase
 import FirebaseStorage
+import UIKit
 
 protocol FeedCellProtocol {
     func likeManager(id: String, _ like: [String:Any])

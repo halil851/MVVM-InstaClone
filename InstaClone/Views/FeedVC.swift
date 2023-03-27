@@ -32,6 +32,28 @@ class FeedVC: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = (view.window?.windowScene?.screen.bounds.height ?? 800) / 1.5
+        tableView.separatorStyle = .none
+    }
+    
+    func boldAndRegularText(indexRow: Int) -> NSMutableAttributedString{
+        let boldAttribute = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 15.0)]
+        let regularAttribute = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 15.0)]
+        let boldText = NSAttributedString(string: viewModel.emails[indexRow], attributes: boldAttribute)
+        let regularText = NSAttributedString(string:" \(viewModel.comments[indexRow])", attributes: regularAttribute)
+        let newString = NSMutableAttributedString()
+        newString.append(boldText)
+        newString.append(regularText)
+        return newString
+    }
+    
+    func likeOrLikes(indexRow: Int,_ cell: FeedCell) -> String {
+        let likesCount = viewModel.likes[indexRow]
+        cell.likeCounting = likesCount
+        if likesCount > 1 {
+            return "\(cell.likeCounting) likes"
+        }
+        return "\(cell.likeCounting) like"
+        
     }
 }
 
@@ -45,20 +67,11 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as? FeedCell else {
             return UITableViewCell()
         }
-        
+
         cell.userEmailLabel.text = viewModel.emails[indexPath.row]
-        cell.commentLabel.text = viewModel.comments[indexPath.row]
-        
-        let likesCount = viewModel.likes[indexPath.row]
-        cell.likeCounting = likesCount
-        if likesCount > 1 {
-            cell.likeCounter.text = "\(cell.likeCounting) likes"
-        } else {
-            cell.likeCounter.text = "\(cell.likeCounting) like"
-        }
-        
-        
-        cell.userImage.sd_setImage(with: URL(string: viewModel.imageURLs[indexPath.row] ))
+        cell.commentLabel.attributedText = boldAndRegularText(indexRow: indexPath.row)
+        cell.likeCounter.text = likeOrLikes(indexRow: indexPath.row, cell)
+        cell.userImage.sd_setImage(with: URL(string: viewModel.imageURLs[indexPath.row]))
         cell.getInfo(index: indexPath.row, ids: viewModel.ids)
         
         return cell
