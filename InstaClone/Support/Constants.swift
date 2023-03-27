@@ -16,6 +16,7 @@ struct K {
         static let date = "date"
         static let imageUrl = "imageUrl"
         static let likes = "likes"
+        static let likedBy = "likedBy"
         static let postComment = "postComment"
         static let postedBy = "postedBy"
     }

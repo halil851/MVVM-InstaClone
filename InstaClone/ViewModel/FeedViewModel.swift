@@ -23,12 +23,14 @@ protocol FeedVCProtocol {
 }
 
 class FeedViewModel: FeedVCProtocol {
+    let db = Firestore.firestore()
     
     var emails = [String]()
     var comments = [String]()
     var likes = [Int]()
     var imageURLs = [String]()
     var ids = [String]()
+    var newLikes = [Int]()
     
     func getDataFromFirestore(tableView: UITableView) {
         let db = Firestore.firestore()
@@ -60,13 +62,15 @@ class FeedViewModel: FeedVCProtocol {
                             self.comments.append(comment)
                         }
                         
-                        if let like = document.get(K.Document.likes) as? Int {
-                            self.likes.append(like)
+                        if let like = document.get(K.Document.likedBy) as? [String] {
+                            self.likes.append(like.count)
                         }
                         
                         if let imageUrl = document.get(K.Document.imageUrl) as? String {
                             self.imageURLs.append(imageUrl)
                         }
+                        
+                       
                         
                     }
                         tableView.reloadData()
@@ -75,12 +79,20 @@ class FeedViewModel: FeedVCProtocol {
     }
 }
 
-extension FeedViewModel: FeedCellProtocol {
+extension FeedViewModel {
     
-    func likeManager(id: String, _ like: [String:Any]) {
+    func likeManager(id: String) {
+        guard let currentUserEmail = Auth.auth().currentUser?.email else {return}
+                
+        //Add who likes
+        db.collection(K.Posts).document(id).updateData([
+            K.Document.likedBy: FieldValue.arrayUnion([currentUserEmail])
+        ])
         
-        let db = Firestore.firestore()
-        db.collection(K.Posts).document(id).setData(like, merge: true)
     }
+    
+    
+    
+   
 }
 

@@ -16,10 +16,9 @@ class FeedCell: UITableViewCell {
     @IBOutlet weak var commentLabel: UILabel!
     
     //MARK: - Properties
-    var viewModel: FeedCellProtocol = FeedViewModel()
+    var viewModel = FeedViewModel()
     var ids = [String]()
     var index = 0
-    var likeCounting = 0
     
     //MARK: - Life Cycles
     override func awakeFromNib() {
@@ -29,20 +28,14 @@ class FeedCell: UITableViewCell {
     
     //MARK: - IBActions
     @IBAction func likeTap(_ sender: UIButton? = nil) {
-//        print("likeCounting: \(likeCounting)")
         
-        let numberOfLikes = ["likes": likeCounting + 1] as [String: Any]
-//        print("numberoflikes: \(numberOfLikes)")
-        viewModel.likeManager(id: ids[index], numberOfLikes)
+        viewModel.likeManager(id: ids[index])
     }
     
     //MARK: - Functions
     func getInfo(index: Int, ids: [String]) {
         self.index = index
         self.ids = ids
-//        print("index: \(index)")
-
-        
     }
     
     func doubleTapSetup() {

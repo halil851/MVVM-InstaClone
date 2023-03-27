@@ -46,13 +46,13 @@ class FeedVC: UIViewController {
         return newString
     }
     
-    func likeOrLikes(indexRow: Int,_ cell: FeedCell) -> String {
+    func likeOrLikes(indexRow: Int) -> String {
+
         let likesCount = viewModel.likes[indexRow]
-        cell.likeCounting = likesCount
         if likesCount > 1 {
-            return "\(cell.likeCounting) likes"
+            return "\(likesCount) likes"
         }
-        return "\(cell.likeCounting) like"
+        return "\(likesCount) like"
         
     }
 }
@@ -70,7 +70,7 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
 
         cell.userEmailLabel.text = viewModel.emails[indexPath.row]
         cell.commentLabel.attributedText = boldAndRegularText(indexRow: indexPath.row)
-        cell.likeCounter.text = likeOrLikes(indexRow: indexPath.row, cell)
+        cell.likeCounter.text = likeOrLikes(indexRow: indexPath.row)
         cell.userImage.sd_setImage(with: URL(string: viewModel.imageURLs[indexPath.row]))
         cell.getInfo(index: indexPath.row, ids: viewModel.ids)
         

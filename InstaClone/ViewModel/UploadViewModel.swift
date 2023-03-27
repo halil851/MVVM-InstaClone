@@ -48,7 +48,8 @@ struct UploadViewModel {
                                                     K.Document.postedBy   : currentUserEmail,
                                                     K.Document.postComment: comment,
                                                     K.Document.date       : FieldValue.serverTimestamp(),
-                                                    K.Document.likes      : 0]
+                                                    K.Document.likes      : 0,
+                                                    K.Document.likedBy    : []]
                 
                 //Saving to Firestore Database
                 firestoreRef = firestoreDatabase.collection(K.Posts).addDocument(data: firestorePost, completion: { err in
