@@ -73,6 +73,7 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         cell.likeCounter.text = likeOrLikes(indexRow: indexPath.row)
         cell.userImage.sd_setImage(with: URL(string: viewModel.imageURLs[indexPath.row]))
         cell.getInfo(index: indexPath.row, ids: viewModel.ids)
+        cell.checkIfLiked(likesList: viewModel.whoLiked[indexPath.row])
         
         return cell
     }

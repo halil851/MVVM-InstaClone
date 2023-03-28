@@ -19,6 +19,7 @@ protocol FeedVCProtocol {
     var likes: [Int] {get}
     var imageURLs: [String] {get}
     var ids: [String] {get}
+    var whoLiked: [[String]] {get}
     func getDataFromFirestore(tableView: UITableView)
 }
 
@@ -30,10 +31,10 @@ class FeedViewModel: FeedVCProtocol {
     var likes = [Int]()
     var imageURLs = [String]()
     var ids = [String]()
-    var newLikes = [Int]()
+    var whoLiked = [[String]]()
+    
     
     func getDataFromFirestore(tableView: UITableView) {
-        let db = Firestore.firestore()
         db.collection(K.Posts)
             .order(by: K.Document.date, descending: true)
             .addSnapshotListener { snapshot, err in
@@ -48,6 +49,7 @@ class FeedViewModel: FeedVCProtocol {
                     self.likes.removeAll()
                     self.imageURLs.removeAll()
                     self.ids.removeAll()
+                    self.whoLiked.removeAll()
                     
                     for document in snapshotSafe.documents {
                         
@@ -64,6 +66,8 @@ class FeedViewModel: FeedVCProtocol {
                         
                         if let like = document.get(K.Document.likedBy) as? [String] {
                             self.likes.append(like.count)
+                            self.whoLiked.append(like)
+                            
                         }
                         
                         if let imageUrl = document.get(K.Document.imageUrl) as? String {
@@ -89,6 +93,17 @@ extension FeedViewModel {
             K.Document.likedBy: FieldValue.arrayUnion([currentUserEmail])
         ])
         
+    }
+    
+    func isItLiked(likesList: [String]) -> Bool {
+        guard let currentUserEmail = Auth.auth().currentUser?.email else {return false}
+        
+        for user in likesList{
+            if user == currentUserEmail{
+                return true
+            }
+        }
+        return false
     }
     
     

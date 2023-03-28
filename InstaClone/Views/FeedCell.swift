@@ -14,6 +14,7 @@ class FeedCell: UITableViewCell {
     @IBOutlet weak var userImage: UIImageView!
     @IBOutlet weak var likeCounter: UILabel!
     @IBOutlet weak var commentLabel: UILabel!
+    @IBOutlet weak var likeButtonOutlet: UIButton!
     
     //MARK: - Properties
     var viewModel = FeedViewModel()
@@ -30,6 +31,7 @@ class FeedCell: UITableViewCell {
     @IBAction func likeTap(_ sender: UIButton? = nil) {
         
         viewModel.likeManager(id: ids[index])
+        
     }
     
     //MARK: - Functions
@@ -40,13 +42,13 @@ class FeedCell: UITableViewCell {
     
     func doubleTapSetup() {
         userImage.isUserInteractionEnabled = true
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(doubleTapToImage))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(doubleTapToLike))
         tapGesture.numberOfTapsRequired = 2
         userImage.addGestureRecognizer(tapGesture)
         heartImage.alpha = 0
     }
     
-    @objc func doubleTapToImage() {
+    @objc func doubleTapToLike() {
         
         UIView.animate(withDuration: 0.4, delay: 0) {
             self.heartImage.alpha = 1
@@ -57,6 +59,18 @@ class FeedCell: UITableViewCell {
             }completion: { done in
                 self.likeTap()
             }
+        }
+    }
+    
+    func checkIfLiked(likesList: [String]) {
+        if viewModel.isItLiked(likesList: likesList){
+            likeButtonOutlet.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+            likeButtonOutlet.tintColor = .systemRed
+            
+        } else {
+            likeButtonOutlet.setImage(UIImage(systemName: "heart"), for: .normal)
+            likeButtonOutlet.tintColor = .black
+            
         }
     }
 }

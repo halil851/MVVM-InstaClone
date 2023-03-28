@@ -301,6 +301,7 @@
                                         <connections>
                                             <outlet property="commentLabel" destination="3oW-UR-oig" id="Srf-QO-RFK"/>
                                             <outlet property="heartImage" destination="Rw9-Xw-Xwo" id="qZz-Ju-aTt"/>
+                                            <outlet property="likeButtonOutlet" destination="0RY-dJ-kUH" id="iS7-UK-jCD"/>
                                             <outlet property="likeCounter" destination="Gna-Hi-oVt" id="gSo-Vw-dfJ"/>
                                             <outlet property="userEmailLabel" destination="2oK-P1-l3v" id="117-Iw-20v"/>
                                             <outlet property="userImage" destination="GhE-Jg-2J2" id="9tz-1N-0cp"/>
