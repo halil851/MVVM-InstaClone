@@ -85,12 +85,22 @@ class FeedViewModel: FeedVCProtocol {
 
 extension FeedViewModel {
     
-    func likeManager(id: String) {
+    func postLikeManager(id: String) {
         guard let currentUserEmail = Auth.auth().currentUser?.email else {return}
                 
         //Add who likes
         db.collection(K.Posts).document(id).updateData([
             K.Document.likedBy: FieldValue.arrayUnion([currentUserEmail])
+        ])
+        
+    }
+    
+    func postDislikeManager(id: String) {
+        guard let currentUserEmail = Auth.auth().currentUser?.email else {return}
+                
+        //Add who likes
+        db.collection(K.Posts).document(id).updateData([
+            K.Document.likedBy: FieldValue.arrayRemove([currentUserEmail])
         ])
         
     }

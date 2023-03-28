@@ -72,8 +72,11 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         cell.commentLabel.attributedText = boldAndRegularText(indexRow: indexPath.row)
         cell.likeCounter.text = likeOrLikes(indexRow: indexPath.row)
         cell.userImage.sd_setImage(with: URL(string: viewModel.imageURLs[indexPath.row]))
-        cell.getInfo(index: indexPath.row, ids: viewModel.ids)
         cell.checkIfLiked(likesList: viewModel.whoLiked[indexPath.row])
+        cell.getInfo(index: indexPath.row,
+                     ids: viewModel.ids,
+                     whoLikeIt: viewModel.whoLiked)
+        
         
         return cell
     }

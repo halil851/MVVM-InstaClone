@@ -20,6 +20,7 @@ class FeedCell: UITableViewCell {
     var viewModel = FeedViewModel()
     var ids = [String]()
     var index = 0
+    var wholiked = [[String]]()
     
     //MARK: - Life Cycles
     override func awakeFromNib() {
@@ -29,15 +30,20 @@ class FeedCell: UITableViewCell {
     
     //MARK: - IBActions
     @IBAction func likeTap(_ sender: UIButton? = nil) {
-        
-        viewModel.likeManager(id: ids[index])
-        
+        if viewModel.isItLiked(likesList: wholiked[index]) {
+            viewModel.postDislikeManager(id: ids[index])
+            
+        } else {
+            viewModel.postLikeManager(id: ids[index])
+        }
     }
     
     //MARK: - Functions
-    func getInfo(index: Int, ids: [String]) {
+    func getInfo(index: Int, ids: [String], whoLikeIt: [[String]]) {
+        self.wholiked.removeAll()
         self.index = index
         self.ids = ids
+        self.wholiked = whoLikeIt
     }
     
     func doubleTapSetup() {
@@ -50,6 +56,12 @@ class FeedCell: UITableViewCell {
     
     @objc func doubleTapToLike() {
         
+        if viewModel.isItLiked(likesList: wholiked[index]){
+            heartImage.image = UIImage(systemName: "heart.slash.fill")
+        } else {
+            heartImage.image = UIImage(systemName: "heart.fill")
+        }
+        
         UIView.animate(withDuration: 0.4, delay: 0) {
             self.heartImage.alpha = 1
         }completion: { done in
@@ -60,6 +72,7 @@ class FeedCell: UITableViewCell {
                 self.likeTap()
             }
         }
+       
     }
     
     func checkIfLiked(likesList: [String]) {
