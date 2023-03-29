@@ -25,6 +25,7 @@
 		A9DFEE1029BB7E9D0059C3A7 /* FeedVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DFEE0F29BB7E9D0059C3A7 /* FeedVC.swift */; };
 		A9DFEE1429BB7F010059C3A7 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DFEE1329BB7F010059C3A7 /* SettingsVC.swift */; };
 		A9DFEE1629BB7F1C0059C3A7 /* UploadVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DFEE1529BB7F1C0059C3A7 /* UploadVC.swift */; };
+		A9E2B69329D467F8008B1118 /* LikeListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E2B69229D467F8008B1118 /* LikeListVC.swift */; };
 		A9F6F4AA29BB4FF200C45192 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = A9F6F4A929BB4FF200C45192 /* FirebaseAnalytics */; };
 		A9F6F4AC29BB4FF200C45192 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A9F6F4AB29BB4FF200C45192 /* FirebaseAuth */; };
 		A9F6F4AE29BB4FF200C45192 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = A9F6F4AD29BB4FF200C45192 /* FirebaseFirestore */; };
@@ -51,6 +52,7 @@
 		A9DFEE0F29BB7E9D0059C3A7 /* FeedVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedVC.swift; sourceTree = "<group>"; };
 		A9DFEE1329BB7F010059C3A7 /* SettingsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
 		A9DFEE1529BB7F1C0059C3A7 /* UploadVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadVC.swift; sourceTree = "<group>"; };
+		A9E2B69229D467F8008B1118 /* LikeListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeListVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,6 +138,7 @@
 				A9453BEC29CCAC0F00A62DB0 /* SignInVC.swift */,
 				A9B5979329C49B2C009ED305 /* FeedCell.swift */,
 				A9DFEE0F29BB7E9D0059C3A7 /* FeedVC.swift */,
+				A9E2B69229D467F8008B1118 /* LikeListVC.swift */,
 				A9DFEE1529BB7F1C0059C3A7 /* UploadVC.swift */,
 				A9DFEE1329BB7F010059C3A7 /* SettingsVC.swift */,
 			);
@@ -228,6 +231,7 @@
 				A9B5979429C49B2C009ED305 /* FeedCell.swift in Sources */,
 				A9453BE129CC73FC00A62DB0 /* UploadViewModel.swift in Sources */,
 				A9DFEE1029BB7E9D0059C3A7 /* FeedVC.swift in Sources */,
+				A9E2B69329D467F8008B1118 /* LikeListVC.swift in Sources */,
 				A9DFEE1629BB7F1C0059C3A7 /* UploadVC.swift in Sources */,
 				A9453BED29CCAC0F00A62DB0 /* SignInVC.swift in Sources */,
 				A9B597A329C9FCD7009ED305 /* Extensions.swift in Sources */,

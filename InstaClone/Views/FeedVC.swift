@@ -29,6 +29,7 @@ class FeedVC: UIViewController {
     //MARK: - Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         initialSetup()
         viewModel.getDataFromFirestore(tableView: tableView)
     }
@@ -65,6 +66,7 @@ class FeedVC: UIViewController {
         return "\(likesCount) like"
         
     }
+    
 }
 
 //MARK: - Tableview Operations
@@ -77,7 +79,7 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as? FeedCell else {
             return UITableViewCell()
         }
-
+        cell.delegate = self
         cell.userEmailLabel.text = viewModel.emails[indexPath.row]
         cell.commentLabel.attributedText = boldAndRegularText(indexRow: indexPath.row)
         cell.likeCounter.text = likeOrLikes(indexRow: indexPath.row)
@@ -86,6 +88,7 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         cell.getInfo(index: indexPath.row,
                      ids: viewModel.ids,
                      whoLikeIt: viewModel.whoLiked)
+        
         return cell
     }
     
@@ -101,4 +104,23 @@ extension FeedVC: UITabBarControllerDelegate {
         }
         lastTabBarIndex = tabBarController.selectedIndex
     }
+}
+
+extension FeedVC: FeedCellSegueProtocol {
+    func performSegue(cellIndex: Int) {
+        performSegue(withIdentifier: "likeList", sender: cellIndex)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let index = sender as? Int else {return}
+        
+        if segue.identifier == "likeList",
+           let destinationVC = segue.destination as? LikeListVC{
+            
+                destinationVC.likedUser = viewModel.whoLiked[index]
+            
+                
+        }
+    }
+    
 }

@@ -13,6 +13,10 @@ protocol FeedCellProtocol {
     func isItLiked(likesList: [String]) -> Bool
 }
 
+protocol FeedCellSegueProtocol {
+    func performSegue(cellIndex: Int)
+}
+
 class FeedCell: UITableViewCell {
     //MARK: - IBOutlets
     @IBOutlet weak var userEmailLabel: UILabel!
@@ -27,11 +31,13 @@ class FeedCell: UITableViewCell {
     var ids = [String]()
     var index = 0
     var wholiked = [[String]]()
+    var delegate: FeedCellSegueProtocol?
     
     //MARK: - Life Cycles
     override func awakeFromNib() {
         super.awakeFromNib()
         doubleTapSetup()
+        clickableLabel()
     }
     
     //MARK: - IBActions
@@ -46,7 +52,6 @@ class FeedCell: UITableViewCell {
     
     //MARK: - Functions
     func getInfo(index: Int, ids: [String], whoLikeIt: [[String]]) {
-        self.wholiked.removeAll()
         self.index = index
         self.ids = ids
         self.wholiked = whoLikeIt
@@ -59,6 +64,19 @@ class FeedCell: UITableViewCell {
         userImage.addGestureRecognizer(tapGesture)
         heartImage.alpha = 0
     }
+    
+    func clickableLabel() {
+        likeCounter.isUserInteractionEnabled = true
+        let click = UITapGestureRecognizer(target: self, action: #selector(performSegue))
+        likeCounter.addGestureRecognizer(click)
+    }
+    
+    @objc func performSegue(){
+        delegate?.performSegue(cellIndex: index)
+    }
+   
+                                         
+   
     
     @objc func doubleTapToLike() {
         
