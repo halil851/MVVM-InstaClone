@@ -9,9 +9,6 @@ import FirebaseStorage
 import Firebase
 import UIKit.UIImageView
 
-protocol UploadVCProtocol {
-    func uploadData(image: UIImageView,comment: String , completionHandler: @escaping(Error?)->())
-}
 
 struct UploadViewModel {
     
@@ -48,7 +45,6 @@ struct UploadViewModel {
                                                     K.Document.postedBy   : currentUserEmail,
                                                     K.Document.postComment: comment,
                                                     K.Document.date       : FieldValue.serverTimestamp(),
-                                                    K.Document.likes      : 0,
                                                     K.Document.likedBy    : []]
                 
                 //Saving to Firestore Database

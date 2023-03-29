@@ -7,6 +7,12 @@
 
 import UIKit
 
+protocol FeedCellProtocol {
+    func postLikeManager(id: String)
+    func postDislikeManager(id: String)
+    func isItLiked(likesList: [String]) -> Bool
+}
+
 class FeedCell: UITableViewCell {
     //MARK: - IBOutlets
     @IBOutlet weak var userEmailLabel: UILabel!
@@ -17,7 +23,7 @@ class FeedCell: UITableViewCell {
     @IBOutlet weak var likeButtonOutlet: UIButton!
     
     //MARK: - Properties
-    var viewModel = FeedViewModel()
+    var viewModel: FeedCellProtocol = FeedViewModel()
     var ids = [String]()
     var index = 0
     var wholiked = [[String]]()

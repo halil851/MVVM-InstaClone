@@ -7,9 +7,6 @@
 
 import Firebase
 
-protocol SettingVCProtocol {
-    func signOut(completionHandler: @escaping(_ success: Bool, Error?)->())
-}
 
 struct SettingsViewModel: SettingVCProtocol {
     

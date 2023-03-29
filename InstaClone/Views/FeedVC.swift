@@ -8,6 +8,16 @@
 import UIKit
 import SDWebImage
 
+protocol FeedVCProtocol {
+    var emails: [String] {get}
+    var comments: [String] {get}
+    var likes: [Int] {get}
+    var imageURLs: [String] {get}
+    var ids: [String] {get}
+    var whoLiked: [[String]] {get}
+    func getDataFromFirestore(tableView: UITableView)
+}
+
 class FeedVC: UIViewController {
     //MARK: - IBOutlets
     @IBOutlet weak var tableView: UITableView!
@@ -76,8 +86,6 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         cell.getInfo(index: indexPath.row,
                      ids: viewModel.ids,
                      whoLikeIt: viewModel.whoLiked)
-        
-        
         return cell
     }
     

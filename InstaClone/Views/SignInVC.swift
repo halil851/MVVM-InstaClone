@@ -7,6 +7,11 @@
 
 import UIKit
 
+protocol SignInVCProtocol {
+    func singInManager(email: String, password: String, completionHandler: @escaping(Error?)->() )
+    func signUpManager(email: String, password: String, completionHandler: @escaping(Error?)->() )
+}
+
 class SignInVC: UIViewController {
     //MARK: - IBOutlets
     @IBOutlet weak var eMailField: UITextField!
@@ -25,7 +30,7 @@ class SignInVC: UIViewController {
         // If Textfields are empty then return with an alert.
         guard textFields().isItEmpty == false else {return}
         
-        viewModel.singInManager(email: textFields().email, password: textFields().password) { err, autData in
+        viewModel.singInManager(email: textFields().email, password: textFields().password) { err in
             
             if err != nil {
                 self.showAlert(mainTitle: "Error Log In", message: err?.localizedDescription ?? "Error", actionButtonTitle: "OK")
@@ -39,7 +44,7 @@ class SignInVC: UIViewController {
         // If Textfields are empty then return with an alert.
         guard textFields().isItEmpty == false else {return}
         
-        viewModel.signUpManager(email: textFields().email, password: textFields().password) { err, authData in
+        viewModel.signUpManager(email: textFields().email, password: textFields().password) { err in
             if err != nil {
                 self.showAlert(mainTitle: "Error Sign Up", message: err?.localizedDescription ?? "Error", actionButtonTitle: "OK")
                 return

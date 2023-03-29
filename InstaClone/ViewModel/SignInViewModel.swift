@@ -7,25 +7,17 @@
 
 import Firebase
 
-protocol SignInVCProtocol {
-    func singInManager(email: String, password: String, completionHandler: @escaping(Error?, AuthDataResult?)->() )
-    
-    func signUpManager(email: String, password: String, completionHandler: @escaping(Error?, AuthDataResult?)->() )
-}
-
-
-
 
 struct SignInViewModel: SignInVCProtocol {
-    func singInManager(email: String, password: String, completionHandler: @escaping(Error?, AuthDataResult?)->() ) {
+    func singInManager(email: String, password: String, completionHandler: @escaping(Error?)->() ) {
         Auth.auth().signIn(withEmail: email, password: password) { authData, err in
-            completionHandler(err, authData)
+            completionHandler(err)
         }
     }
     
-    func signUpManager(email: String, password: String, completionHandler: @escaping(Error?, AuthDataResult?)->() )  {
+    func signUpManager(email: String, password: String, completionHandler: @escaping(Error?)->() )  {
         Auth.auth().createUser(withEmail: email, password: password) { authData, err in
-            completionHandler(err, authData)
+            completionHandler(err)
         }
     }
 }

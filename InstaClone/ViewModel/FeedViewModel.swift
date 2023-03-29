@@ -9,20 +9,6 @@ import Firebase
 import FirebaseStorage
 import UIKit
 
-protocol FeedCellProtocol {
-    func likeManager(id: String, _ like: [String:Any])
-}
-
-protocol FeedVCProtocol {
-    var emails: [String] {get}
-    var comments: [String] {get}
-    var likes: [Int] {get}
-    var imageURLs: [String] {get}
-    var ids: [String] {get}
-    var whoLiked: [[String]] {get}
-    func getDataFromFirestore(tableView: UITableView)
-}
-
 class FeedViewModel: FeedVCProtocol {
     let db = Firestore.firestore()
     
@@ -74,20 +60,20 @@ class FeedViewModel: FeedVCProtocol {
                             self.imageURLs.append(imageUrl)
                         }
                         
-                       
+                        
                         
                     }
-                        tableView.reloadData()
+                    tableView.reloadData()
                 }
             }
     }
 }
 
-extension FeedViewModel {
+extension FeedViewModel: FeedCellProtocol {
     
     func postLikeManager(id: String) {
         guard let currentUserEmail = Auth.auth().currentUser?.email else {return}
-                
+        
         //Add who likes
         db.collection(K.Posts).document(id).updateData([
             K.Document.likedBy: FieldValue.arrayUnion([currentUserEmail])
@@ -97,7 +83,7 @@ extension FeedViewModel {
     
     func postDislikeManager(id: String) {
         guard let currentUserEmail = Auth.auth().currentUser?.email else {return}
-                
+        
         //Add who likes
         db.collection(K.Posts).document(id).updateData([
             K.Document.likedBy: FieldValue.arrayRemove([currentUserEmail])
@@ -118,6 +104,6 @@ extension FeedViewModel {
     
     
     
-   
+    
 }
 
