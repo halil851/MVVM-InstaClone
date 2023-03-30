@@ -21,4 +21,9 @@ struct K {
         static let postedBy = "postedBy"
     }
     
+    struct Images {
+        static let heartRedFill = "heart.red.fill"
+        static let heartBold = "heart.bold"
+    }
+    
 }

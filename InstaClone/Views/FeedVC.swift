@@ -117,8 +117,8 @@ extension FeedVC: FeedCellSegueProtocol {
         if segue.identifier == "likeList",
            let destinationVC = segue.destination as? LikeListVC{
             
-                destinationVC.likedUser = viewModel.whoLiked[index]
-            
+            destinationVC.likedUser = viewModel.whoLiked[index]
+            destinationVC.numberOfLikesStr = likeOrLikes(indexRow: index)
                 
         }
     }

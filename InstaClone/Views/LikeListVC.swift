@@ -10,15 +10,18 @@ import UIKit
 class LikeListVC: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var numberOfLikes: UILabel!
     
     var likedUser = [String]()
+    var numberOfLikesStr = String()
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.separatorStyle = .none
+//        tableView.separatorStyle = .none
+        numberOfLikes.text = numberOfLikesStr
     }
 
 }
@@ -40,6 +43,10 @@ extension LikeListVC: UITableViewDelegate, UITableViewDataSource {
         cell.textLabel?.text = likedUser[indexPath.row]
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     

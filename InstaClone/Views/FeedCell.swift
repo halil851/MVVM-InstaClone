@@ -79,7 +79,7 @@ class FeedCell: UITableViewCell {
    
     
     @objc func doubleTapToLike() {
-        
+        //MARK: Heart Image, center of posted Image
         if viewModel.isItLiked(likesList: wholiked[index]){
             heartImage.image = UIImage(systemName: "heart.slash.fill")
         } else {
@@ -98,15 +98,15 @@ class FeedCell: UITableViewCell {
         }
        
     }
-    
+    //MARK: Button Image
     func checkIfLiked(likesList: [String]) {
         if viewModel.isItLiked(likesList: likesList){
-            likeButtonOutlet.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+            likeButtonOutlet.setImage(UIImage(named: K.Images.heartRedFill), for: .normal)
             likeButtonOutlet.tintColor = .systemRed
             
         } else {
-            likeButtonOutlet.setImage(UIImage(systemName: "heart"), for: .normal)
-            likeButtonOutlet.tintColor = .black
+            likeButtonOutlet.setImage(UIImage(named: K.Images.heartBold), for: .normal)
+            likeButtonOutlet.tintColor = .label
             
         }
     }
