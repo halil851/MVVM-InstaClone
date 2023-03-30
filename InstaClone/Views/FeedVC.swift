@@ -15,7 +15,10 @@ protocol FeedVCProtocol {
     var imageURLs: [String] {get}
     var ids: [String] {get}
     var whoLiked: [[String]] {get}
+    var date: [DateComponents] {get}
     func getDataFromFirestore(tableView: UITableView)
+    func likeOrLikes(indexRow: Int) -> String
+    func uploadDate(indexRow: Int) -> String
 }
 
 class FeedVC: UIViewController {
@@ -25,6 +28,8 @@ class FeedVC: UIViewController {
     //MARK: - Properties
     var viewModel: FeedVCProtocol = FeedViewModel()
     var lastTabBarIndex = 0
+    var refreshControl = UIRefreshControl()
+
     
     //MARK: - Life Cycles
     override func viewDidLoad() {
@@ -44,6 +49,9 @@ class FeedVC: UIViewController {
         tableView.dataSource = self
         tableView.rowHeight = (view.window?.windowScene?.screen.bounds.height ?? 800) / 1.5
         tableView.separatorStyle = .none
+        // Refresh Check
+        refreshControl.addTarget(self, action: #selector(refreshTableView), for: .valueChanged)
+        tableView.addSubview(refreshControl)
     }
     
     func boldAndRegularText(indexRow: Int) -> NSMutableAttributedString{
@@ -57,15 +65,7 @@ class FeedVC: UIViewController {
         return newString
     }
     
-    func likeOrLikes(indexRow: Int) -> String {
-
-        let likesCount = viewModel.likes[indexRow]
-        if likesCount > 1 {
-            return "\(likesCount) likes"
-        }
-        return "\(likesCount) like"
-        
-    }
+   
     
 }
 
@@ -80,9 +80,10 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
             return UITableViewCell()
         }
         cell.delegate = self
+        cell.dateLabel.text = viewModel.uploadDate(indexRow: indexPath.row)
         cell.userEmailLabel.text = viewModel.emails[indexPath.row]
         cell.commentLabel.attributedText = boldAndRegularText(indexRow: indexPath.row)
-        cell.likeCounter.text = likeOrLikes(indexRow: indexPath.row)
+        cell.likeCounter.text = viewModel.likeOrLikes(indexRow: indexPath.row)
         cell.userImage.sd_setImage(with: URL(string: viewModel.imageURLs[indexPath.row]))
         cell.checkIfLiked(likesList: viewModel.whoLiked[indexPath.row])
         cell.getInfo(index: indexPath.row,
@@ -101,6 +102,7 @@ extension FeedVC: UITabBarControllerDelegate {
         // Go to top with animation if user at Feed
         if lastTabBarIndex == 0, tabBarController.selectedIndex == 0 {
             tableView.setContentOffset(CGPointZero, animated: true)
+            viewModel.getDataFromFirestore(tableView: tableView)
         }
         lastTabBarIndex = tabBarController.selectedIndex
     }
@@ -118,9 +120,79 @@ extension FeedVC: FeedCellSegueProtocol {
            let destinationVC = segue.destination as? LikeListVC{
             
             destinationVC.likedUser = viewModel.whoLiked[index]
-            destinationVC.numberOfLikesStr = likeOrLikes(indexRow: index)
+            destinationVC.numberOfLikesStr = viewModel.likeOrLikes(indexRow: index)
                 
         }
     }
     
 }
+
+extension FeedVC: UIScrollViewDelegate {
+    // Aşağı kaydırma işlemi gerçekleştiğinde tetiklenecek metod
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+
+        if offsetY > contentHeight - scrollView.frame.height {
+            // TableView aşağı kaydırıldı ve en altına geldi
+            refreshTableView()
+        }
+    }
+    
+    // Yenileme işlemi gerçekleştiğinde tetiklenecek metod
+    @objc func refreshTableView() {
+        // Yenileme işlemi yapılır
+        viewModel.getDataFromFirestore(tableView: tableView)
+
+        // Refresh kontrolü durdurulur
+        refreshControl.endRefreshing()
+    }
+}
+
+/*
+ 
+ import UIKit
+
+ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate {
+
+     @IBOutlet weak var tableView: UITableView!
+     var refreshControl = UIRefreshControl()
+
+     override func viewDidLoad() {
+         super.viewDidLoad()
+
+         // TableView'in özellikleri ayarlanır
+         tableView.dataSource = self
+         tableView.delegate = self
+
+         // Refresh kontrolü oluşturulur ve TableView'e eklenir
+         refreshControl.addTarget(self, action: #selector(refreshTableView), for: .valueChanged)
+         tableView.addSubview(refreshControl)
+     }
+
+     // Aşağı kaydırma işlemi gerçekleştiğinde tetiklenecek metod
+     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+         let offsetY = scrollView.contentOffset.y
+         let contentHeight = scrollView.contentSize.height
+
+         if offsetY > contentHeight - scrollView.frame.height {
+             // TableView aşağı kaydırıldı ve en altına geldi
+             refreshTableView()
+         }
+     }
+
+     // Yenileme işlemi gerçekleştiğinde tetiklenecek metod
+     @objc func refreshTableView() {
+         // Yenileme işlemi yapılır
+         // Örneğin, TableView'de gösterilen veriler yenilenir
+         tableView.reloadData()
+
+         // Refresh kontrolü durdurulur
+         refreshControl.endRefreshing()
+     }
+
+     // TableView'in diğer metodları (numberOfRowsInSection, cellForRowAt vb.)
+     // burada yer alacak
+ }
+
+ */

@@ -25,9 +25,10 @@ class FeedCell: UITableViewCell {
     @IBOutlet weak var likeCounter: UILabel!
     @IBOutlet weak var commentLabel: UILabel!
     @IBOutlet weak var likeButtonOutlet: UIButton!
+    @IBOutlet weak var dateLabel: UILabel!
     
     //MARK: - Properties
-    var viewModel: FeedCellProtocol = FeedViewModel()
+    var viewModel: FeedCellProtocol = FeedCellViewModel()
     var ids = [String]()
     var index = 0
     var wholiked = [[String]]()

@@ -18,6 +18,7 @@ class FeedViewModel: FeedVCProtocol {
     var imageURLs = [String]()
     var ids = [String]()
     var whoLiked = [[String]]()
+    var date = [DateComponents]()
     
     
     func getDataFromFirestore(tableView: UITableView) {
@@ -36,6 +37,7 @@ class FeedViewModel: FeedVCProtocol {
                     self.imageURLs.removeAll()
                     self.ids.removeAll()
                     self.whoLiked.removeAll()
+                    self.date.removeAll()
                     
                     for document in snapshotSafe.documents {
                         
@@ -60,7 +62,15 @@ class FeedViewModel: FeedVCProtocol {
                             self.imageURLs.append(imageUrl)
                         }
                         
-                        
+                        if let date = document.get(K.Document.date) as? Timestamp {
+                            
+                            let uploadDate = Date(timeIntervalSince1970: TimeInterval(date.seconds))
+                            let now = Date()
+                            // Calculation the time between 2 dates
+                            let calendar = Calendar.current
+                            let timeDifference = calendar.dateComponents([ .year,.weekOfMonth, .month, .day, .hour, .minute], from: uploadDate, to: now)
+                            self.date.append(timeDifference)
+                        }
                         
                     }
                     tableView.reloadData()
@@ -69,41 +79,51 @@ class FeedViewModel: FeedVCProtocol {
     }
 }
 
-extension FeedViewModel: FeedCellProtocol {
-    
-    func postLikeManager(id: String) {
-        guard let currentUserEmail = Auth.auth().currentUser?.email else {return}
-        
-        //Add who likes
-        db.collection(K.Posts).document(id).updateData([
-            K.Document.likedBy: FieldValue.arrayUnion([currentUserEmail])
-        ])
-        
-    }
-    
-    func postDislikeManager(id: String) {
-        guard let currentUserEmail = Auth.auth().currentUser?.email else {return}
-        
-        //Add who likes
-        db.collection(K.Posts).document(id).updateData([
-            K.Document.likedBy: FieldValue.arrayRemove([currentUserEmail])
-        ])
-        
-    }
-    
-    func isItLiked(likesList: [String]) -> Bool {
-        guard let currentUserEmail = Auth.auth().currentUser?.email else {return false}
-        
-        for user in likesList{
-            if user == currentUserEmail{
-                return true
-            }
+extension FeedViewModel {
+    func likeOrLikes(indexRow: Int) -> String {
+
+        let likesCount = likes[indexRow]
+        if likesCount > 1 {
+            return "\(likesCount) likes"
         }
-        return false
+        return "\(likesCount) like"
+        
     }
     
-    
-    
-    
+    func uploadDate(indexRow: Int) -> String {
+        guard let year = date[indexRow].year else {return ""}
+        if year > 0 {
+            return "\(year) years ago"
+        }
+        
+        guard let month = date[indexRow].month else {return ""}
+        if month > 0 {
+            return "\(month) months ago"
+        }
+        
+        guard let week = date[indexRow].weekOfMonth else {return ""}
+        if week > 0 {
+            return "\(week) weeks ago"
+        }
+        
+        guard let day = date[indexRow].day else {return ""}
+        if day > 0 {
+            return "\(day) days ago"
+        }
+        
+        guard let hour = date[indexRow].hour else {return ""}
+        if hour > 0 {
+            return "\(hour) hours ago"
+        }
+        
+        guard let minute = date[indexRow].minute else {return ""}
+        if minute == 0 {
+            return "now"
+        }
+        return "\(minute) minutes ago"
+        
+    }
 }
+
+
 

@@ -281,6 +281,12 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ycp-sy-HXH">
+                                                    <rect key="frame" x="16" y="494" width="69.5" height="17"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="trailing" secondItem="uMq-ng-eyo" secondAttribute="trailing" id="2YD-s6-xJJ"/>
@@ -293,7 +299,10 @@
                                                 <constraint firstItem="2oK-P1-l3v" firstAttribute="trailing" secondItem="4RK-18-Rgh" secondAttribute="trailingMargin" id="SOv-iA-5fK"/>
                                                 <constraint firstItem="uMq-ng-eyo" firstAttribute="leading" secondItem="4RK-18-Rgh" secondAttribute="leading" id="Tfx-Rb-zHN"/>
                                                 <constraint firstItem="2oK-P1-l3v" firstAttribute="leading" secondItem="4RK-18-Rgh" secondAttribute="leadingMargin" id="V95-sX-25L"/>
+                                                <constraint firstItem="Ycp-sy-HXH" firstAttribute="leading" secondItem="4RK-18-Rgh" secondAttribute="leadingMargin" id="VcM-I7-6KX"/>
                                                 <constraint firstItem="2oK-P1-l3v" firstAttribute="top" secondItem="4RK-18-Rgh" secondAttribute="topMargin" id="aa0-cg-Mz3"/>
+                                                <constraint firstItem="Ycp-sy-HXH" firstAttribute="top" secondItem="3oW-UR-oig" secondAttribute="bottom" constant="4" id="d0I-65-vUj"/>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Ycp-sy-HXH" secondAttribute="trailing" constant="20" symbolic="YES" id="kbu-fO-LL0"/>
                                                 <constraint firstItem="uMq-ng-eyo" firstAttribute="top" secondItem="2oK-P1-l3v" secondAttribute="bottom" constant="8" id="mW8-uf-t1B"/>
                                                 <constraint firstItem="0RY-dJ-kUH" firstAttribute="width" secondItem="4RK-18-Rgh" secondAttribute="width" multiplier="0.055" id="pVU-mS-Wma"/>
                                                 <constraint firstItem="3oW-UR-oig" firstAttribute="leading" secondItem="4RK-18-Rgh" secondAttribute="leadingMargin" id="qvE-lw-HBf"/>
@@ -302,6 +311,7 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="commentLabel" destination="3oW-UR-oig" id="Srf-QO-RFK"/>
+                                            <outlet property="dateLabel" destination="Ycp-sy-HXH" id="C3M-qR-hmY"/>
                                             <outlet property="heartImage" destination="Rw9-Xw-Xwo" id="qZz-Ju-aTt"/>
                                             <outlet property="likeButtonOutlet" destination="0RY-dJ-kUH" id="iS7-UK-jCD"/>
                                             <outlet property="likeCounter" destination="Gna-Hi-oVt" id="gSo-Vw-dfJ"/>

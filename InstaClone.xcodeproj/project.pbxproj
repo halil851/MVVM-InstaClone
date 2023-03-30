@@ -26,6 +26,7 @@
 		A9DFEE1429BB7F010059C3A7 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DFEE1329BB7F010059C3A7 /* SettingsVC.swift */; };
 		A9DFEE1629BB7F1C0059C3A7 /* UploadVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DFEE1529BB7F1C0059C3A7 /* UploadVC.swift */; };
 		A9E2B69329D467F8008B1118 /* LikeListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E2B69229D467F8008B1118 /* LikeListVC.swift */; };
+		A9E2B69529D5BEB2008B1118 /* FeedCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E2B69429D5BEB2008B1118 /* FeedCellViewModel.swift */; };
 		A9F6F4AA29BB4FF200C45192 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = A9F6F4A929BB4FF200C45192 /* FirebaseAnalytics */; };
 		A9F6F4AC29BB4FF200C45192 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A9F6F4AB29BB4FF200C45192 /* FirebaseAuth */; };
 		A9F6F4AE29BB4FF200C45192 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = A9F6F4AD29BB4FF200C45192 /* FirebaseFirestore */; };
@@ -53,6 +54,7 @@
 		A9DFEE1329BB7F010059C3A7 /* SettingsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
 		A9DFEE1529BB7F1C0059C3A7 /* UploadVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadVC.swift; sourceTree = "<group>"; };
 		A9E2B69229D467F8008B1118 /* LikeListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeListVC.swift; sourceTree = "<group>"; };
+		A9E2B69429D5BEB2008B1118 /* FeedCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCellViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +111,7 @@
 			isa = PBXGroup;
 			children = (
 				A9453BDC29CB3A3D00A62DB0 /* SignInViewModel.swift */,
+				A9E2B69429D5BEB2008B1118 /* FeedCellViewModel.swift */,
 				A9453BDE29CC458D00A62DB0 /* FeedViewModel.swift */,
 				A9453BE029CC73FC00A62DB0 /* UploadViewModel.swift */,
 				A9453BE229CC8C8B00A62DB0 /* SettingsViewModel.swift */,
@@ -239,6 +242,7 @@
 				A91B4F9A29BB19EF002CF7E9 /* AppDelegate.swift in Sources */,
 				A9453BE329CC8C8B00A62DB0 /* SettingsViewModel.swift in Sources */,
 				A9453BDD29CB3A3D00A62DB0 /* SignInViewModel.swift in Sources */,
+				A9E2B69529D5BEB2008B1118 /* FeedCellViewModel.swift in Sources */,
 				A91B4F9C29BB19EF002CF7E9 /* SceneDelegate.swift in Sources */,
 				A9DFEE1429BB7F010059C3A7 /* SettingsVC.swift in Sources */,
 				A9B597A129C9F9E2009ED305 /* Constants.swift in Sources */,
