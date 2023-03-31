@@ -26,9 +26,9 @@ class FeedVC: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     //MARK: - Properties
-    var viewModel: FeedVCProtocol = FeedViewModel()
-    var lastTabBarIndex = 0
-    var refreshControl = UIRefreshControl()
+    private var viewModel: FeedVCProtocol = FeedViewModel()
+    private var lastTabBarIndex = 0
+    private var refreshControl = UIRefreshControl()
 
     
     //MARK: - Life Cycles
@@ -43,18 +43,18 @@ class FeedVC: UIViewController {
     
     
     //MARK: - Functions
-    func initialSetup() {
+    private func initialSetup() {
         tabBarController?.delegate = self
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = (view.window?.windowScene?.screen.bounds.height ?? 800) / 1.5
         tableView.separatorStyle = .none
-        // Refresh Check
+        // Enable Refresh Check
         refreshControl.addTarget(self, action: #selector(refreshTableView), for: .valueChanged)
         tableView.addSubview(refreshControl)
     }
     
-    func boldAndRegularText(indexRow: Int) -> NSMutableAttributedString{
+    private func boldAndRegularText(indexRow: Int) -> NSMutableAttributedString{
         let boldAttribute = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 15.0)]
         let regularAttribute = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 15.0)]
         let boldText = NSAttributedString(string: viewModel.emails[indexRow], attributes: boldAttribute)
@@ -64,9 +64,7 @@ class FeedVC: UIViewController {
         newString.append(regularText)
         return newString
     }
-    
-   
-    
+  
 }
 
 //MARK: - Tableview Operations
@@ -131,68 +129,26 @@ extension FeedVC: UIScrollViewDelegate {
     // Aşağı kaydırma işlemi gerçekleştiğinde tetiklenecek metod
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
+//        print("offsetY: \(offsetY)")
         let contentHeight = scrollView.contentSize.height
+//        print(contentHeight)
+        
+        
+        /*
+         if offsetY > contentHeight - scrollView.frame.height {
+         // TableView aşağı kaydırıldı ve en altına geldi
+            print("En aşağı inildi")
+         }
 
-        if offsetY > contentHeight - scrollView.frame.height {
-            // TableView aşağı kaydırıldı ve en altına geldi
-            refreshTableView()
-        }
+         */
+        
     }
     
-    // Yenileme işlemi gerçekleştiğinde tetiklenecek metod
-    @objc func refreshTableView() {
-        // Yenileme işlemi yapılır
+    // Get data and stop refreshing
+    @objc private func refreshTableView() {
+        // Refresh Data
         viewModel.getDataFromFirestore(tableView: tableView)
-
-        // Refresh kontrolü durdurulur
+        // Stop Refreshing
         refreshControl.endRefreshing()
     }
 }
-
-/*
- 
- import UIKit
-
- class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate {
-
-     @IBOutlet weak var tableView: UITableView!
-     var refreshControl = UIRefreshControl()
-
-     override func viewDidLoad() {
-         super.viewDidLoad()
-
-         // TableView'in özellikleri ayarlanır
-         tableView.dataSource = self
-         tableView.delegate = self
-
-         // Refresh kontrolü oluşturulur ve TableView'e eklenir
-         refreshControl.addTarget(self, action: #selector(refreshTableView), for: .valueChanged)
-         tableView.addSubview(refreshControl)
-     }
-
-     // Aşağı kaydırma işlemi gerçekleştiğinde tetiklenecek metod
-     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-         let offsetY = scrollView.contentOffset.y
-         let contentHeight = scrollView.contentSize.height
-
-         if offsetY > contentHeight - scrollView.frame.height {
-             // TableView aşağı kaydırıldı ve en altına geldi
-             refreshTableView()
-         }
-     }
-
-     // Yenileme işlemi gerçekleştiğinde tetiklenecek metod
-     @objc func refreshTableView() {
-         // Yenileme işlemi yapılır
-         // Örneğin, TableView'de gösterilen veriler yenilenir
-         tableView.reloadData()
-
-         // Refresh kontrolü durdurulur
-         refreshControl.endRefreshing()
-     }
-
-     // TableView'in diğer metodları (numberOfRowsInSection, cellForRowAt vb.)
-     // burada yer alacak
- }
-
- */

@@ -6,11 +6,10 @@
 //
 
 import Firebase
-import FirebaseStorage
-import UIKit
+//import UIKit
 
 class FeedViewModel: FeedVCProtocol {
-    let db = Firestore.firestore()
+    private let db = Firestore.firestore()
     
     var emails = [String]()
     var comments = [String]()
@@ -93,35 +92,41 @@ extension FeedViewModel {
     func uploadDate(indexRow: Int) -> String {
         guard let year = date[indexRow].year else {return ""}
         if year > 0 {
-            return "\(year) years ago"
+            return singularPluralDate(date: year, "year")
         }
         
         guard let month = date[indexRow].month else {return ""}
         if month > 0 {
-            return "\(month) months ago"
+            return singularPluralDate(date: month, "month")
         }
         
         guard let week = date[indexRow].weekOfMonth else {return ""}
         if week > 0 {
-            return "\(week) weeks ago"
+            return singularPluralDate(date: week, "week")
         }
         
         guard let day = date[indexRow].day else {return ""}
         if day > 0 {
-            return "\(day) days ago"
+            return singularPluralDate(date: day, "day")
         }
         
         guard let hour = date[indexRow].hour else {return ""}
         if hour > 0 {
-            return "\(hour) hours ago"
+            return singularPluralDate(date: hour, "hour")
         }
         
         guard let minute = date[indexRow].minute else {return ""}
         if minute == 0 {
             return "now"
         }
-        return "\(minute) minutes ago"
-        
+        return singularPluralDate(date: minute, "min")
+    }
+    
+    func singularPluralDate(date: Int, _ str: String) -> String{
+        if date == 1 {
+            return "\(date) \(str) ago"
+        }
+        return "\(date) \(str)s ago"
     }
 }
 
