@@ -23,12 +23,14 @@ class FeedViewModel: FeedVCProtocol {
     
     // First call you get 3 photo, then 6, then 9...
     func getDataFromFirestore(tableView: UITableView, limit: Int?) {
-         
+         /*
         if limit == nil {
             limitation += 3
         } else {
             limitation = limit ?? 0
         }
+        */
+        
         
         db.collection(K.Posts)
             .order(by: K.Document.date, descending: true)
