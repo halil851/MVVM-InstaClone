@@ -13,12 +13,12 @@ protocol UploadVCProtocol {
 
 class UploadVC: UIViewController {
     //MARK: - IBOutlets
-    @IBOutlet weak var commentText: UITextField!
-    @IBOutlet weak var image: UIImageView!
-    @IBOutlet weak var uploadOutlet: UIButton!
+    @IBOutlet private weak var commentText: UITextField!
+    @IBOutlet private weak var image: UIImageView!
+    @IBOutlet private weak var uploadOutlet: UIButton!
     
     //MARK: - Properties
-    var viewModel = UploadViewModel()
+    private var viewModel = UploadViewModel()
     
     //MARK: - Life Cycles
     override func viewDidLoad() {
@@ -28,7 +28,7 @@ class UploadVC: UIViewController {
     }
     
     //MARK: - IBActions
-    @IBAction func uploadTap(_ sender: UIButton) {
+    @IBAction private func uploadTap(_ sender: UIButton) {
         
         if image.image == UIImage(named: "select3") {
             showAlert(mainTitle: "Select image", message: "Select an image before update!", actionButtonTitle: "OK")
@@ -53,7 +53,7 @@ class UploadVC: UIViewController {
     }
     //MARK: - Functions
     
-    func setImageInteractable() {
+    private func setImageInteractable() {
         image.isUserInteractionEnabled = true
         let imageTap = UITapGestureRecognizer(target: self, action: #selector(selectImage))
         image.addGestureRecognizer(imageTap)

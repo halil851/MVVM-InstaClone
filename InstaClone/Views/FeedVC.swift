@@ -16,14 +16,22 @@ protocol FeedVCProtocol {
     var ids: [String] {get}
     var whoLiked: [[String]] {get}
     var date: [DateComponents] {get}
-    func getDataFromFirestore(tableView: UITableView)
+    func getDataFromFirestore(tableView: UITableView, limit: Int?)
     func likeOrLikes(indexRow: Int) -> String
     func uploadDate(indexRow: Int) -> String
 }
 
+extension FeedVCProtocol {
+    func getDataFromFirestore (tableView: UITableView, limit: Int? = nil){
+        getDataFromFirestore(tableView: tableView, limit: limit)
+    }
+}
+
+
+
 class FeedVC: UIViewController {
     //MARK: - IBOutlets
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
     
     //MARK: - Properties
     private var viewModel: FeedVCProtocol = FeedViewModel()
@@ -37,6 +45,7 @@ class FeedVC: UIViewController {
         
         initialSetup()
         viewModel.getDataFromFirestore(tableView: tableView)
+        
     }
     
     //MARK: - IBActions
@@ -70,6 +79,7 @@ class FeedVC: UIViewController {
 //MARK: - Tableview Operations
 extension FeedVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        print(viewModel.emails.count)
         return viewModel.emails.count
     }
     
@@ -100,7 +110,7 @@ extension FeedVC: UITabBarControllerDelegate {
         // Go to top with animation if user at Feed
         if lastTabBarIndex == 0, tabBarController.selectedIndex == 0 {
             tableView.setContentOffset(CGPointZero, animated: true)
-            viewModel.getDataFromFirestore(tableView: tableView)
+            viewModel.getDataFromFirestore(tableView: tableView, limit: 5)
         }
         lastTabBarIndex = tabBarController.selectedIndex
     }
@@ -126,28 +136,22 @@ extension FeedVC: FeedCellSegueProtocol {
 }
 
 extension FeedVC: UIScrollViewDelegate {
-    // Aşağı kaydırma işlemi gerçekleştiğinde tetiklenecek metod
+    // Trigger when scroll down
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
-//        print("offsetY: \(offsetY)")
         let contentHeight = scrollView.contentSize.height
-//        print(contentHeight)
-        
-        
-        /*
-         if offsetY > contentHeight - scrollView.frame.height {
-         // TableView aşağı kaydırıldı ve en altına geldi
-            print("En aşağı inildi")
+ 
+        if offsetY > (contentHeight - scrollView.frame.height) * 0.99 {
+         // When tableview reach bottom
+            viewModel.getDataFromFirestore(tableView: tableView)
          }
 
-         */
-        
     }
     
     // Get data and stop refreshing
     @objc private func refreshTableView() {
         // Refresh Data
-        viewModel.getDataFromFirestore(tableView: tableView)
+        viewModel.getDataFromFirestore(tableView: tableView, limit: 5)
         // Stop Refreshing
         refreshControl.endRefreshing()
     }

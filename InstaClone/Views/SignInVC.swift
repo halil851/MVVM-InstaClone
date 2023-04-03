@@ -14,11 +14,11 @@ protocol SignInVCProtocol {
 
 class SignInVC: UIViewController {
     //MARK: - IBOutlets
-    @IBOutlet weak var eMailField: UITextField!
-    @IBOutlet weak var passwordField: UITextField!
+    @IBOutlet private weak var eMailField: UITextField!
+    @IBOutlet private weak var passwordField: UITextField!
     
     //MARK: - Properties
-    var viewModel: SignInVCProtocol = SignInViewModel()
+    private var viewModel: SignInVCProtocol = SignInViewModel()
     
     //MARK: - Life Cycles
     override func viewDidLoad() {
@@ -26,7 +26,7 @@ class SignInVC: UIViewController {
         // Do any additional setup after loading the view.
     }
     //MARK: - IBActions
-    @IBAction func signInTap(_ sender: UIButton) {
+    @IBAction private func signInTap(_ sender: UIButton) {
         // If Textfields are empty then return with an alert.
         guard textFields().isItEmpty == false else {return}
         
@@ -40,7 +40,7 @@ class SignInVC: UIViewController {
         }
     }
     
-    @IBAction func signUpTap(_ sender: UIButton) {
+    @IBAction private func signUpTap(_ sender: UIButton) {
         // If Textfields are empty then return with an alert.
         guard textFields().isItEmpty == false else {return}
         
@@ -55,7 +55,7 @@ class SignInVC: UIViewController {
     
     //MARK: - Functions
     // If Textfields are empty then return with an alert.
-    func textFields() -> (isItEmpty: Bool, email: String, password: String) {
+    private func textFields() -> (isItEmpty: Bool, email: String, password: String) {
         guard let email = eMailField.text,
               let password = passwordField.text,
               email != "",

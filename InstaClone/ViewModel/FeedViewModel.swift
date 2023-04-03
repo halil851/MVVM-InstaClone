@@ -18,75 +18,98 @@ class FeedViewModel: FeedVCProtocol {
     var ids = [String]()
     var whoLiked = [[String]]()
     var date = [DateComponents]()
+    var limitation = 0
     
     
-    func getDataFromFirestore(tableView: UITableView) {
+    // First call you get 3 photo, then 6, then 9...
+    func getDataFromFirestore(tableView: UITableView, limit: Int?) {
+         
+        if limit == nil {
+            limitation += 3
+        } else {
+            limitation = limit ?? 0
+        }
+        
         db.collection(K.Posts)
             .order(by: K.Document.date, descending: true)
+            .limit(to: limit ?? limitation)
             .addSnapshotListener { snapshot, err in
-                
+
                 if err != nil {
                     print(err.debugDescription)
                     return}
-                
-                if snapshot?.isEmpty == false, let snapshotSafe = snapshot {
-                    self.emails.removeAll()
-                    self.comments.removeAll()
-                    self.likes.removeAll()
-                    self.imageURLs.removeAll()
-                    self.ids.removeAll()
-                    self.whoLiked.removeAll()
-                    self.date.removeAll()
-                    
-                    for document in snapshotSafe.documents {
-                        
-                        let id = document.documentID
-                        self.ids.append(id)
-                        
-                        if let postedBy = document.get(K.Document.postedBy) as? String {
-                            self.emails.append(postedBy)
-                        }
-                        
-                        if let comment = document.get(K.Document.postComment) as? String {
-                            self.comments.append(comment)
-                        }
-                        
-                        if let like = document.get(K.Document.likedBy) as? [String] {
-                            self.likes.append(like.count)
-                            self.whoLiked.append(like)
-                            
-                        }
-                        
-                        if let imageUrl = document.get(K.Document.imageUrl) as? String {
-                            self.imageURLs.append(imageUrl)
-                        }
-                        
-                        if let date = document.get(K.Document.date) as? Timestamp {
-                            
-                            let uploadDate = Date(timeIntervalSince1970: TimeInterval(date.seconds))
-                            let now = Date()
-                            // Calculation the time between 2 dates
-                            let calendar = Calendar.current
-                            let timeDifference = calendar.dateComponents([ .year,.weekOfMonth, .month, .day, .hour, .minute], from: uploadDate, to: now)
-                            self.date.append(timeDifference)
-                        }
-                        
-                    }
-                    tableView.reloadData()
-                }
+
+                guard let snapshot = snapshot else {
+                    print(err.debugDescription)
+                    return}
+
+                self.removeAllArrays()
+                self.appending(snapshot: snapshot)
+
+                tableView.reloadData()
+
             }
     }
+ 
+    
 }
 
 extension FeedViewModel {
+    private func removeAllArrays() {
+        self.emails.removeAll()
+        self.comments.removeAll()
+        self.likes.removeAll()
+        self.imageURLs.removeAll()
+        self.ids.removeAll()
+        self.whoLiked.removeAll()
+        self.date.removeAll()
+    }
+    
+    private func appending(snapshot: QuerySnapshot) {
+        
+        for document in snapshot.documents {
+            
+            let id = document.documentID
+            self.ids.append(id)
+            
+            if let postedBy = document.get(K.Document.postedBy) as? String {
+                self.emails.append(postedBy)
+            }
+            
+            if let comment = document.get(K.Document.postComment) as? String {
+                self.comments.append(comment)
+            }
+            
+            if let like = document.get(K.Document.likedBy) as? [String] {
+                self.likes.append(like.count)
+                self.whoLiked.append(like)
+                
+            }
+            
+            if let imageUrl = document.get(K.Document.imageUrl) as? String {
+                self.imageURLs.append(imageUrl)
+            }
+            
+            if let date = document.get(K.Document.date) as? Timestamp {
+                
+                let uploadDate = Date(timeIntervalSince1970: TimeInterval(date.seconds))
+                let now = Date()
+                // Calculation the time between 2 dates
+                let calendar = Calendar.current
+                let timeDifference = calendar.dateComponents([ .year,.weekOfMonth, .month, .day, .hour, .minute], from: uploadDate, to: now)
+                self.date.append(timeDifference)
+            }
+            
+        }
+    }
+    
     func likeOrLikes(indexRow: Int) -> String {
-
+        
         let likesCount = likes[indexRow]
         if likesCount > 1 {
             return "\(likesCount) likes"
         }
         return "\(likesCount) like"
-        
     }
     
     func uploadDate(indexRow: Int) -> String {
@@ -122,7 +145,7 @@ extension FeedViewModel {
         return singularPluralDate(date: minute, "min")
     }
     
-    func singularPluralDate(date: Int, _ str: String) -> String{
+    private func singularPluralDate(date: Int, _ str: String) -> String{
         if date == 1 {
             return "\(date) \(str) ago"
         }

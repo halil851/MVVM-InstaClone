@@ -9,8 +9,8 @@ import UIKit
 
 class LikeListVC: UIViewController {
 
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var numberOfLikes: UILabel!
+    @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var numberOfLikes: UILabel!
     
     var likedUser = [String]()
     var numberOfLikesStr = String()
@@ -20,7 +20,6 @@ class LikeListVC: UIViewController {
 
         tableView.delegate = self
         tableView.dataSource = self
-//        tableView.separatorStyle = .none
         numberOfLikes.text = numberOfLikesStr
     }
 

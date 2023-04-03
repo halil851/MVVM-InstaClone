@@ -15,7 +15,7 @@ class SettingsVC: UIViewController {
     //MARK: - IBOutlets
 
     //MARK: - Properties
-    var viewModel: SettingVCProtocol = SettingsViewModel()
+    private var viewModel: SettingVCProtocol = SettingsViewModel()
     
     //MARK: - Life Cycles
     override func viewDidLoad() {
@@ -26,7 +26,7 @@ class SettingsVC: UIViewController {
     
     
     //MARK: - IBActions
-    @IBAction func signOut(_ sender: UIButton) {
+    @IBAction private func signOut(_ sender: UIButton) {
         viewModel.signOut { success, err in
             if err != nil {
                 self.showAlert(mainTitle: "Error!", message: err?.localizedDescription ?? "Error while signing out.", actionButtonTitle: "OK")

@@ -20,18 +20,18 @@ protocol FeedCellSegueProtocol {
 class FeedCell: UITableViewCell {
     //MARK: - IBOutlets
     @IBOutlet weak var userEmailLabel: UILabel!
-    @IBOutlet weak var heartImage: UIImageView!
+    @IBOutlet private weak var heartImage: UIImageView!
     @IBOutlet weak var userImage: UIImageView!
     @IBOutlet weak var likeCounter: UILabel!
     @IBOutlet weak var commentLabel: UILabel!
-    @IBOutlet weak var likeButtonOutlet: UIButton!
+    @IBOutlet private weak var likeButtonOutlet: UIButton!
     @IBOutlet weak var dateLabel: UILabel!
     
     //MARK: - Properties
-    var viewModel: FeedCellProtocol = FeedCellViewModel()
-    var ids = [String]()
-    var index = 0
-    var wholiked = [[String]]()
+    private var viewModel: FeedCellProtocol = FeedCellViewModel()
+    private var ids = [String]()
+    private var index = 0
+    private var wholiked = [[String]]()
     var delegate: FeedCellSegueProtocol?
     
     //MARK: - Life Cycles
@@ -42,13 +42,14 @@ class FeedCell: UITableViewCell {
     }
     
     //MARK: - IBActions
-    @IBAction func likeTap(_ sender: UIButton? = nil) {
+    @IBAction private func likeTap(_ sender: UIButton? = nil) {
+        
         if viewModel.isItLiked(likesList: wholiked[index]) {
             viewModel.postDislikeManager(id: ids[index])
-            
         } else {
             viewModel.postLikeManager(id: ids[index])
         }
+         
     }
     
     //MARK: - Functions
@@ -58,7 +59,7 @@ class FeedCell: UITableViewCell {
         self.wholiked = whoLikeIt
     }
     
-    func doubleTapSetup() {
+    private func doubleTapSetup() {
         userImage.isUserInteractionEnabled = true
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(doubleTapToLike))
         tapGesture.numberOfTapsRequired = 2
@@ -66,27 +67,24 @@ class FeedCell: UITableViewCell {
         heartImage.alpha = 0
     }
     
-    func clickableLabel() {
+    private func clickableLabel() {
         likeCounter.isUserInteractionEnabled = true
         let click = UITapGestureRecognizer(target: self, action: #selector(performSegue))
         likeCounter.addGestureRecognizer(click)
     }
     
-    @objc func performSegue(){
+    @objc private func performSegue(){
         delegate?.performSegue(cellIndex: index)
     }
-   
-                                         
-   
-    
-    @objc func doubleTapToLike() {
+
+    @objc private func doubleTapToLike() {
         //MARK: Heart Image, center of posted Image
         if viewModel.isItLiked(likesList: wholiked[index]){
             heartImage.image = UIImage(systemName: "heart.slash.fill")
         } else {
             heartImage.image = UIImage(systemName: "heart.fill")
         }
-        
+             
         UIView.animate(withDuration: 0.4, delay: 0) {
             self.heartImage.alpha = 1
         }completion: { done in
