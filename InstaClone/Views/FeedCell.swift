@@ -11,6 +11,7 @@ protocol FeedCellProtocol {
     func postLikeManager(id: String)
     func postDislikeManager(id: String)
     func isItLiked(likesList: [String]) -> Bool
+    func likeOrLikes(indexRow: Int, likeCount: Int) -> String
 }
 
 protocol FeedCellSegueProtocol {
@@ -28,13 +29,15 @@ class FeedCell: UITableViewCell {
     @IBOutlet weak var dateLabel: UILabel!
     
     //MARK: - Properties
-//    var feedVCVM = FeedViewModel()
     private var viewModel: FeedCellProtocol = FeedCellViewModel()
     private var ids = [String]()
     private var index = 0
     private var wholiked = [[String]]()
     var delegate: FeedCellSegueProtocol?
-    
+    var firebaseLikeCount = Int()
+    var temporaryIntArray = [999999]
+    var lastLikeCount = 0
+
     //MARK: - Life Cycles
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -44,20 +47,33 @@ class FeedCell: UITableViewCell {
     
     //MARK: - IBActions
     @IBAction private func likeTap(_ sender: UIButton? = nil) {
-
+        
+        for i in temporaryIntArray {
+            if i == index {
+                firebaseLikeCount = lastLikeCount
+            } else {
+                firebaseLikeCount = wholiked[index].count
+            }
+        }
         
         if likeButtonOutlet.imageView?.image == UIImage(named: K.Images.heartRedFill) {
             likeButtonOutlet.setImage(UIImage(named: K.Images.heartBold), for: .normal)
             likeButtonOutlet.tintColor = .label
             viewModel.postDislikeManager(id: ids[index])
-            
+            firebaseLikeCount -= 1
             
         } else { /// like
             likeButtonOutlet.setImage(UIImage(named: K.Images.heartRedFill), for: .normal)
             likeButtonOutlet.tintColor = .systemRed
             viewModel.postLikeManager(id: ids[index])
+            firebaseLikeCount += 1
            
         }
+        lastLikeCount = firebaseLikeCount
+        likeCounter.text = viewModel.likeOrLikes(indexRow: index, likeCount: lastLikeCount)
+       
+        temporaryIntArray.append(index)
+        
          
     }
     
@@ -100,9 +116,6 @@ class FeedCell: UITableViewCell {
         }completion: { done in
             UIView.animate(withDuration: 0.4, delay: 0.2) {
                 self.heartImage.alpha = 0
-                
-            }completion: { done in
-                
             }
         }
        
