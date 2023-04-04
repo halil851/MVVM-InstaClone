@@ -97,8 +97,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="select3" translatesAutoresizingMaskIntoConstraints="NO" id="j6W-p2-aHs">
-                                <rect key="frame" x="16" y="0.0" width="343" height="291"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hand" translatesAutoresizingMaskIntoConstraints="NO" id="j6W-p2-aHs">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="291"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </imageView>
                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0hh-RZ-zDj">
                                 <rect key="frame" x="16" y="311" width="343" height="34"/>
@@ -126,7 +127,7 @@
                         <viewLayoutGuide key="safeArea" id="VJy-D0-UW7"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="j6W-p2-aHs" firstAttribute="leading" secondItem="VJy-D0-UW7" secondAttribute="leading" constant="16" id="27v-BS-fmx"/>
+                            <constraint firstItem="j6W-p2-aHs" firstAttribute="leading" secondItem="VJy-D0-UW7" secondAttribute="leading" id="27v-BS-fmx"/>
                             <constraint firstItem="0hh-RZ-zDj" firstAttribute="top" secondItem="j6W-p2-aHs" secondAttribute="bottom" constant="20" id="3ef-FB-eE5"/>
                             <constraint firstItem="A1C-H5-XuG" firstAttribute="top" secondItem="0hh-RZ-zDj" secondAttribute="bottom" constant="51" id="4BI-vm-Gsd"/>
                             <constraint firstItem="lPp-hg-8LZ" firstAttribute="top" secondItem="0hh-RZ-zDj" secondAttribute="bottom" constant="51" id="Al0-bB-oiO"/>
@@ -137,7 +138,7 @@
                             <constraint firstItem="0hh-RZ-zDj" firstAttribute="leading" secondItem="VJy-D0-UW7" secondAttribute="leading" constant="16" id="gDw-10-FFL"/>
                             <constraint firstItem="VJy-D0-UW7" firstAttribute="trailing" secondItem="0hh-RZ-zDj" secondAttribute="trailing" constant="16" id="phy-Gi-ViO"/>
                             <constraint firstItem="j6W-p2-aHs" firstAttribute="height" secondItem="iaM-4S-m3t" secondAttribute="height" multiplier="0.43662" id="rsf-2U-dXP"/>
-                            <constraint firstItem="VJy-D0-UW7" firstAttribute="trailing" secondItem="j6W-p2-aHs" secondAttribute="trailing" constant="16" id="vrC-vL-RYi"/>
+                            <constraint firstItem="VJy-D0-UW7" firstAttribute="trailing" secondItem="j6W-p2-aHs" secondAttribute="trailing" id="vrC-vL-RYi"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Upload" image="icloud.and.arrow.up.fill" catalog="system" id="Vnr-if-7W8"/>
@@ -423,12 +424,12 @@
     </scenes>
     <resources>
         <image name="bubble.right" width="22" height="22.5"/>
+        <image name="hand" width="111.5" height="148.5"/>
         <image name="heart.bold" width="20.5" height="19.5"/>
         <image name="heart.fill" catalog="system" width="128" height="107"/>
         <image name="house.fill" catalog="system" width="128" height="104"/>
         <image name="icloud.and.arrow.up.fill" catalog="system" width="128" height="108"/>
         <image name="paperplane" width="21" height="22"/>
-        <image name="select3" width="256" height="256"/>
         <image name="square.and.arrow.down.on.square" catalog="system" width="122" height="128"/>
         <systemColor name="labelColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

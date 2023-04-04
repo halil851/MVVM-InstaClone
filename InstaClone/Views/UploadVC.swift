@@ -27,6 +27,10 @@ class UploadVC: UIViewController {
         setImageInteractable()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        selectImage()
+    }
+    
     //MARK: - IBActions
     @IBAction private func uploadTap(_ sender: UIButton) {
         
@@ -43,12 +47,12 @@ class UploadVC: UIViewController {
         
         //Go to Feed when uploading is done
         self.commentText.text = ""
-        self.image.image = UIImage(named: "select3")
+        self.image.image = UIImage(named: "hand")
         self.tabBarController?.selectedIndex = 0
     }
     
     @IBAction func cancelTap(_ sender: UIButton) {
-        self.image.image = UIImage(named: "select3")
+        self.image.image = UIImage(named: "hand")
         self.commentText.text = ""
     }
     //MARK: - Functions
@@ -57,7 +61,7 @@ class UploadVC: UIViewController {
         image.isUserInteractionEnabled = true
         let imageTap = UITapGestureRecognizer(target: self, action: #selector(selectImage))
         image.addGestureRecognizer(imageTap)
-        image.image = UIImage(named: "select3")
+        image.image = UIImage(named: "hand")
     }
 }
 

@@ -37,6 +37,7 @@ class FeedVC: UIViewController {
     var viewModel: FeedVCProtocol = FeedViewModel()
     private var lastTabBarIndex = 0
     private var refreshControl = UIRefreshControl()
+    private var isScrollingToBottom = false
     
     
     //MARK: - Life Cycles
@@ -151,6 +152,7 @@ extension FeedVC: UIScrollViewDelegate {
         
         guard !viewModel.isPaginating else {return}
         
+        
         let position = scrollView.contentOffset.y
         
         /*
@@ -161,20 +163,27 @@ extension FeedVC: UIScrollViewDelegate {
          */
         
         
-        if position > (tableView.contentSize.height - 100 - scrollView.frame.size.height) {
+        if position > (tableView.contentSize.height - 50 - scrollView.frame.size.height) {
             // Pagination işlemi için kodunuzu buraya ekleyin
+            
+            guard !isScrollingToBottom else {return}
+            
+            isScrollingToBottom = true
+            
             self.tableView.tableFooterView = self.createSpinnerFooter()
             
             self.viewModel.getDataFromFirestore(tableView: self.tableView, pagination: true)
             
-            DispatchQueue.global().asyncAfter(deadline: .now()+3, execute: {
-                DispatchQueue.main.async {
-                    self.tableView.tableFooterView = nil
-                }
-               
-            })
-        }
+            DispatchQueue.global().asyncAfter(deadline: .now()+2, execute: {
+                DispatchQueue.main.async { [self] in
+                    
+                    tableView.tableFooterView = nil
 
+                    isScrollingToBottom = false
+                }
+            })
+            
+        }
     }
     
     
