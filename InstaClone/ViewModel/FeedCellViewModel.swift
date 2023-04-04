@@ -24,6 +24,7 @@ struct FeedCellViewModel: FeedCellProtocol {
         guard let currentUserEmail = Auth.auth().currentUser?.email else {return}
         
         //Remove who no longer like
+        
         db.collection(K.Posts).document(id).updateData([
             K.Document.likedBy: FieldValue.arrayRemove([currentUserEmail])
         ])
@@ -40,4 +41,5 @@ struct FeedCellViewModel: FeedCellProtocol {
         }
         return false
     }
+    
 }

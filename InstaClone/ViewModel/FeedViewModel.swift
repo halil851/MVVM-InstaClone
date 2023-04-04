@@ -13,61 +13,81 @@ class FeedViewModel: FeedVCProtocol {
     
     var emails = [String]()
     var comments = [String]()
-    var likes = [Int]()
     var imageURLs = [String]()
     var ids = [String]()
     var whoLiked = [[String]]()
     var date = [DateComponents]()
-    var limitation = 0
+    private var limitation = 0
     
+    let pageSize = 5 // Sayfa boyutu
+    var isPaginating = false
+    var lastDocumentSnapshot: DocumentSnapshot? = nil // Son belge snapshot'ı
     
     // First call you get 3 photo, then 6, then 9...
-    func getDataFromFirestore(tableView: UITableView, limit: Int?) {
-         /*
-        if limit == nil {
-            limitation += 3
-        } else {
-            limitation = limit ?? 0
+    func getDataFromFirestore(tableView: UITableView, limit: Int?, pagination: Bool? = false) {
+        if pagination! {
+            isPaginating = true
         }
-        */
-        
-        
-        db.collection(K.Posts)
-            .order(by: K.Document.date, descending: true)
-            .limit(to: limit ?? limitation)
-            .addSnapshotListener { snapshot, err in
+        DispatchQueue.global().asyncAfter(deadline: .now()+0.5, execute: { [self] in
 
-                if err != nil {
-                    print(err.debugDescription)
-                    return}
-
-                guard let snapshot = snapshot else {
-                    print(err.debugDescription)
-                    return}
-
-                self.removeAllArrays()
-                self.appending(snapshot: snapshot)
-
-                tableView.reloadData()
-
+            //MARK: - new query
+            
+            var query = db.collection(K.Posts)
+                .order(by: K.Document.date, descending: true) // Verileri yaratılma tarihine göre sıralama
+                .limit(to: pageSize) // Sayfa boyutunu belirleme
+            
+            if let lastSnapshot = lastDocumentSnapshot {
+                
+                // Eğer bir son snapshot varsa, sonraki sayfayı belirlemek için startAfter işlevini kullanın
+                print("lastSnapshot var")
+                query = query.start(afterDocument: lastSnapshot)
+                
+            } else {
+                print("lastSnapshot YOK, TÜM VERİLER TEKRAR ÇEKİLİYOR, HATA!!!!")
             }
+            
+              query.getDocuments{ (snapshot, err) in
+                  if err != nil {
+                      print(err.debugDescription)
+                      return}
+
+                  guard let snapshot = snapshot else {
+                      print(err.debugDescription)
+                      return}
+                  
+                  // Verileri işleyin ve son snapshot'ı kaydedin
+                  
+                  
+                  
+
+                  
+                  if let newLastSnapshot = self.appending(snapshot: snapshot) {
+                      self.lastDocumentSnapshot = newLastSnapshot
+                  }
+                  
+                  if pagination! {
+                      self.isPaginating = false
+                  }
+                  tableView.reloadData()
+                  
+                  
+              }
+            
+            
+        })
+        
+        
+        
+        
     }
- 
     
 }
 
 extension FeedViewModel {
-    private func removeAllArrays() {
-        self.emails.removeAll()
-        self.comments.removeAll()
-        self.likes.removeAll()
-        self.imageURLs.removeAll()
-        self.ids.removeAll()
-        self.whoLiked.removeAll()
-        self.date.removeAll()
-    }
     
-    private func appending(snapshot: QuerySnapshot) {
+    private func appending(snapshot: QuerySnapshot) -> DocumentSnapshot? {
+        print("\(snapshot.count) tane daha veri çağırıldı")
+        var newLastSnapshot: DocumentSnapshot? = nil
         
         for document in snapshot.documents {
             
@@ -83,7 +103,6 @@ extension FeedViewModel {
             }
             
             if let like = document.get(K.Document.likedBy) as? [String] {
-                self.likes.append(like.count)
                 self.whoLiked.append(like)
                 
             }
@@ -98,16 +117,18 @@ extension FeedViewModel {
                 let now = Date()
                 // Calculation the time between 2 dates
                 let calendar = Calendar.current
-                let timeDifference = calendar.dateComponents([ .year,.weekOfMonth, .month, .day, .hour, .minute], from: uploadDate, to: now)
+                let timeDifference = calendar.dateComponents([.year, .weekOfMonth, .month, .day, .hour, .minute], from: uploadDate, to: now)
                 self.date.append(timeDifference)
             }
             
+            newLastSnapshot = document
         }
+        return newLastSnapshot
     }
     
     func likeOrLikes(indexRow: Int) -> String {
         
-        let likesCount = likes[indexRow]
+        let likesCount = whoLiked[indexRow].count
         if likesCount > 1 {
             return "\(likesCount) likes"
         }

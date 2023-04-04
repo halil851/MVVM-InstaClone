@@ -28,6 +28,7 @@ class FeedCell: UITableViewCell {
     @IBOutlet weak var dateLabel: UILabel!
     
     //MARK: - Properties
+//    var feedVCVM = FeedViewModel()
     private var viewModel: FeedCellProtocol = FeedCellViewModel()
     private var ids = [String]()
     private var index = 0
@@ -43,11 +44,19 @@ class FeedCell: UITableViewCell {
     
     //MARK: - IBActions
     @IBAction private func likeTap(_ sender: UIButton? = nil) {
+
         
-        if viewModel.isItLiked(likesList: wholiked[index]) {
+        if likeButtonOutlet.imageView?.image == UIImage(named: K.Images.heartRedFill) {
+            likeButtonOutlet.setImage(UIImage(named: K.Images.heartBold), for: .normal)
+            likeButtonOutlet.tintColor = .label
             viewModel.postDislikeManager(id: ids[index])
-        } else {
+            
+            
+        } else { /// like
+            likeButtonOutlet.setImage(UIImage(named: K.Images.heartRedFill), for: .normal)
+            likeButtonOutlet.tintColor = .systemRed
             viewModel.postLikeManager(id: ids[index])
+           
         }
          
     }
@@ -79,11 +88,12 @@ class FeedCell: UITableViewCell {
 
     @objc private func doubleTapToLike() {
         //MARK: Heart Image, center of posted Image
-        if viewModel.isItLiked(likesList: wholiked[index]){
+        if likeButtonOutlet.imageView?.image == UIImage(named: K.Images.heartRedFill){
             heartImage.image = UIImage(systemName: "heart.slash.fill")
         } else {
             heartImage.image = UIImage(systemName: "heart.fill")
         }
+        self.likeTap()
              
         UIView.animate(withDuration: 0.4, delay: 0) {
             self.heartImage.alpha = 1
@@ -92,7 +102,7 @@ class FeedCell: UITableViewCell {
                 self.heartImage.alpha = 0
                 
             }completion: { done in
-                self.likeTap()
+                
             }
         }
        

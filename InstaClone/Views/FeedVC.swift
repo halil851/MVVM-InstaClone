@@ -11,19 +11,19 @@ import SDWebImage
 protocol FeedVCProtocol {
     var emails: [String] {get}
     var comments: [String] {get}
-    var likes: [Int] {get}
     var imageURLs: [String] {get}
     var ids: [String] {get}
     var whoLiked: [[String]] {get}
     var date: [DateComponents] {get}
-    func getDataFromFirestore(tableView: UITableView, limit: Int?)
+    var isPaginating: Bool {get}
+    func getDataFromFirestore(tableView: UITableView, limit: Int?, pagination: Bool?)
     func likeOrLikes(indexRow: Int) -> String
     func uploadDate(indexRow: Int) -> String
 }
 
 extension FeedVCProtocol {
-    func getDataFromFirestore (tableView: UITableView, limit: Int? = nil){
-        getDataFromFirestore(tableView: tableView, limit: limit)
+    func getDataFromFirestore (tableView: UITableView, limit: Int? = nil, pagination: Bool? = false){
+        getDataFromFirestore(tableView: tableView, limit: limit, pagination: pagination)
     }
 }
 
@@ -34,10 +34,10 @@ class FeedVC: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
     
     //MARK: - Properties
-    private var viewModel: FeedVCProtocol = FeedViewModel()
+    var viewModel: FeedVCProtocol = FeedViewModel()
     private var lastTabBarIndex = 0
     private var refreshControl = UIRefreshControl()
-
+    
     
     //MARK: - Life Cycles
     override func viewDidLoad() {
@@ -47,6 +47,7 @@ class FeedVC: UIViewController {
         viewModel.getDataFromFirestore(tableView: tableView)
         
     }
+    
     
     //MARK: - IBActions
     
@@ -61,6 +62,7 @@ class FeedVC: UIViewController {
         // Enable Refresh Check
         refreshControl.addTarget(self, action: #selector(refreshTableView), for: .valueChanged)
         tableView.addSubview(refreshControl)
+        
     }
     
     private func boldAndRegularText(indexRow: Int) -> NSMutableAttributedString{
@@ -73,13 +75,22 @@ class FeedVC: UIViewController {
         newString.append(regularText)
         return newString
     }
-  
+    
+    private func createSpinnerFooter() -> UIView {
+        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 100))
+        let spinner = UIActivityIndicatorView()
+        spinner.center = footerView.center
+        footerView.addSubview(spinner)
+        spinner.startAnimating()
+        return footerView
+    }
+    
 }
 
 //MARK: - Tableview Operations
 extension FeedVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print(viewModel.emails.count)
+        print("\(viewModel.emails.count) tane foto listelendi")
         return viewModel.emails.count
     }
     
@@ -129,7 +140,7 @@ extension FeedVC: FeedCellSegueProtocol {
             
             destinationVC.likedUser = viewModel.whoLiked[index]
             destinationVC.numberOfLikesStr = viewModel.likeOrLikes(indexRow: index)
-                
+            
         }
     }
     
@@ -138,20 +149,43 @@ extension FeedVC: FeedCellSegueProtocol {
 extension FeedVC: UIScrollViewDelegate {
     // Trigger when scroll down
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetY = scrollView.contentOffset.y
-        let contentHeight = scrollView.contentSize.height
- 
-        if offsetY > (contentHeight - scrollView.frame.height) * 0.99 {
-         // When tableview reach bottom
-            viewModel.getDataFromFirestore(tableView: tableView)
-         }
+        
+        guard !viewModel.isPaginating else {
+            print("Already paginating")
+            return}
+        
+        let position = scrollView.contentOffset.y
+        
+        /*
+         print("position: \(scrollView.contentOffset.y) ")
+         print("tableView.contentSize.height: \(tableView.contentSize.height) ")
+         print("scrollView.frame.size.height: \(scrollView.frame.size.height) ")
+         print("Result: \(tableView.contentSize.height  + 50 - scrollView.frame.size.height) ")
+         */
+        
+        
+        if position > (tableView.contentSize.height - 100 - scrollView.frame.size.height) {
+            // Pagination işlemi için kodunuzu buraya ekleyin
+            self.tableView.tableFooterView = self.createSpinnerFooter()
+            
+            self.viewModel.getDataFromFirestore(tableView: self.tableView, limit: 5, pagination: true)
+            
+            DispatchQueue.global().asyncAfter(deadline: .now()+3, execute: {
+                DispatchQueue.main.async {
+                    self.tableView.tableFooterView = nil
+                }
+               
+            })
+        }
 
     }
+    
+    
     
     // Get data and stop refreshing
     @objc private func refreshTableView() {
         // Refresh Data
-        viewModel.getDataFromFirestore(tableView: tableView, limit: 5)
+        viewModel.getDataFromFirestore(tableView: tableView, limit: 5, pagination: true)
         // Stop Refreshing
         refreshControl.endRefreshing()
     }
