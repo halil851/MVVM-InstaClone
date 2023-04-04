@@ -16,14 +16,14 @@ protocol FeedVCProtocol {
     var whoLiked: [[String]] {get}
     var date: [DateComponents] {get}
     var isPaginating: Bool {get}
-    func getDataFromFirestore(tableView: UITableView, limit: Int?, pagination: Bool?)
+    func getDataFromFirestore(tableView: UITableView, limit: Int?, pagination: Bool, getNewOnes: Bool)
     func likeOrLikes(indexRow: Int) -> String
     func uploadDate(indexRow: Int) -> String
 }
 
 extension FeedVCProtocol {
-    func getDataFromFirestore (tableView: UITableView, limit: Int? = nil, pagination: Bool? = false){
-        getDataFromFirestore(tableView: tableView, limit: limit, pagination: pagination)
+    func getDataFromFirestore (tableView: UITableView, limit: Int? = nil, pagination: Bool = false, getNewOnes: Bool = false){
+        getDataFromFirestore(tableView: tableView, limit: limit, pagination: pagination, getNewOnes: getNewOnes)
     }
 }
 
@@ -90,7 +90,6 @@ class FeedVC: UIViewController {
 //MARK: - Tableview Operations
 extension FeedVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print("\(viewModel.emails.count) tane foto listelendi")
         return viewModel.emails.count
     }
     
@@ -118,10 +117,10 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
 extension FeedVC: UITabBarControllerDelegate {
     
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        // Go to top with animation if user at Feed
+        // Go to top with animation if user at Feed and top Feed
         if lastTabBarIndex == 0, tabBarController.selectedIndex == 0 {
+            refreshTableView()
             tableView.setContentOffset(CGPointZero, animated: true)
-            viewModel.getDataFromFirestore(tableView: tableView, limit: 5)
         }
         lastTabBarIndex = tabBarController.selectedIndex
     }
@@ -150,9 +149,7 @@ extension FeedVC: UIScrollViewDelegate {
     // Trigger when scroll down
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
-        guard !viewModel.isPaginating else {
-            print("Already paginating")
-            return}
+        guard !viewModel.isPaginating else {return}
         
         let position = scrollView.contentOffset.y
         
@@ -168,7 +165,7 @@ extension FeedVC: UIScrollViewDelegate {
             // Pagination işlemi için kodunuzu buraya ekleyin
             self.tableView.tableFooterView = self.createSpinnerFooter()
             
-            self.viewModel.getDataFromFirestore(tableView: self.tableView, limit: 5, pagination: true)
+            self.viewModel.getDataFromFirestore(tableView: self.tableView, pagination: true)
             
             DispatchQueue.global().asyncAfter(deadline: .now()+3, execute: {
                 DispatchQueue.main.async {
@@ -185,7 +182,7 @@ extension FeedVC: UIScrollViewDelegate {
     // Get data and stop refreshing
     @objc private func refreshTableView() {
         // Refresh Data
-        viewModel.getDataFromFirestore(tableView: tableView, limit: 5, pagination: true)
+        viewModel.getDataFromFirestore(tableView: tableView, limit: 7, pagination: true, getNewOnes: true)
         // Stop Refreshing
         refreshControl.endRefreshing()
     }

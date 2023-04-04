@@ -6,7 +6,6 @@
 //
 
 import Firebase
-//import UIKit
 
 class FeedViewModel: FeedVCProtocol {
     private let db = Firestore.firestore()
@@ -17,33 +16,25 @@ class FeedViewModel: FeedVCProtocol {
     var ids = [String]()
     var whoLiked = [[String]]()
     var date = [DateComponents]()
-    private var limitation = 0
     
-    let pageSize = 5 // Sayfa boyutu
+    let pageSize = 5
     var isPaginating = false
-    var lastDocumentSnapshot: DocumentSnapshot? = nil // Son belge snapshot'ı
+    var lastDocumentSnapshot: DocumentSnapshot? = nil
     
-    // First call you get 3 photo, then 6, then 9...
-    func getDataFromFirestore(tableView: UITableView, limit: Int?, pagination: Bool? = false) {
-        if pagination! {
+    // First call you get 5 photo, then get new 5...
+    func getDataFromFirestore(tableView: UITableView, limit: Int?, pagination: Bool = false, getNewOnes: Bool = false) {
+        if pagination {
             isPaginating = true
         }
-        DispatchQueue.global().asyncAfter(deadline: .now()+0.5, execute: { [self] in
+        DispatchQueue.global().asyncAfter(deadline: .now(), execute: { [self] in
 
             //MARK: - new query
-            
             var query = db.collection(K.Posts)
-                .order(by: K.Document.date, descending: true) // Verileri yaratılma tarihine göre sıralama
-                .limit(to: pageSize) // Sayfa boyutunu belirleme
+                .order(by: K.Document.date, descending: true)
+                .limit(to: limit ?? pageSize)
             
-            if let lastSnapshot = lastDocumentSnapshot {
-                
-                // Eğer bir son snapshot varsa, sonraki sayfayı belirlemek için startAfter işlevini kullanın
-                print("lastSnapshot var")
+            if let lastSnapshot = lastDocumentSnapshot, !getNewOnes {
                 query = query.start(afterDocument: lastSnapshot)
-                
-            } else {
-                print("lastSnapshot YOK, TÜM VERİLER TEKRAR ÇEKİLİYOR, HATA!!!!")
             }
             
               query.getDocuments{ (snapshot, err) in
@@ -55,29 +46,22 @@ class FeedViewModel: FeedVCProtocol {
                       print(err.debugDescription)
                       return}
                   
-                  // Verileri işleyin ve son snapshot'ı kaydedin
-                  
-                  
-                  
-
+                  if getNewOnes {
+                      self.removeAllArrays()
+                  }
                   
                   if let newLastSnapshot = self.appending(snapshot: snapshot) {
                       self.lastDocumentSnapshot = newLastSnapshot
                   }
-                  
-                  if pagination! {
+
+                  if pagination {
                       self.isPaginating = false
                   }
                   tableView.reloadData()
-                  
-                  
+
               }
             
-            
         })
-        
-        
-        
         
     }
     
@@ -85,8 +69,17 @@ class FeedViewModel: FeedVCProtocol {
 
 extension FeedViewModel {
     
+    private func removeAllArrays() {
+            self.emails.removeAll()
+            self.comments.removeAll()
+            self.imageURLs.removeAll()
+            self.ids.removeAll()
+            self.whoLiked.removeAll()
+            self.date.removeAll()
+        }
+    
     private func appending(snapshot: QuerySnapshot) -> DocumentSnapshot? {
-        print("\(snapshot.count) tane daha veri çağırıldı")
+        print("\(snapshot.count) data called")
         var newLastSnapshot: DocumentSnapshot? = nil
         
         for document in snapshot.documents {
