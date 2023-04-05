@@ -19,6 +19,7 @@ protocol FeedVCProtocol {
     func getDataFromFirestore(tableView: UITableView, limit: Int?, pagination: Bool, getNewOnes: Bool)
     func likeOrLikes(indexRow: Int) -> String
     func uploadDate(indexRow: Int) -> String
+    func isOptionsButtonHidden(user: String) -> Bool
 }
 
 extension FeedVCProtocol {
@@ -108,6 +109,7 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         cell.getInfo(index: indexPath.row,
                      ids: viewModel.ids,
                      whoLikeIt: viewModel.whoLiked)
+        cell.optionsOutlet.isHidden = viewModel.isOptionsButtonHidden(user: viewModel.emails[indexPath.row])
         
         return cell
     }

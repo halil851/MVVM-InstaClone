@@ -27,6 +27,7 @@ class FeedCell: UITableViewCell {
     @IBOutlet weak var commentLabel: UILabel!
     @IBOutlet private weak var likeButtonOutlet: UIButton!
     @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var optionsOutlet: UIButton!
     
     //MARK: - Properties
     private var viewModel: FeedCellProtocol = FeedCellViewModel()
@@ -37,12 +38,18 @@ class FeedCell: UITableViewCell {
     var firebaseLikeCount = Int()
     var temporaryIntArray = [999999]
     var lastLikeCount = 0
-
+    
+    
+    
+    
+    
     //MARK: - Life Cycles
     override func awakeFromNib() {
         super.awakeFromNib()
         doubleTapSetup()
         clickableLabel()
+        optionsPopUp()
+        
     }
     
     //MARK: - IBActions
@@ -67,17 +74,32 @@ class FeedCell: UITableViewCell {
             likeButtonOutlet.tintColor = .systemRed
             viewModel.postLikeManager(id: ids[index])
             firebaseLikeCount += 1
-           
+            
         }
         lastLikeCount = firebaseLikeCount
         likeCounter.text = viewModel.likeOrLikes(indexRow: index, likeCount: lastLikeCount)
-       
+        
         temporaryIntArray.append(index)
         
-         
+        
     }
     
+    
     //MARK: - Functions
+    func optionsPopUp() {
+        
+        let removeItem = UIAction(title: "Remove Photo", image: UIImage(systemName: "trash")) { (action) in
+            print("Remove User action was tapped")
+        }
+        
+        let menu = UIMenu( options: .displayInline, children: [ removeItem])
+        optionsOutlet.menu = menu
+        optionsOutlet.showsMenuAsPrimaryAction = true
+
+    }
+    
+    
+    
     func getInfo(index: Int, ids: [String], whoLikeIt: [[String]]) {
         self.index = index
         self.ids = ids
@@ -101,7 +123,7 @@ class FeedCell: UITableViewCell {
     @objc private func performSegue(){
         delegate?.performSegue(cellIndex: index)
     }
-
+    
     @objc private func doubleTapToLike() {
         //MARK: Heart Image, center of posted Image
         if likeButtonOutlet.imageView?.image == UIImage(named: K.Images.heartRedFill){
@@ -110,7 +132,7 @@ class FeedCell: UITableViewCell {
             heartImage.image = UIImage(systemName: "heart.fill")
         }
         self.likeTap()
-             
+        
         UIView.animate(withDuration: 0.4, delay: 0) {
             self.heartImage.alpha = 1
         }completion: { done in
@@ -118,7 +140,7 @@ class FeedCell: UITableViewCell {
                 self.heartImage.alpha = 0
             }
         }
-       
+        
     }
     //MARK: Button Image
     func checkIfLiked(likesList: [String]) {

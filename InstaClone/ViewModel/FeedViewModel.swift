@@ -167,6 +167,15 @@ extension FeedViewModel {
         }
         return "\(date) \(str)s ago"
     }
+    
+    func isOptionsButtonHidden(user: String) -> Bool {
+        guard let currentUserEmail = Auth.auth().currentUser?.email else {return false}
+        
+        if user == currentUserEmail {
+            return false
+        }
+        return true
+    }
 }
 
 

@@ -168,17 +168,26 @@
                                     <action selector="signOut:" destination="RYB-Vn-461" eventType="touchUpInside" id="o4p-vk-keJ"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Current User" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ofp-Mu-Abv">
+                                <rect key="frame" x="138.5" y="238" width="98" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="HM5-bU-9dY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="2Wt-wd-0nT" firstAttribute="centerX" secondItem="ePv-aI-j7B" secondAttribute="centerX" id="OET-Yv-O5s"/>
+                            <constraint firstItem="2Wt-wd-0nT" firstAttribute="top" secondItem="Ofp-Mu-Abv" secondAttribute="bottom" constant="57.5" id="SJO-wD-t2U"/>
                             <constraint firstItem="2Wt-wd-0nT" firstAttribute="centerY" secondItem="ePv-aI-j7B" secondAttribute="centerY" id="gZp-Pr-xTc"/>
+                            <constraint firstItem="Ofp-Mu-Abv" firstAttribute="centerX" secondItem="ePv-aI-j7B" secondAttribute="centerX" id="lWa-bZ-5lm"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Settings" image="square.and.arrow.down.on.square" catalog="system" id="pfj-Gu-1QR"/>
                     <connections>
-                        <segue destination="BYZ-38-t0r" kind="presentation" identifier="toViewController" modalPresentationStyle="fullScreen" id="dOy-mc-5Bm"/>
+                        <outlet property="currentUser" destination="Ofp-Mu-Abv" id="WVQ-dU-klX"/>
+                        <segue destination="BYZ-38-t0r" kind="presentation" identifier="toSignIn" modalPresentationStyle="fullScreen" id="dOy-mc-5Bm"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0pb-q9-EXq" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -232,7 +241,7 @@
                                                     </constraints>
                                                 </view>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="userEmail" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2oK-P1-l3v">
-                                                    <rect key="frame" x="16" y="11" width="343" height="20.5"/>
+                                                    <rect key="frame" x="16" y="11" width="232" height="20.5"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -288,16 +297,24 @@
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2PQ-Qm-Vmw">
+                                                    <rect key="frame" x="317.5" y="12" width="41.5" height="17.5"/>
+                                                    <state key="normal" title=""/>
+                                                    <buttonConfiguration key="configuration" style="plain" image="ellipsis"/>
+                                                </button>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="trailing" secondItem="uMq-ng-eyo" secondAttribute="trailing" id="2YD-s6-xJJ"/>
+                                                <constraint firstItem="2PQ-Qm-Vmw" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="2oK-P1-l3v" secondAttribute="trailing" constant="8" symbolic="YES" id="4C1-9T-Lqg"/>
+                                                <constraint firstItem="2PQ-Qm-Vmw" firstAttribute="top" secondItem="4RK-18-Rgh" secondAttribute="topMargin" constant="1" id="5ri-at-bdL"/>
                                                 <constraint firstItem="n0P-ek-Fli" firstAttribute="leading" secondItem="4RK-18-Rgh" secondAttribute="leadingMargin" id="8zr-x3-B7q"/>
                                                 <constraint firstItem="3oW-UR-oig" firstAttribute="top" secondItem="Gna-Hi-oVt" secondAttribute="bottom" constant="4.5" id="BEj-y7-uWU"/>
                                                 <constraint firstItem="Gna-Hi-oVt" firstAttribute="top" secondItem="n0P-ek-Fli" secondAttribute="bottom" constant="5" id="BVn-Ml-QrC"/>
                                                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="3oW-UR-oig" secondAttribute="trailing" constant="20" symbolic="YES" id="CtB-UG-Lwh"/>
+                                                <constraint firstItem="2PQ-Qm-Vmw" firstAttribute="trailing" secondItem="4RK-18-Rgh" secondAttribute="trailingMargin" id="GbN-g3-HyH"/>
                                                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Gna-Hi-oVt" secondAttribute="trailing" constant="20" symbolic="YES" id="K5Z-jy-0au"/>
                                                 <constraint firstItem="Gna-Hi-oVt" firstAttribute="leading" secondItem="4RK-18-Rgh" secondAttribute="leadingMargin" id="KWT-zD-jEd"/>
-                                                <constraint firstItem="2oK-P1-l3v" firstAttribute="trailing" secondItem="4RK-18-Rgh" secondAttribute="trailingMargin" id="SOv-iA-5fK"/>
+                                                <constraint firstItem="2oK-P1-l3v" firstAttribute="trailing" secondItem="4RK-18-Rgh" secondAttribute="trailingMargin" constant="-111" id="SOv-iA-5fK"/>
                                                 <constraint firstItem="uMq-ng-eyo" firstAttribute="leading" secondItem="4RK-18-Rgh" secondAttribute="leading" id="Tfx-Rb-zHN"/>
                                                 <constraint firstItem="2oK-P1-l3v" firstAttribute="leading" secondItem="4RK-18-Rgh" secondAttribute="leadingMargin" id="V95-sX-25L"/>
                                                 <constraint firstItem="Ycp-sy-HXH" firstAttribute="leading" secondItem="4RK-18-Rgh" secondAttribute="leadingMargin" id="VcM-I7-6KX"/>
@@ -316,6 +333,7 @@
                                             <outlet property="heartImage" destination="Rw9-Xw-Xwo" id="qZz-Ju-aTt"/>
                                             <outlet property="likeButtonOutlet" destination="0RY-dJ-kUH" id="iS7-UK-jCD"/>
                                             <outlet property="likeCounter" destination="Gna-Hi-oVt" id="gSo-Vw-dfJ"/>
+                                            <outlet property="optionsOutlet" destination="2PQ-Qm-Vmw" id="O0J-60-TWA"/>
                                             <outlet property="userEmailLabel" destination="2oK-P1-l3v" id="117-Iw-20v"/>
                                             <outlet property="userImage" destination="GhE-Jg-2J2" id="9tz-1N-0cp"/>
                                         </connections>
@@ -424,6 +442,7 @@
     </scenes>
     <resources>
         <image name="bubble.right" width="22" height="22.5"/>
+        <image name="ellipsis" width="17.5" height="3.5"/>
         <image name="hand" width="111.5" height="148.5"/>
         <image name="heart.bold" width="20.5" height="19.5"/>
         <image name="heart.fill" catalog="system" width="128" height="107"/>
