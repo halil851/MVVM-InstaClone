@@ -9,7 +9,7 @@ import UIKit
 
 protocol SettingVCProtocol {
     func signOut(completionHandler: @escaping(_ success: Bool, Error?)->())
-    func getCurrentUser(completionHandler: @escaping(String?)->())
+//    func getCurrentUser(completionHandler: @escaping(String?)->())
 }
 
 class SettingsVC: UIViewController {
@@ -22,9 +22,10 @@ class SettingsVC: UIViewController {
     //MARK: - Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel.getCurrentUser { usr in
-            self.currentUser.text = usr
-        }
+        currentUser.text = currentUserEmail
+//        viewModel.getCurrentUser { usr in
+//            self.currentUser.text = usr
+//        }
 
         // Do any additional setup after loading the view.
     }

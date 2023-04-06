@@ -9,7 +9,6 @@ import Firebase
 
 class FeedViewModel: FeedVCProtocol {
     private let db = Firestore.firestore()
-    
     var emails = [String]()
     var comments = [String]()
     var imageURLs = [String]()
@@ -137,7 +136,6 @@ extension FeedViewModel {
     }
     
     func uploadDate(indexRow: Int) -> String {
-        print(date[indexRow].year)
          
         guard let year = date[indexRow].year else {return ""}
         if year > 0 {
@@ -179,7 +177,6 @@ extension FeedViewModel {
     }
     
     func isOptionsButtonHidden(user: String) -> Bool {
-        guard let currentUserEmail = Auth.auth().currentUser?.email else {return false}
         
         if user == currentUserEmail {
             return false

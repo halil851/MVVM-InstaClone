@@ -42,6 +42,7 @@ class FeedVC: UIViewController {
     private var refreshControl = UIRefreshControl()
     private var isScrollingToBottom = false
     var uploadVC = UploadVC()
+    var cellHeight: CGFloat = 0.0
     
     
     //MARK: - Life Cycles
@@ -51,7 +52,7 @@ class FeedVC: UIViewController {
         viewModel.getDataFromFirestore(tableView: tableView)
         
     }
-    
+  
     
     //MARK: - IBActions
     
@@ -115,6 +116,16 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         cell.optionsOutlet.isHidden = viewModel.isOptionsButtonHidden(user: viewModel.emails[indexPath.row])
         cell.dateLabel.text = viewModel.uploadDate(indexRow: indexPath.row)
         
+        guard let item = cell.userImage.image else {return cell}
+        let itemAspectRatio = item.size.width / item.size.height
+        print(item.size.height)
+        let availableWidth = tableView.bounds.width
+        let cellPadding: CGFloat = 16.0 // istenilen dolgulama miktarı
+        let contentWidth = availableWidth - (cellPadding * 2.0)
+        let contentHeight = contentWidth / itemAspectRatio
+        cellHeight = contentHeight + (cellPadding * 2.0) + 100
+//        print(cellHeight)
+        
         return cell
     }
     
@@ -138,6 +149,7 @@ extension FeedVC: UITabBarControllerDelegate {
 }
 
 extension FeedVC: FeedCellToFeedVCProtocol {
+    
     func showAlert(alert: UIAlertController) {
         present(alert, animated: true)
     }
@@ -146,19 +158,23 @@ extension FeedVC: FeedCellToFeedVCProtocol {
         refreshTableView()
     }
     
-    func performSegue(cellIndex: Int) {
-        performSegue(withIdentifier: "likeList", sender: cellIndex)
+    func performSegue(cellIndex: Int, likeList: [String], likeCount: String) {
+        let sendList: [Any] = [likeList, likeCount]
+        performSegue(withIdentifier: "likeList", sender: sendList)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let index = sender as? Int else {return}
+        guard let object = sender as? [Any] else {return}
+        guard let likeList = object[0] as? [String] else {return}
+        guard let likeCount = object[1] as? String else {return}
+        
+        
         
         if segue.identifier == "likeList",
            let destinationVC = segue.destination as? LikeListVC{
             
-            destinationVC.likedUser = viewModel.whoLiked[index]
-            destinationVC.numberOfLikesStr = viewModel.likeOrLikes(indexRow: index)
-            
+            destinationVC.likedUser = likeList
+            destinationVC.numberOfLikesStr = likeCount
         }
     }
     

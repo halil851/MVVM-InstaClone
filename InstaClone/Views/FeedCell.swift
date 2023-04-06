@@ -16,7 +16,7 @@ protocol FeedCellProtocol {
 }
 
 protocol FeedCellToFeedVCProtocol {
-    func performSegue(cellIndex: Int)
+    func performSegue(cellIndex: Int, likeList: [String], likeCount: String)
     func refreshAfterActionPost()
     func showAlert(alert: UIAlertController)
 }
@@ -42,6 +42,7 @@ class FeedCell: UITableViewCell {
     private var firebaseLikeCount = Int()
     private var temporaryIntArray = [999999]
     private var lastLikeCount = 0
+    private var temporaryLikedList = [String]()
     
     //MARK: - Life Cycles
     override func awakeFromNib() {
@@ -49,7 +50,6 @@ class FeedCell: UITableViewCell {
         doubleTapSetup()
         clickableLabel()
         optionsPopUp()
-        
     }
     
     //MARK: - IBActions
@@ -62,6 +62,8 @@ class FeedCell: UITableViewCell {
                 firebaseLikeCount = wholiked[index].count
             }
         }
+        temporaryLikedList = wholiked[index]
+        likeListUIManager()
         
         if likeButtonOutlet.imageView?.image == UIImage(named: K.Images.heartRedFill) {
             likeButtonOutlet.setImage(UIImage(named: K.Images.heartBold), for: .normal)
@@ -74,7 +76,9 @@ class FeedCell: UITableViewCell {
             likeButtonOutlet.tintColor = .systemRed
             viewModel.postLikeManager(id: ids[index])
             firebaseLikeCount += 1
-            
+
+            temporaryLikedList += [currentUserEmail]
+
         }
         lastLikeCount = firebaseLikeCount
         likeCounter.text = viewModel.likeOrLikes(indexRow: index, likeCount: lastLikeCount)
@@ -86,6 +90,17 @@ class FeedCell: UITableViewCell {
     
     
     //MARK: - Functions
+    //Manage like list without Firebase to show user.
+    private func likeListUIManager() {
+        for user in temporaryLikedList {
+            if user == currentUserEmail {
+                if let deleteIndex = temporaryLikedList.firstIndex(of: user) {
+                    temporaryLikedList.remove(at: deleteIndex)
+                }
+            }
+        }
+    }
+    
     private func optionsPopUp() {
         //Delete Post
         let deletePost = UIAction(title: "Delete Post", image: UIImage(systemName: "trash")) { _ in
@@ -116,6 +131,7 @@ class FeedCell: UITableViewCell {
         self.ids = ids
         self.wholiked = whoLikeIt
         self.storageID = storageID
+        self.temporaryLikedList = wholiked[index]
     }
     
     private func doubleTapSetup() {
@@ -133,7 +149,7 @@ class FeedCell: UITableViewCell {
     }
     
     @objc private func performSegue(){
-        delegate?.performSegue(cellIndex: index)
+        delegate?.performSegue(cellIndex: index, likeList: temporaryLikedList, likeCount: likeCounter.text ?? "")
     }
     
     @objc private func doubleTapToLike() {

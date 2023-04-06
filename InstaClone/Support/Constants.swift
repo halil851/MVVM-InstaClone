@@ -9,7 +9,7 @@ import Foundation
 
 struct K {
     static let Posts = "Posts"
-    
+      
     static let media = "media"
     
     struct Document {
