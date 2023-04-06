@@ -14,6 +14,7 @@ class FeedViewModel: FeedVCProtocol {
     var comments = [String]()
     var imageURLs = [String]()
     var ids = [String]()
+    var storageID = [String]()
     var whoLiked = [[String]]()
     var date = [DateComponents]()
     
@@ -74,6 +75,7 @@ extension FeedViewModel {
             self.comments.removeAll()
             self.imageURLs.removeAll()
             self.ids.removeAll()
+            self.storageID.removeAll()
             self.whoLiked.removeAll()
             self.date.removeAll()
         }
@@ -90,6 +92,11 @@ extension FeedViewModel {
             if let postedBy = document.get(K.Document.postedBy) as? String {
                 self.emails.append(postedBy)
             }
+            
+            if let storageID = document.get(K.Document.storageID) as? String {
+                self.storageID.append(storageID)
+            }
+            
             
             if let comment = document.get(K.Document.postComment) as? String {
                 self.comments.append(comment)
@@ -112,6 +119,7 @@ extension FeedViewModel {
                 let calendar = Calendar.current
                 let timeDifference = calendar.dateComponents([.year, .weekOfMonth, .month, .day, .hour, .minute], from: uploadDate, to: now)
                 self.date.append(timeDifference)
+                
             }
             
             newLastSnapshot = document
@@ -129,11 +137,13 @@ extension FeedViewModel {
     }
     
     func uploadDate(indexRow: Int) -> String {
+        print(date[indexRow].year)
+         
         guard let year = date[indexRow].year else {return ""}
         if year > 0 {
             return singularPluralDate(date: year, "year")
         }
-        
+         
         guard let month = date[indexRow].month else {return ""}
         if month > 0 {
             return singularPluralDate(date: month, "month")

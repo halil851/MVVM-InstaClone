@@ -11,6 +11,7 @@ protocol UploadVCProtocol {
     func uploadData(image: UIImageView,comment: String , completionHandler: @escaping(Error?)->())
 }
 
+
 class UploadVC: UIViewController {
     //MARK: - IBOutlets
     @IBOutlet private weak var commentText: UITextField!

@@ -12,10 +12,13 @@ protocol FeedCellProtocol {
     func postDislikeManager(id: String)
     func isItLiked(likesList: [String]) -> Bool
     func likeOrLikes(indexRow: Int, likeCount: Int) -> String
+    func deletePost(id: String, storageID: String)
 }
 
-protocol FeedCellSegueProtocol {
+protocol FeedCellToFeedVCProtocol {
     func performSegue(cellIndex: Int)
+    func refreshAfterActionPost()
+    func showAlert(alert: UIAlertController)
 }
 
 class FeedCell: UITableViewCell {
@@ -32,16 +35,13 @@ class FeedCell: UITableViewCell {
     //MARK: - Properties
     private var viewModel: FeedCellProtocol = FeedCellViewModel()
     private var ids = [String]()
+    private var storageID = [String]()
     private var index = 0
     private var wholiked = [[String]]()
-    var delegate: FeedCellSegueProtocol?
-    var firebaseLikeCount = Int()
-    var temporaryIntArray = [999999]
-    var lastLikeCount = 0
-    
-    
-    
-    
+    var delegate: FeedCellToFeedVCProtocol?
+    private var firebaseLikeCount = Int()
+    private var temporaryIntArray = [999999]
+    private var lastLikeCount = 0
     
     //MARK: - Life Cycles
     override func awakeFromNib() {
@@ -54,7 +54,7 @@ class FeedCell: UITableViewCell {
     
     //MARK: - IBActions
     @IBAction private func likeTap(_ sender: UIButton? = nil) {
-        
+
         for i in temporaryIntArray {
             if i == index {
                 firebaseLikeCount = lastLikeCount
@@ -86,13 +86,24 @@ class FeedCell: UITableViewCell {
     
     
     //MARK: - Functions
-    func optionsPopUp() {
-        
-        let removeItem = UIAction(title: "Remove Photo", image: UIImage(systemName: "trash")) { (action) in
-            print("Remove User action was tapped")
+    private func optionsPopUp() {
+        //Delete Post
+        let deletePost = UIAction(title: "Delete Post", image: UIImage(systemName: "trash")) { _ in
+            
+            let alert = UIAlertController(title: "Would you like to DELETE this post?", message: nil, preferredStyle: .actionSheet)
+            let cancel = UIAlertAction(title: "Cancel", style: .default)
+            let delete = UIAlertAction(title: "DELETE", style: .destructive) {_ in
+                self.viewModel.deletePost(id: self.ids[self.index], storageID: self.storageID[self.index])
+                self.delegate?.refreshAfterActionPost()
+            }
+            alert.addAction(delete)
+            alert.addAction(cancel)
+            
+            self.delegate?.showAlert(alert: alert)
+            
         }
         
-        let menu = UIMenu( options: .displayInline, children: [ removeItem])
+        let menu = UIMenu( options: .displayInline, children: [ deletePost])
         optionsOutlet.menu = menu
         optionsOutlet.showsMenuAsPrimaryAction = true
 
@@ -100,10 +111,11 @@ class FeedCell: UITableViewCell {
     
     
     
-    func getInfo(index: Int, ids: [String], whoLikeIt: [[String]]) {
+    func getInfo(index: Int, ids: [String], whoLikeIt: [[String]], storageID: [String]) {
         self.index = index
         self.ids = ids
         self.wholiked = whoLikeIt
+        self.storageID = storageID
     }
     
     private func doubleTapSetup() {

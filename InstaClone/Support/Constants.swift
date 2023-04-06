@@ -19,6 +19,7 @@ struct K {
         static let likedBy = "likedBy"
         static let postComment = "postComment"
         static let postedBy = "postedBy"
+        static let storageID = "storageID"
     }
     
     struct Images {

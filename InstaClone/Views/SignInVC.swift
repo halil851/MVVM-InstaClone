@@ -13,6 +13,7 @@ protocol SignInVCProtocol {
 }
 
 class SignInVC: UIViewController {
+    
     //MARK: - IBOutlets
     @IBOutlet private weak var eMailField: UITextField!
     @IBOutlet private weak var passwordField: UITextField!
@@ -25,6 +26,7 @@ class SignInVC: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
     }
+ 
     //MARK: - IBActions
     @IBAction private func signInTap(_ sender: UIButton) {
         // If Textfields are empty then return with an alert.

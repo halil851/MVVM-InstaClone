@@ -13,6 +13,7 @@ protocol FeedVCProtocol {
     var comments: [String] {get}
     var imageURLs: [String] {get}
     var ids: [String] {get}
+    var storageID: [String] {get}
     var whoLiked: [[String]] {get}
     var date: [DateComponents] {get}
     var isPaginating: Bool {get}
@@ -31,6 +32,7 @@ extension FeedVCProtocol {
 
 
 class FeedVC: UIViewController {
+    
     //MARK: - IBOutlets
     @IBOutlet private weak var tableView: UITableView!
     
@@ -39,12 +41,12 @@ class FeedVC: UIViewController {
     private var lastTabBarIndex = 0
     private var refreshControl = UIRefreshControl()
     private var isScrollingToBottom = false
+    var uploadVC = UploadVC()
     
     
     //MARK: - Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         initialSetup()
         viewModel.getDataFromFirestore(tableView: tableView)
         
@@ -56,6 +58,7 @@ class FeedVC: UIViewController {
     
     //MARK: - Functions
     private func initialSetup() {
+        
         tabBarController?.delegate = self
         tableView.delegate = self
         tableView.dataSource = self
@@ -100,7 +103,6 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
             return UITableViewCell()
         }
         cell.delegate = self
-        cell.dateLabel.text = viewModel.uploadDate(indexRow: indexPath.row)
         cell.userEmailLabel.text = viewModel.emails[indexPath.row]
         cell.commentLabel.attributedText = boldAndRegularText(indexRow: indexPath.row)
         cell.likeCounter.text = viewModel.likeOrLikes(indexRow: indexPath.row)
@@ -108,8 +110,10 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         cell.checkIfLiked(likesList: viewModel.whoLiked[indexPath.row])
         cell.getInfo(index: indexPath.row,
                      ids: viewModel.ids,
-                     whoLikeIt: viewModel.whoLiked)
+                     whoLikeIt: viewModel.whoLiked,
+                     storageID: viewModel.storageID)
         cell.optionsOutlet.isHidden = viewModel.isOptionsButtonHidden(user: viewModel.emails[indexPath.row])
+        cell.dateLabel.text = viewModel.uploadDate(indexRow: indexPath.row)
         
         return cell
     }
@@ -123,13 +127,25 @@ extension FeedVC: UITabBarControllerDelegate {
         // Go to top with animation if user at Feed and top Feed
         if lastTabBarIndex == 0, tabBarController.selectedIndex == 0 {
             refreshTableView()
-            tableView.setContentOffset(CGPointZero, animated: true)
+            print("go up")
+            DispatchQueue.main.async {
+                self.tableView.setContentOffset(CGPointZero, animated: true)
+            }
+            
         }
         lastTabBarIndex = tabBarController.selectedIndex
     }
 }
 
-extension FeedVC: FeedCellSegueProtocol {
+extension FeedVC: FeedCellToFeedVCProtocol {
+    func showAlert(alert: UIAlertController) {
+        present(alert, animated: true)
+    }
+   
+    func refreshAfterActionPost() {
+        refreshTableView()
+    }
+    
     func performSegue(cellIndex: Int) {
         performSegue(withIdentifier: "likeList", sender: cellIndex)
     }
@@ -191,10 +207,14 @@ extension FeedVC: UIScrollViewDelegate {
     
     
     // Get data and stop refreshing
-    @objc private func refreshTableView() {
+    @objc func refreshTableView() {
         // Refresh Data
         viewModel.getDataFromFirestore(tableView: tableView, limit: 7, pagination: true, getNewOnes: true)
         // Stop Refreshing
-        refreshControl.endRefreshing()
+        DispatchQueue.main.async {
+            self.refreshControl.endRefreshing()
+        }
+        
     }
 }
+
