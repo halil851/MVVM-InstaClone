@@ -11,7 +11,8 @@ import SDWebImage
 protocol FeedVCProtocol {
     var emails: [String] {get}
     var comments: [String] {get}
-    var imageURLs: [String] {get}
+    var images: [UIImage] {get}
+    var imagesHeights: [CGFloat] {get}
     var ids: [String] {get}
     var storageID: [String] {get}
     var whoLiked: [[String]] {get}
@@ -50,7 +51,6 @@ class FeedVC: UIViewController {
         super.viewDidLoad()
         initialSetup()
         viewModel.getDataFromFirestore(tableView: tableView)
-        print("start again")
     }
   
     
@@ -63,7 +63,7 @@ class FeedVC: UIViewController {
         tabBarController?.delegate = self
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.rowHeight = (view.window?.windowScene?.screen.bounds.height ?? 800) / 1.5
+//        tableView.rowHeight = (view.window?.windowScene?.screen.bounds.height ?? 800) / 1.5
         tableView.separatorStyle = .none
         // Enable Refresh Check
         refreshControl.addTarget(self, action: #selector(refreshTableView), for: .valueChanged)
@@ -104,10 +104,11 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
             return UITableViewCell()
         }
         cell.delegate = self
+        cell.userImage.image = viewModel.images[indexPath.row]
+        
         cell.userEmailLabel.text = viewModel.emails[indexPath.row]
         cell.commentLabel.attributedText = boldAndRegularText(indexRow: indexPath.row)
         cell.likeCounter.text = viewModel.likeOrLikes(indexRow: indexPath.row)
-        cell.userImage.sd_setImage(with: URL(string: viewModel.imageURLs[indexPath.row]))
         cell.checkIfLiked(likesList: viewModel.whoLiked[indexPath.row])
         cell.getInfo(index: indexPath.row,
                      ids: viewModel.ids,
@@ -116,17 +117,12 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         cell.optionsOutlet.isHidden = viewModel.isOptionsButtonHidden(user: viewModel.emails[indexPath.row])
         cell.dateLabel.text = viewModel.uploadDate(indexRow: indexPath.row)
         
-        guard let item = cell.userImage.image else {return cell}
-        let itemAspectRatio = item.size.width / item.size.height
-        print(item.size.height)
-        let availableWidth = tableView.bounds.width
-        let cellPadding: CGFloat = 16.0 // istenilen dolgulama miktarı
-        let contentWidth = availableWidth - (cellPadding * 2.0)
-        let contentHeight = contentWidth / itemAspectRatio
-        cellHeight = contentHeight + (cellPadding * 2.0) + 100
-//        print(cellHeight)
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return viewModel.imagesHeights[indexPath.row] + 170
     }
     
 }

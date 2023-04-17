@@ -6,12 +6,16 @@
 //
 
 import Firebase
+import SDWebImage
 
 class FeedViewModel: FeedVCProtocol {
+    
     private let db = Firestore.firestore()
+    
     var emails = [String]()
     var comments = [String]()
-    var imageURLs = [String]()
+    var images = [UIImage]()
+    var imagesHeights = [CGFloat]()
     var ids = [String]()
     var storageID = [String]()
     var whoLiked = [[String]]()
@@ -26,42 +30,41 @@ class FeedViewModel: FeedVCProtocol {
         if pagination {
             isPaginating = true
         }
-        DispatchQueue.global().asyncAfter(deadline: .now(), execute: { [self] in
-
-            //MARK: - new query
-            var query = db.collection(K.Posts)
-                .order(by: K.Document.date, descending: true)
-                .limit(to: limit ?? pageSize)
+        
+        
+        //MARK: - new query
+        var query = db.collection(K.Posts)
+            .order(by: K.Document.date, descending: true)
+            .limit(to: limit ?? pageSize)
+        
+        if let lastSnapshot = lastDocumentSnapshot, !getNewOnes {
+            query = query.start(afterDocument: lastSnapshot)
+        }
+        
+        query.getDocuments{ (snapshot, err) in
+            if err != nil {
+                print(err.debugDescription)
+                return}
             
-            if let lastSnapshot = lastDocumentSnapshot, !getNewOnes {
-                query = query.start(afterDocument: lastSnapshot)
+            guard let snapshot = snapshot else {
+                print(err.debugDescription)
+                return}
+            
+            if getNewOnes {
+                self.removeAllArrays()
             }
             
-              query.getDocuments{ (snapshot, err) in
-                  if err != nil {
-                      print(err.debugDescription)
-                      return}
-
-                  guard let snapshot = snapshot else {
-                      print(err.debugDescription)
-                      return}
-                  
-                  if getNewOnes {
-                      self.removeAllArrays()
-                  }
-                  
-                  if let newLastSnapshot = self.appending(snapshot: snapshot) {
-                      self.lastDocumentSnapshot = newLastSnapshot
-                  }
-
-                  if pagination {
-                      self.isPaginating = false
-                  }
-                  tableView.reloadData()
-
-              }
+            if let newLastSnapshot = self.appending(tableView, snapshot) {
+                self.lastDocumentSnapshot = newLastSnapshot
+            }
             
-        })
+            if pagination {
+                self.isPaginating = false
+            }
+            
+        }
+        
+        
         
     }
     
@@ -69,57 +72,92 @@ class FeedViewModel: FeedVCProtocol {
 
 extension FeedViewModel {
     
-    private func removeAllArrays() {
-            self.emails.removeAll()
-            self.comments.removeAll()
-            self.imageURLs.removeAll()
-            self.ids.removeAll()
-            self.storageID.removeAll()
-            self.whoLiked.removeAll()
-            self.date.removeAll()
+    private func downloadImages(_ imageURL: String, completion: @escaping ()->Void) {
+        let imageUrl = URL(string: imageURL)
+        
+        SDWebImageManager.shared.loadImage(with: imageUrl, options: .continueInBackground, progress: nil) { image, data, error, cacheType, finished, imageURL in
+            if let error = error {
+                print("Error downloading image: \(error.localizedDescription)")
+                return
+            }
+            
+            // Add the image to the array
+            if let image = image {
+                self.images.append(image)
+                self.calculateNewImageSize(image)
+                completion()
+            }
+            
         }
+    }
     
-    private func appending(snapshot: QuerySnapshot) -> DocumentSnapshot? {
+    private func calculateNewImageSize(_ image: UIImage) {
+        let imageSize = image.size
+        let phoneScreenWidth = UIScreen.main.bounds.width
+        let coefficient = imageSize.width / phoneScreenWidth
+        let newHeight = imageSize.height / coefficient
+        imagesHeights.append(newHeight)
+
+    }
+    
+    private func removeAllArrays() {
+        self.emails.removeAll()
+        self.comments.removeAll()
+        self.ids.removeAll()
+        self.storageID.removeAll()
+        self.whoLiked.removeAll()
+        self.date.removeAll()
+        self.images.removeAll()
+        self.imagesHeights.removeAll()
+    }
+    
+    private func appending(_ tableView: UITableView,_ snapshot: QuerySnapshot) -> DocumentSnapshot? {
         print("\(snapshot.count) data called")
         var newLastSnapshot: DocumentSnapshot? = nil
         
         for document in snapshot.documents {
             
-            let id = document.documentID
-            self.ids.append(id)
-            
-            if let postedBy = document.get(K.Document.postedBy) as? String {
-                self.emails.append(postedBy)
-            }
-            
-            if let storageID = document.get(K.Document.storageID) as? String {
-                self.storageID.append(storageID)
-            }
-            
-            
-            if let comment = document.get(K.Document.postComment) as? String {
-                self.comments.append(comment)
-            }
-            
-            if let like = document.get(K.Document.likedBy) as? [String] {
-                self.whoLiked.append(like)
-                
-            }
-            
             if let imageUrl = document.get(K.Document.imageUrl) as? String {
-                self.imageURLs.append(imageUrl)
+                downloadImages(imageUrl, completion: {
+                    let id = document.documentID
+                    self.ids.append(id)
+                    
+                    if let postedBy = document.get(K.Document.postedBy) as? String {
+                        self.emails.append(postedBy)
+                    }
+                    
+                    if let storageID = document.get(K.Document.storageID) as? String {
+                        self.storageID.append(storageID)
+                    }
+                    
+                    
+                    if let comment = document.get(K.Document.postComment) as? String {
+                        self.comments.append(comment)
+                    }
+                    
+                    if let like = document.get(K.Document.likedBy) as? [String] {
+                        self.whoLiked.append(like)
+                        
+                    }
+                    
+                    
+                    
+                    if let date = document.get(K.Document.date) as? Timestamp {
+                        
+                        let uploadDate = Date(timeIntervalSince1970: TimeInterval(date.seconds))
+                        let now = Date()
+                        // Calculation the time between 2 dates
+                        let calendar = Calendar.current
+                        let timeDifference = calendar.dateComponents([.year, .weekOfMonth, .month, .day, .hour, .minute], from: uploadDate, to: now)
+                        self.date.append(timeDifference)
+                        
+                    }
+                    tableView.reloadData()
+                })
             }
             
-            if let date = document.get(K.Document.date) as? Timestamp {
-                
-                let uploadDate = Date(timeIntervalSince1970: TimeInterval(date.seconds))
-                let now = Date()
-                // Calculation the time between 2 dates
-                let calendar = Calendar.current
-                let timeDifference = calendar.dateComponents([.year, .weekOfMonth, .month, .day, .hour, .minute], from: uploadDate, to: now)
-                self.date.append(timeDifference)
-                
-            }
+            
+            
             
             newLastSnapshot = document
         }
@@ -136,12 +174,12 @@ extension FeedViewModel {
     }
     
     func uploadDate(indexRow: Int) -> String {
-         
+        
         guard let year = date[indexRow].year else {return ""}
         if year > 0 {
             return singularPluralDate(date: year, "year")
         }
-         
+        
         guard let month = date[indexRow].month else {return ""}
         if month > 0 {
             return singularPluralDate(date: month, "month")
