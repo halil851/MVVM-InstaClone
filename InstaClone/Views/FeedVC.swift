@@ -133,8 +133,6 @@ extension FeedVC: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         // Go to top with animation if user at Feed and top Feed
         if lastTabBarIndex == 0, tabBarController.selectedIndex == 0 {
-            refreshTableView()
-            print("go up")
             DispatchQueue.main.async {
                 self.tableView.setContentOffset(CGPointZero, animated: true)
             }
@@ -200,38 +198,24 @@ extension FeedVC: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
         guard !viewModel.isPaginating else {return}
-        
-        
+         
         let position = scrollView.contentOffset.y
         
-        /*
-         print("position: \(scrollView.contentOffset.y) ")
-         print("tableView.contentSize.height: \(tableView.contentSize.height) ")
-         print("scrollView.frame.size.height: \(scrollView.frame.size.height) ")
-         print("Result: \(tableView.contentSize.height  + 50 - scrollView.frame.size.height) ")
-         */
-        
-        
         if position > (tableView.contentSize.height - 50 - scrollView.frame.size.height) {
-            // Pagination işlemi için kodunuzu buraya ekleyin
             
             guard !isScrollingToBottom else {return}
-            
             isScrollingToBottom = true
             
             self.tableView.tableFooterView = self.createSpinnerFooter()
-            
-            self.viewModel.getDataFromFirestore(tableView: self.tableView, pagination: true)
+            self.viewModel.getDataFromFirestore(tableView: self.tableView,limit: 3, pagination: true)
             
             DispatchQueue.global().asyncAfter(deadline: .now()+2, execute: {
                 DispatchQueue.main.async { [self] in
                     
                     tableView.tableFooterView = nil
-
-                    isScrollingToBottom = false
                 }
             })
-            
+            isScrollingToBottom = false
         }
     }
     
@@ -240,7 +224,7 @@ extension FeedVC: UIScrollViewDelegate {
     // Get data and stop refreshing
     @objc func refreshTableView() {
         // Refresh Data
-        viewModel.getDataFromFirestore(tableView: tableView, limit: 7, pagination: true, getNewOnes: true)
+        viewModel.getDataFromFirestore(tableView: tableView, limit: 6, pagination: true, getNewOnes: true)
         // Stop Refreshing
         DispatchQueue.main.async {
             self.refreshControl.endRefreshing()

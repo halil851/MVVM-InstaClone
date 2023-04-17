@@ -58,10 +58,7 @@ class FeedViewModel: FeedVCProtocol {
                 self.lastDocumentSnapshot = newLastSnapshot
             }
             
-            if pagination {
-                self.isPaginating = false
-            }
-            
+           
         }
         
         
@@ -152,6 +149,7 @@ extension FeedViewModel {
                         self.date.append(timeDifference)
                         
                     }
+                    self.isPaginating = false
                     tableView.reloadData()
                 })
             }
