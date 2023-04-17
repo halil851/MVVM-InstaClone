@@ -50,7 +50,7 @@ class FeedVC: UIViewController {
         super.viewDidLoad()
         initialSetup()
         viewModel.getDataFromFirestore(tableView: tableView)
-        
+        print("start again")
     }
   
     
