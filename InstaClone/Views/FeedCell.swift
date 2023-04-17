@@ -19,6 +19,7 @@ protocol FeedCellToFeedVCProtocol {
     func performSegue(cellIndex: Int, likeList: [String], likeCount: String)
     func refreshAfterActionPost()
     func showAlert(alert: UIAlertController)
+    func manageUIChanges(action: Action,_ indexRow: Int)
 }
 
 class FeedCell: UITableViewCell {
@@ -71,12 +72,14 @@ class FeedCell: UITableViewCell {
             likeButtonOutlet.tintColor = .label
             viewModel.postDislikeManager(id: ids[index])
             firebaseLikeCount -= 1
+            delegate?.manageUIChanges(action: .NoMoreLiking, index)
             
         } else { /// like
             likeButtonOutlet.setImage(UIImage(named: K.Images.heartRedFill), for: .normal)
             likeButtonOutlet.tintColor = .systemRed
             viewModel.postLikeManager(id: ids[index])
             firebaseLikeCount += 1
+            delegate?.manageUIChanges(action: .Like, index)
 
             temporaryLikedList += [currentUserEmail]
 

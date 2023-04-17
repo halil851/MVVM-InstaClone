@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import SDWebImage
 
 protocol FeedVCProtocol {
     var emails: [String] {get}
@@ -15,7 +14,7 @@ protocol FeedVCProtocol {
     var imagesHeights: [CGFloat] {get}
     var ids: [String] {get}
     var storageID: [String] {get}
-    var whoLiked: [[String]] {get}
+    var whoLiked: [[String]] {get set}
     var date: [DateComponents] {get}
     var isPaginating: Bool {get}
     func getDataFromFirestore(tableView: UITableView, limit: Int?, pagination: Bool, getNewOnes: Bool)
@@ -106,7 +105,6 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         cell.delegate = self
         cell.userImage.image = viewModel.images[indexPath.row]
         cell.imageHeight.constant = viewModel.imagesHeights[indexPath.row]
-        print(viewModel.imagesHeights[indexPath.row])
         
         cell.userEmailLabel.text = viewModel.emails[indexPath.row]
         cell.commentLabel.attributedText = boldAndRegularText(indexRow: indexPath.row)
@@ -147,6 +145,25 @@ extension FeedVC: UITabBarControllerDelegate {
 }
 
 extension FeedVC: FeedCellToFeedVCProtocol {
+    
+    func manageUIChanges(action: Action,_ indexRow: Int) {
+        
+        if action == .NoMoreLiking {
+            for user in viewModel.whoLiked[indexRow] {
+                if user == currentUserEmail {
+                    
+                    viewModel.whoLiked[indexRow].removeAll(where: {$0 == currentUserEmail})
+                }
+            }
+        } else {
+            viewModel.whoLiked[indexRow].append(currentUserEmail)
+            
+        }
+    }
+    
+    
+  
+    
     
     func showAlert(alert: UIAlertController) {
         present(alert, animated: true)

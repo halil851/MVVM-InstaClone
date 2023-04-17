@@ -16,4 +16,9 @@ extension UIViewController {
     }
 }
 
+enum Action {
+    case Like
+    case NoMoreLiking
+}
+
 
