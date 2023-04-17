@@ -105,6 +105,8 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         }
         cell.delegate = self
         cell.userImage.image = viewModel.images[indexPath.row]
+        cell.imageHeight.constant = viewModel.imagesHeights[indexPath.row]
+        print(viewModel.imagesHeights[indexPath.row])
         
         cell.userEmailLabel.text = viewModel.emails[indexPath.row]
         cell.commentLabel.attributedText = boldAndRegularText(indexRow: indexPath.row)
@@ -122,7 +124,7 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return viewModel.imagesHeights[indexPath.row] + 170
+        return viewModel.imagesHeights[indexPath.row] + 150
     }
     
 }

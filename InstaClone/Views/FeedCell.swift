@@ -31,6 +31,7 @@ class FeedCell: UITableViewCell {
     @IBOutlet private weak var likeButtonOutlet: UIButton!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var optionsOutlet: UIButton!
+    @IBOutlet weak var imageHeight: NSLayoutConstraint!
     
     //MARK: - Properties
     private var viewModel: FeedCellProtocol = FeedCellViewModel()
