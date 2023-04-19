@@ -149,6 +149,7 @@ extension FeedVC: UITabBarControllerDelegate {
 
 //MARK: - FeedCellToFeedVCProtocol
 extension FeedVC: FeedCellToFeedVCProtocol {
+    
     func deleteAIndex(indexPaths: [IndexPath]) {
         guard let indexPath = indexPaths.first?.row else {return}
         

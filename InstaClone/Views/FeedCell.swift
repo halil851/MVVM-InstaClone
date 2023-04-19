@@ -34,6 +34,7 @@ class FeedCell: UITableViewCell {
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var optionsOutlet: UIButton!
     @IBOutlet weak var imageHeight: NSLayoutConstraint!
+    @IBOutlet weak var buttons: UIStackView!
     
     //MARK: - Properties
     private var viewModel: FeedCellProtocol = FeedCellViewModel()
@@ -46,8 +47,7 @@ class FeedCell: UITableViewCell {
     private var temporaryIntArray = [999999]
     private var lastLikeCount = 0
     private var temporaryLikedList = [String]()
-    private var initialImageScale: CGFloat = 1.0
-
+   
     //MARK: - Life Cycles
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -157,12 +157,14 @@ class FeedCell: UITableViewCell {
     
     @objc func pinchGestureAction(_ sender: UIPinchGestureRecognizer) {
         guard sender.view != nil else {return}
-        
+        var duration: TimeInterval = 0.3
         let touch = sender.location(in: userImage)
         let scale = sender.scale
         
-        if sender.state == .began || sender.state == .changed {
-            
+        
+        switch sender.state {
+        case .began, .changed:
+            startAndStopZooming(hideItems: true)
             let pinchCenter = CGPoint(x: touch.x - userImage.bounds.midX,
                                       y: touch.y - userImage.bounds.midY)
             let transform = userImage.transform.translatedBy(x: pinchCenter.x, y: pinchCenter.y)
@@ -170,14 +172,40 @@ class FeedCell: UITableViewCell {
                 .translatedBy(x: -pinchCenter.x, y: -pinchCenter.y)
             userImage.transform = transform
             sender.scale = 1
-        }
-        
-        if sender.state == .cancelled || sender.state == .ended || sender.state == .failed {
-            UIView.animate(withDuration: 0.3, animations: {
+            
+    
+        case .ended, .cancelled, .failed:
+            startAndStopZooming(hideItems: false)
+            UIView.animate(withDuration: duration, animations: {
+                
                 self.userImage.transform = .identity
             })
+       
+        case .possible:
+            print(".possible")
+        @unknown default:
+            break
+        }
+        
+        func startAndStopZooming(hideItems: Bool) {
+
+            if hideItems{ duration = 0.1 }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + duration - 0.1, execute: {
+                self.userEmailLabel.isHidden = hideItems
+                self.likeCounter.isHidden = hideItems
+                self.commentLabel.isHidden = hideItems
+                self.dateLabel.isHidden = hideItems
+                self.buttons.isHidden = hideItems
+                
+                if self.userEmailLabel.text == currentUserEmail {
+                    self.optionsOutlet.isHidden = hideItems
+                }
+            })
+            
             
         }
+       
         
             
     }

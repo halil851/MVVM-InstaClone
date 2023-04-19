@@ -317,6 +317,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="buttons" destination="n0P-ek-Fli" id="ce3-zj-bCu"/>
                                             <outlet property="commentLabel" destination="3oW-UR-oig" id="Srf-QO-RFK"/>
                                             <outlet property="dateLabel" destination="Ycp-sy-HXH" id="C3M-qR-hmY"/>
                                             <outlet property="heartImage" destination="Rw9-Xw-Xwo" id="qZz-Ju-aTt"/>
