@@ -29,8 +29,6 @@ extension FeedVCProtocol {
     }
 }
 
-
-
 class FeedVC: UIViewController {
     
     //MARK: - IBOutlets
@@ -49,7 +47,6 @@ class FeedVC: UIViewController {
         initialSetup()
         viewModel.getDataFromFirestore(tableView: tableView)
     }
-  
     
     //MARK: - IBActions
     
@@ -84,6 +81,17 @@ class FeedVC: UIViewController {
         footerView.addSubview(spinner)
         spinner.startAnimating()
         return footerView
+    }
+    
+    // Get data and stop refreshing
+    @objc func refreshTableView() {
+        // Refresh Data
+        viewModel.getDataFromFirestore(tableView: tableView, limit: 5, pagination: false, getNewOnes: true)
+        // Stop Refreshing
+        DispatchQueue.main.async {
+            self.refreshControl.endRefreshing()
+        }
+        
     }
     
 }
@@ -139,6 +147,7 @@ extension FeedVC: UITabBarControllerDelegate {
     }
 }
 
+//MARK: - FeedCellToFeedVCProtocol
 extension FeedVC: FeedCellToFeedVCProtocol {
     func deleteAIndex(indexPaths: [IndexPath]) {
         guard let indexPath = indexPaths.first?.row else {return}
@@ -153,9 +162,8 @@ extension FeedVC: FeedCellToFeedVCProtocol {
         viewModel.imagesHeights.remove(at: indexPath)
                 
         tableView.beginUpdates()
-        tableView.deleteRows(at: indexPaths, with: .left)
+        tableView.deleteRows(at: indexPaths, with: .left) //Animate to left when deleting
         tableView.endUpdates()
-        
         tableView.reloadData()
     }
     
@@ -176,9 +184,6 @@ extension FeedVC: FeedCellToFeedVCProtocol {
     }
     
     
-  
-    
-    
     func showAlert(alert: UIAlertController) {
         present(alert, animated: true)
     }
@@ -197,8 +202,6 @@ extension FeedVC: FeedCellToFeedVCProtocol {
         guard let likeList = object[0] as? [String] else {return}
         guard let likeCount = object[1] as? String else {return}
         
-        
-        
         if segue.identifier == "likeList",
            let destinationVC = segue.destination as? LikeListVC{
             
@@ -209,6 +212,7 @@ extension FeedVC: FeedCellToFeedVCProtocol {
     
 }
 
+//MARK: - ScrollView Operations
 extension FeedVC: UIScrollViewDelegate {
     // Trigger when scroll down
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -234,18 +238,6 @@ extension FeedVC: UIScrollViewDelegate {
             isScrollingToBottom = false
         }
     }
-    
-    
-    
-    // Get data and stop refreshing
-    @objc func refreshTableView() {
-        // Refresh Data
-        viewModel.getDataFromFirestore(tableView: tableView, limit: 5, pagination: false, getNewOnes: true)
-        // Stop Refreshing
-        DispatchQueue.main.async {
-            self.refreshControl.endRefreshing()
-        }
-        
-    }
+     
 }
 

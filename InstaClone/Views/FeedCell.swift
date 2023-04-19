@@ -46,13 +46,15 @@ class FeedCell: UITableViewCell {
     private var temporaryIntArray = [999999]
     private var lastLikeCount = 0
     private var temporaryLikedList = [String]()
-    
+    private var initialImageScale: CGFloat = 1.0
+
     //MARK: - Life Cycles
     override func awakeFromNib() {
         super.awakeFromNib()
         doubleTapSetup()
         clickableLabel()
         optionsPopUp()
+        pinchToZoomSetup()
     }
     
     //MARK: - IBActions
@@ -95,6 +97,14 @@ class FeedCell: UITableViewCell {
     
     
     //MARK: - Functions
+    func getInfo(indexPath: IndexPath, ids: [String], whoLikeIt: [[String]], storageID: [String]) {
+        self.indexPath = indexPath
+        self.ids = ids
+        self.wholiked = whoLikeIt
+        self.storageID = storageID
+        self.temporaryLikedList = wholiked[indexPath.row]
+    }
+    
     //Manage like list without Firebase to show user.
     private func likeListUIManager() {
         for user in temporaryLikedList {
@@ -106,6 +116,22 @@ class FeedCell: UITableViewCell {
         }
     }
     
+    //MARK: - Setups
+    private func doubleTapSetup() {
+        userImage.isUserInteractionEnabled = true
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(doubleTapToLike))
+        tapGesture.numberOfTapsRequired = 2
+        userImage.addGestureRecognizer(tapGesture)
+        heartImage.alpha = 0
+    }
+    
+    private func pinchToZoomSetup(){
+        let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinchGestureAction(_:)))
+        userImage.addGestureRecognizer(pinchGesture)
+        userImage.isUserInteractionEnabled = true
+    }
+    
+    
     private func optionsPopUp() {
         //Delete Post
         let deletePost = UIAction(title: "Delete Post", image: UIImage(systemName: "trash")) { _ in
@@ -114,7 +140,6 @@ class FeedCell: UITableViewCell {
             let cancel = UIAlertAction(title: "Cancel", style: .default)
             let delete = UIAlertAction(title: "DELETE", style: .destructive) {_ in
                 self.viewModel.deletePost(id: self.ids[self.indexPath.row], storageID: self.storageID[self.indexPath.row])
-//                self.delegate?.refreshAfterActionPost()
                 self.delegate?.deleteAIndex(indexPaths: [self.indexPath])
             }
             alert.addAction(delete)
@@ -130,22 +155,31 @@ class FeedCell: UITableViewCell {
 
     }
     
-    
-    
-    func getInfo(indexPath: IndexPath, ids: [String], whoLikeIt: [[String]], storageID: [String]) {
-        self.indexPath = indexPath
-        self.ids = ids
-        self.wholiked = whoLikeIt
-        self.storageID = storageID
-        self.temporaryLikedList = wholiked[indexPath.row]
-    }
-    
-    private func doubleTapSetup() {
-        userImage.isUserInteractionEnabled = true
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(doubleTapToLike))
-        tapGesture.numberOfTapsRequired = 2
-        userImage.addGestureRecognizer(tapGesture)
-        heartImage.alpha = 0
+    @objc func pinchGestureAction(_ sender: UIPinchGestureRecognizer) {
+        guard sender.view != nil else {return}
+        
+        let touch = sender.location(in: userImage)
+        let scale = sender.scale
+        
+        if sender.state == .began || sender.state == .changed {
+            
+            let pinchCenter = CGPoint(x: touch.x - userImage.bounds.midX,
+                                      y: touch.y - userImage.bounds.midY)
+            let transform = userImage.transform.translatedBy(x: pinchCenter.x, y: pinchCenter.y)
+                .scaledBy(x: scale, y: scale)
+                .translatedBy(x: -pinchCenter.x, y: -pinchCenter.y)
+            userImage.transform = transform
+            sender.scale = 1
+        }
+        
+        if sender.state == .cancelled || sender.state == .ended || sender.state == .failed {
+            UIView.animate(withDuration: 0.3, animations: {
+                self.userImage.transform = .identity
+            })
+            
+        }
+        
+            
     }
     
     private func clickableLabel() {
@@ -176,6 +210,7 @@ class FeedCell: UITableViewCell {
         }
         
     }
+    
     //MARK: Button Image
     func checkIfLiked(likesList: [String]) {
         if viewModel.isItLiked(likesList: likesList){
