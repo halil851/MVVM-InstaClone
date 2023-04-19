@@ -8,7 +8,7 @@
 import Firebase
 import FirebaseStorage
 
-let currentUserEmail: String = Auth.auth().currentUser?.email ?? "No One"
+var currentUserEmail: String = Auth.auth().currentUser?.email ?? "No One"
 
 struct FeedCellViewModel: FeedCellProtocol {
     let db = Firestore.firestore()

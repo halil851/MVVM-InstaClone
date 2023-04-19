@@ -8,14 +8,14 @@
 import UIKit
 
 protocol FeedVCProtocol {
-    var emails: [String] {get}
-    var comments: [String] {get}
-    var images: [UIImage] {get}
-    var imagesHeights: [CGFloat] {get}
-    var ids: [String] {get}
-    var storageID: [String] {get}
+    var emails: [String] {get set}
+    var comments: [String] {get set}
+    var images: [UIImage] {get set}
+    var imagesHeights: [CGFloat] {get set}
+    var ids: [String] {get set}
+    var storageID: [String] {get set}
     var whoLiked: [[String]] {get set}
-    var date: [DateComponents] {get}
+    var date: [DateComponents] {get set}
     var isPaginating: Bool {get}
     func getDataFromFirestore(tableView: UITableView, limit: Int?, pagination: Bool, getNewOnes: Bool)
     func likeOrLikes(indexRow: Int) -> String
@@ -41,8 +41,6 @@ class FeedVC: UIViewController {
     private var lastTabBarIndex = 0
     private var refreshControl = UIRefreshControl()
     private var isScrollingToBottom = false
-    var uploadVC = UploadVC()
-    var cellHeight: CGFloat = 0.0
     
     
     //MARK: - Life Cycles
@@ -58,11 +56,9 @@ class FeedVC: UIViewController {
     
     //MARK: - Functions
     private func initialSetup() {
-        
         tabBarController?.delegate = self
         tableView.delegate = self
         tableView.dataSource = self
-//        tableView.rowHeight = (view.window?.windowScene?.screen.bounds.height ?? 800) / 1.5
         tableView.separatorStyle = .none
         // Enable Refresh Check
         refreshControl.addTarget(self, action: #selector(refreshTableView), for: .valueChanged)
@@ -95,13 +91,14 @@ class FeedVC: UIViewController {
 //MARK: - Tableview Operations
 extension FeedVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.emails.count
+        return viewModel.imagesHeights.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as? FeedCell else {
             return UITableViewCell()
         }
+
         cell.delegate = self
         cell.userImage.image = viewModel.images[indexPath.row]
         cell.imageHeight.constant = viewModel.imagesHeights[indexPath.row]
@@ -110,7 +107,7 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         cell.commentLabel.attributedText = boldAndRegularText(indexRow: indexPath.row)
         cell.likeCounter.text = viewModel.likeOrLikes(indexRow: indexPath.row)
         cell.checkIfLiked(likesList: viewModel.whoLiked[indexPath.row])
-        cell.getInfo(index: indexPath.row,
+        cell.getInfo(indexPath: indexPath,
                      ids: viewModel.ids,
                      whoLikeIt: viewModel.whoLiked,
                      storageID: viewModel.storageID)
@@ -143,6 +140,25 @@ extension FeedVC: UITabBarControllerDelegate {
 }
 
 extension FeedVC: FeedCellToFeedVCProtocol {
+    func deleteAIndex(indexPaths: [IndexPath]) {
+        guard let indexPath = indexPaths.first?.row else {return}
+        
+        viewModel.comments.remove(at: indexPath)
+        viewModel.date.remove(at: indexPath)
+        viewModel.emails.remove(at: indexPath)
+        viewModel.ids.remove(at: indexPath)
+        viewModel.images.remove(at: indexPath)
+        viewModel.storageID.remove(at: indexPath)
+        viewModel.whoLiked.remove(at: indexPath)
+        viewModel.imagesHeights.remove(at: indexPath)
+                
+        tableView.beginUpdates()
+        tableView.deleteRows(at: indexPaths, with: .left)
+        tableView.endUpdates()
+        
+        tableView.reloadData()
+    }
+    
     
     func manageUIChanges(action: Action,_ indexRow: Int) {
         
@@ -207,7 +223,7 @@ extension FeedVC: UIScrollViewDelegate {
             isScrollingToBottom = true
             
             self.tableView.tableFooterView = self.createSpinnerFooter()
-            self.viewModel.getDataFromFirestore(tableView: self.tableView,limit: 3, pagination: true)
+            self.viewModel.getDataFromFirestore(tableView: self.tableView,limit: 4, pagination: true)
             
             DispatchQueue.global().asyncAfter(deadline: .now()+2, execute: {
                 DispatchQueue.main.async { [self] in
@@ -224,7 +240,7 @@ extension FeedVC: UIScrollViewDelegate {
     // Get data and stop refreshing
     @objc func refreshTableView() {
         // Refresh Data
-        viewModel.getDataFromFirestore(tableView: tableView, limit: 6, pagination: true, getNewOnes: true)
+        viewModel.getDataFromFirestore(tableView: tableView, limit: 5, pagination: false, getNewOnes: true)
         // Stop Refreshing
         DispatchQueue.main.async {
             self.refreshControl.endRefreshing()

@@ -38,6 +38,7 @@ class SignInVC: UIViewController {
                 self.showAlert(mainTitle: "Error Log In", message: err?.localizedDescription ?? "Error", actionButtonTitle: "OK")
                 return
             }
+            currentUserEmail = self.textFields().email
             self.performSegue(withIdentifier: "toFeedVC", sender: nil)
         }
     }
@@ -51,6 +52,7 @@ class SignInVC: UIViewController {
                 self.showAlert(mainTitle: "Error Sign Up", message: err?.localizedDescription ?? "Error", actionButtonTitle: "OK")
                 return
             }
+            currentUserEmail = self.textFields().email
             self.performSegue(withIdentifier: "toFeedVC", sender: nil)
         }
     }

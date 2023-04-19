@@ -20,6 +20,7 @@ protocol FeedCellToFeedVCProtocol {
     func refreshAfterActionPost()
     func showAlert(alert: UIAlertController)
     func manageUIChanges(action: Action,_ indexRow: Int)
+    func deleteAIndex(indexPaths: [IndexPath])
 }
 
 class FeedCell: UITableViewCell {
@@ -38,7 +39,7 @@ class FeedCell: UITableViewCell {
     private var viewModel: FeedCellProtocol = FeedCellViewModel()
     private var ids = [String]()
     private var storageID = [String]()
-    private var index = 0
+    private var indexPath = IndexPath()
     private var wholiked = [[String]]()
     var delegate: FeedCellToFeedVCProtocol?
     private var firebaseLikeCount = Int()
@@ -58,36 +59,36 @@ class FeedCell: UITableViewCell {
     @IBAction private func likeTap(_ sender: UIButton? = nil) {
 
         for i in temporaryIntArray {
-            if i == index {
+            if i == indexPath.row {
                 firebaseLikeCount = lastLikeCount
             } else {
-                firebaseLikeCount = wholiked[index].count
+                firebaseLikeCount = wholiked[indexPath.row].count
             }
         }
-        temporaryLikedList = wholiked[index]
+        temporaryLikedList = wholiked[indexPath.row]
         likeListUIManager()
         
         if likeButtonOutlet.imageView?.image == UIImage(named: K.Images.heartRedFill) {
             likeButtonOutlet.setImage(UIImage(named: K.Images.heartBold), for: .normal)
             likeButtonOutlet.tintColor = .label
-            viewModel.postDislikeManager(id: ids[index])
+            viewModel.postDislikeManager(id: ids[indexPath.row])
             firebaseLikeCount -= 1
-            delegate?.manageUIChanges(action: .NoMoreLiking, index)
+            delegate?.manageUIChanges(action: .NoMoreLiking, indexPath.row)
             
         } else { /// like
             likeButtonOutlet.setImage(UIImage(named: K.Images.heartRedFill), for: .normal)
             likeButtonOutlet.tintColor = .systemRed
-            viewModel.postLikeManager(id: ids[index])
+            viewModel.postLikeManager(id: ids[indexPath.row])
             firebaseLikeCount += 1
-            delegate?.manageUIChanges(action: .Like, index)
+            delegate?.manageUIChanges(action: .Like, indexPath.row)
 
             temporaryLikedList += [currentUserEmail]
 
         }
         lastLikeCount = firebaseLikeCount
-        likeCounter.text = viewModel.likeOrLikes(indexRow: index, likeCount: lastLikeCount)
+        likeCounter.text = viewModel.likeOrLikes(indexRow: indexPath.row, likeCount: lastLikeCount)
         
-        temporaryIntArray.append(index)
+        temporaryIntArray.append(indexPath.row)
         
         
     }
@@ -112,8 +113,9 @@ class FeedCell: UITableViewCell {
             let alert = UIAlertController(title: "Would you like to DELETE this post?", message: nil, preferredStyle: .actionSheet)
             let cancel = UIAlertAction(title: "Cancel", style: .default)
             let delete = UIAlertAction(title: "DELETE", style: .destructive) {_ in
-                self.viewModel.deletePost(id: self.ids[self.index], storageID: self.storageID[self.index])
-                self.delegate?.refreshAfterActionPost()
+                self.viewModel.deletePost(id: self.ids[self.indexPath.row], storageID: self.storageID[self.indexPath.row])
+//                self.delegate?.refreshAfterActionPost()
+                self.delegate?.deleteAIndex(indexPaths: [self.indexPath])
             }
             alert.addAction(delete)
             alert.addAction(cancel)
@@ -130,12 +132,12 @@ class FeedCell: UITableViewCell {
     
     
     
-    func getInfo(index: Int, ids: [String], whoLikeIt: [[String]], storageID: [String]) {
-        self.index = index
+    func getInfo(indexPath: IndexPath, ids: [String], whoLikeIt: [[String]], storageID: [String]) {
+        self.indexPath = indexPath
         self.ids = ids
         self.wholiked = whoLikeIt
         self.storageID = storageID
-        self.temporaryLikedList = wholiked[index]
+        self.temporaryLikedList = wholiked[indexPath.row]
     }
     
     private func doubleTapSetup() {
@@ -153,7 +155,7 @@ class FeedCell: UITableViewCell {
     }
     
     @objc private func performSegue(){
-        delegate?.performSegue(cellIndex: index, likeList: temporaryLikedList, likeCount: likeCounter.text ?? "")
+        delegate?.performSegue(cellIndex: indexPath.row, likeList: temporaryLikedList, likeCount: likeCounter.text ?? "")
     }
     
     @objc private func doubleTapToLike() {

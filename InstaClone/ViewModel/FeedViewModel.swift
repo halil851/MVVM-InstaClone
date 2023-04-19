@@ -20,10 +20,11 @@ class FeedViewModel: FeedVCProtocol {
     var storageID = [String]()
     var whoLiked = [[String]]()
     var date = [DateComponents]()
-    
-    let pageSize = 5
+
+    private var firstImageURLAfterUploading = String()
+    private let pageSize = 5
     var isPaginating = false
-    var lastDocumentSnapshot: DocumentSnapshot? = nil
+    private var lastDocumentSnapshot: DocumentSnapshot? = nil
     
     // First call you get 5 photo, then get new 5...
     func getDataFromFirestore(tableView: UITableView, limit: Int?, pagination: Bool = false, getNewOnes: Bool = false) {
@@ -37,6 +38,7 @@ class FeedViewModel: FeedVCProtocol {
             .order(by: K.Document.date, descending: true)
             .limit(to: limit ?? pageSize)
         
+        //If Firebase datas have been called before, and not refreshing. It gets last post and adds ONLY new ones.
         if let lastSnapshot = lastDocumentSnapshot, !getNewOnes {
             query = query.start(afterDocument: lastSnapshot)
         }
@@ -50,15 +52,9 @@ class FeedViewModel: FeedVCProtocol {
                 print(err.debugDescription)
                 return}
             
-            if getNewOnes {
-                self.removeAllArrays()
-            }
-            
-            if let newLastSnapshot = self.appending(tableView, snapshot) {
+            if let newLastSnapshot = self.prepareAppending(tableView, snapshot, getNewOnes: getNewOnes) {
                 self.lastDocumentSnapshot = newLastSnapshot
             }
-            
-           
         }
         
         
@@ -67,35 +63,8 @@ class FeedViewModel: FeedVCProtocol {
     
 }
 
+//MARK: - Firebase Operations
 extension FeedViewModel {
-    
-    private func downloadImages(_ imageURL: String, completion: @escaping ()->Void) {
-        let imageUrl = URL(string: imageURL)
-        
-        SDWebImageManager.shared.loadImage(with: imageUrl, options: .continueInBackground, progress: nil) { image, data, error, cacheType, finished, imageURL in
-            if let error = error {
-                print("Error downloading image: \(error.localizedDescription)")
-                return
-            }
-            
-            // Add the image to the array
-            if let image = image {
-                self.images.append(image)
-                self.calculateNewImageSize(image)
-                completion()
-            }
-            
-        }
-    }
-    
-    private func calculateNewImageSize(_ image: UIImage) {
-        let imageSize = image.size
-        let phoneScreenWidth = UIScreen.main.bounds.width
-        let coefficient = imageSize.width / phoneScreenWidth
-        let newHeight = imageSize.height / coefficient
-        imagesHeights.append(newHeight)
-
-    }
     
     private func removeAllArrays() {
         self.emails.removeAll()
@@ -108,60 +77,143 @@ extension FeedViewModel {
         self.imagesHeights.removeAll()
     }
     
-    private func appending(_ tableView: UITableView,_ snapshot: QuerySnapshot) -> DocumentSnapshot? {
+    private func downloadImages(_ imageURL: String, completion: @escaping ()->Void) {
+        let imageUrl = URL(string: imageURL)
+        
+        SDWebImageManager.shared.loadImage(with: imageUrl, options: .continueInBackground, progress: nil) { image, data, error, cacheType, finished, _ in
+            if let error = error {
+                print("Error downloading image: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let image = image else {return}
+            
+            
+            // It only works after uploading a photo and refresh the tableview.
+            if isFirstRefreshAfterUploading, imageURL == self.firstImageURLAfterUploading {
+                self.images.insert(image, at: 0)
+                self.calculateNewImageSize(image, isFirstAfterUpload: true)
+                
+            } else { // Add the image to the array
+                self.images.append(image)
+                self.calculateNewImageSize(image, isFirstAfterUpload: false)
+            }
+                 
+            completion()
+            
+        }
+    }
+    
+    private func calculateNewImageSize(_ image: UIImage, isFirstAfterUpload: Bool) {
+        //Takes orijinal image sizes and calculate to fit the screen by keeping aspect ratio.
+        let imageSize = image.size
+        let phoneScreenWidth = UIScreen.main.bounds.width
+        let coefficient = imageSize.width / phoneScreenWidth
+        let newHeight = imageSize.height / coefficient
+        
+        if isFirstAfterUpload {
+            imagesHeights.insert(newHeight, at: 0)
+        } else {
+            imagesHeights.append(newHeight)
+        }
+    }
+    
+   
+    
+    private func append(_ document: QueryDocumentSnapshot, _ tableView: UITableView, snapshotCount: Int, index: Int) {
+        if let imageUrl = document.get(K.Document.imageUrl) as? String {
+            //Appending start first with downloading images. When ONE image downloaded, next others.
+            self.downloadImages(imageUrl,completion: {
+                
+                let id = document.documentID
+                //After upload a post and refresh table, this "if" run and insert the post info to the first place. If not, user can not see the new posted at top.
+                if isFirstRefreshAfterUploading, imageUrl == self.firstImageURLAfterUploading {
+                    
+                    getPostInfo { postedBy, storageID, comment, like, date in
+                        self.ids.insert(id, at: 0)
+                        self.emails.insert(postedBy, at: 0)
+                        self.storageID.insert(storageID, at: 0)
+                        self.comments.insert(comment, at: 0)
+                        self.whoLiked.insert(like, at: 0)
+                        self.date.insert(dateConfig(date), at: 0)
+                    }
+                    //Reload table, after first snapshot called from Firebase
+                    DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
+                        tableView.reloadData()
+                        self.isPaginating = false
+                        isFirstRefreshAfterUploading = false
+                    })
+                    
+                } else {
+                    //Add items when reloading. Mostly run this part.
+                    getPostInfo { postedBy, storageID, comment, like, date in
+                        self.ids.append(id)
+                        self.emails.append(postedBy)
+                        self.storageID.append(storageID)
+                        self.comments.append(comment)
+                        self.whoLiked.append(like)
+                        self.date.append(dateConfig(date))
+                    }
+                    
+                    //Reload table, after all data called from Firebase
+                    if index == snapshotCount - 1 {
+                        DispatchQueue.main.asyncAfter(deadline: .now()+0.25, execute: {
+                            tableView.reloadData()
+                            self.isPaginating = false
+                        })
+                    }
+                    
+                }
+                
+                func dateConfig(_ date: Timestamp) -> DateComponents {
+                    let uploadDate = Date(timeIntervalSince1970: TimeInterval(date.seconds))
+                    let now = Date()
+                    // Calculation the time between 2 dates
+                    let calendar = Calendar.current
+                    let timeDifference = calendar.dateComponents([.year, .weekOfMonth, .month, .day, .hour, .minute], from: uploadDate, to: now)
+                    return timeDifference
+                }
+                //Unwrap informations from Firebase
+                func getPostInfo(complation: @escaping(_ postedBy: String, _ storageID: String, _ comment: String, _ like: [String], _ date: Timestamp)->Void){
+                    if let postedBy = document.get(K.Document.postedBy) as? String,
+                       let storageID = document.get(K.Document.storageID) as? String,
+                       let comment = document.get(K.Document.postComment) as? String,
+                       let like = document.get(K.Document.likedBy) as? [String],
+                       let date = document.get(K.Document.date) as? Timestamp{
+                        
+                        complation(postedBy, storageID, comment, like, date)
+                    }
+                }
+
+                
+            })
+        }
+    }
+    
+    private func prepareAppending(_ tableView: UITableView,_ snapshot: QuerySnapshot, getNewOnes: Bool) -> DocumentSnapshot? {
+
         print("\(snapshot.count) data called")
         var newLastSnapshot: DocumentSnapshot? = nil
         
-        for document in snapshot.documents {
+        if isFirstRefreshAfterUploading, let firstImageURLString = snapshot.documents.first?.get(K.Document.imageUrl) as? String{
+            self.firstImageURLAfterUploading = firstImageURLString
+        }
+        //When pull to refresh run this works, and remove all arrays to make room for refresh. When paginating this is not running.
+        if getNewOnes {
+            self.removeAllArrays()
+        }
+        
+        for (index,document) in snapshot.documents.enumerated() {
             
-            if let imageUrl = document.get(K.Document.imageUrl) as? String {
-                downloadImages(imageUrl, completion: {
-                    let id = document.documentID
-                    self.ids.append(id)
-                    
-                    if let postedBy = document.get(K.Document.postedBy) as? String {
-                        self.emails.append(postedBy)
-                    }
-                    
-                    if let storageID = document.get(K.Document.storageID) as? String {
-                        self.storageID.append(storageID)
-                    }
-                    
-                    
-                    if let comment = document.get(K.Document.postComment) as? String {
-                        self.comments.append(comment)
-                    }
-                    
-                    if let like = document.get(K.Document.likedBy) as? [String] {
-                        self.whoLiked.append(like)
-                        
-                    }
-                    
-                    
-                    
-                    if let date = document.get(K.Document.date) as? Timestamp {
-                        
-                        let uploadDate = Date(timeIntervalSince1970: TimeInterval(date.seconds))
-                        let now = Date()
-                        // Calculation the time between 2 dates
-                        let calendar = Calendar.current
-                        let timeDifference = calendar.dateComponents([.year, .weekOfMonth, .month, .day, .hour, .minute], from: uploadDate, to: now)
-                        self.date.append(timeDifference)
-                        
-                    }
-                    self.isPaginating = false
-                    tableView.reloadData()
-                })
-            }
-            
-            
-            
-            
+            append(document, tableView, snapshotCount: snapshot.count, index: index)
             newLastSnapshot = document
         }
         return newLastSnapshot
     }
-    
+}
+//MARK: - UI Operations
+extension FeedViewModel {
+    //Decide singular or plural
     func likeOrLikes(indexRow: Int) -> String {
         
         let likesCount = whoLiked[indexRow].count
@@ -171,8 +223,9 @@ extension FeedViewModel {
         return "\(likesCount) like"
     }
     
+    
     func uploadDate(indexRow: Int) -> String {
-        
+        //Decide singular or plural and the date
         guard let year = date[indexRow].year else {return ""}
         if year > 0 {
             return singularPluralDate(date: year, "year")
@@ -204,7 +257,7 @@ extension FeedViewModel {
         }
         return singularPluralDate(date: minute, "min")
     }
-    
+    //Decide singular or plural Date
     private func singularPluralDate(date: Int, _ str: String) -> String{
         if date == 1 {
             return "\(date) \(str) ago"
@@ -212,8 +265,8 @@ extension FeedViewModel {
         return "\(date) \(str)s ago"
     }
     
+    // User can only edit or delete own post
     func isOptionsButtonHidden(user: String) -> Bool {
-        
         if user == currentUserEmail {
             return false
         }

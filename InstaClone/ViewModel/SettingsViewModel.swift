@@ -9,16 +9,15 @@ import Firebase
 
 
 struct SettingsViewModel: SettingVCProtocol {
-//    func getCurrentUser(completionHandler: @escaping (String?) -> ()) {
-//        let currentUserEmail = Auth.auth().currentUser?.email
-//        completionHandler(currentUserEmail)
-//    }
-    
     
     func signOut(completionHandler: @escaping(_ success: Bool, Error?)->()) {
+        
         do {
             try Auth.auth().signOut()
             completionHandler(true, nil)
+            
+            currentUserEmail = "Please Sign In"
+            
             
         } catch {
             completionHandler(false, error)
