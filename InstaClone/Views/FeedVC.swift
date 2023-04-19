@@ -110,7 +110,6 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         cell.delegate = self
         cell.userImage.image = viewModel.images[indexPath.row]
         cell.imageHeight.constant = viewModel.imagesHeights[indexPath.row]
-        
         cell.userEmailLabel.text = viewModel.emails[indexPath.row]
         cell.commentLabel.attributedText = boldAndRegularText(indexRow: indexPath.row)
         cell.likeCounter.text = viewModel.likeOrLikes(indexRow: indexPath.row)
@@ -127,7 +126,13 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return viewModel.imagesHeights[indexPath.row] + 150
+        let charNumber = viewModel.comments[indexPath.row].count + viewModel.emails[indexPath.row].count
+        
+        let coefficient = Double(charNumber) / Double(50) //50 is allowed char number of a row
+        let height: Double = Double(coefficient * 18)  // 18 is a row height
+        
+        return viewModel.imagesHeights[indexPath.row] + 140 + CGFloat(height)
+        
     }
     
 }
