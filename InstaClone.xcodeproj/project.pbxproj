@@ -92,6 +92,7 @@
 		A91B4F9829BB19EF002CF7E9 /* InstaClone */ = {
 			isa = PBXGroup;
 			children = (
+				A9883C2B29F0222A00B1B72B /* Media */,
 				A91B4F9929BB19EF002CF7E9 /* AppDelegate.swift */,
 				A91B4F9B29BB19EF002CF7E9 /* SceneDelegate.swift */,
 				A9B5979F29C9F9BE009ED305 /* Support */,
@@ -117,6 +118,13 @@
 				A9453BE229CC8C8B00A62DB0 /* SettingsViewModel.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		A9883C2B29F0222A00B1B72B /* Media */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Media;
 			sourceTree = "<group>";
 		};
 		A9B5979C29C9F13B009ED305 /* Model */ = {
