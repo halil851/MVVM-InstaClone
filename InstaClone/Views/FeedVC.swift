@@ -125,12 +125,7 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let charNumber = viewModel.comments[indexPath.row].count + viewModel.emails[indexPath.row].count
-        let coefficient = Double(charNumber) / Double(50) //50 is allowed char number of a row
-        let height: Double = Double(coefficient * 18)  // 18 is a row height
-        return viewModel.imagesHeights[indexPath.row] + 140 + CGFloat(height)
-    }
+    
     
 }
 
