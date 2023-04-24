@@ -12,6 +12,8 @@ struct K {
     static let media = "media"
     static let FeedCell = "FeedCell"
     static let Cell = "Cell"
+    static let MyPhotosCell = "MyPhotosCell"
+    static let HeaderView = "HeaderView"
     
     struct Document {
         static let date = "date"
