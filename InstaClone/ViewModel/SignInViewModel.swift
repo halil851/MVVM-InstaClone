@@ -7,6 +7,7 @@
 
 import Firebase
 
+var currentUserEmail: String = Auth.auth().currentUser?.email ?? "No One"
 
 struct SignInViewModel: SignInVCProtocol {
     func singInManager(email: String, password: String, completionHandler: @escaping(Error?)->() ) {

@@ -35,7 +35,7 @@ class UploadVC: UIViewController {
     //MARK: - IBActions
     @IBAction private func uploadTap(_ sender: UIButton) {
         
-        if image.image == UIImage(named: "select3") {
+        if image.image == UIImage(named: K.Images.hand) {
             showAlert(mainTitle: "Select image", message: "Select an image before update!", actionButtonTitle: "OK")
             return
         }
@@ -48,12 +48,12 @@ class UploadVC: UIViewController {
         
         //Go to Feed when uploading is done
         self.commentText.text = ""
-        self.image.image = UIImage(named: "hand")
+        self.image.image = UIImage(named: K.Images.hand)
         self.tabBarController?.selectedIndex = 0
     }
     
     @IBAction func cancelTap(_ sender: UIButton) {
-        self.image.image = UIImage(named: "hand")
+        self.image.image = UIImage(named: K.Images.hand)
         self.commentText.text = ""
     }
     //MARK: - Functions
@@ -62,7 +62,7 @@ class UploadVC: UIViewController {
         image.isUserInteractionEnabled = true
         let imageTap = UITapGestureRecognizer(target: self, action: #selector(selectImage))
         image.addGestureRecognizer(imageTap)
-        image.image = UIImage(named: "hand")
+        image.image = UIImage(named: K.Images.hand)
     }
 }
 

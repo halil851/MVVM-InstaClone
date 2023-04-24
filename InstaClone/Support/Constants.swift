@@ -25,6 +25,7 @@ struct K {
     struct Images {
         static let heartRedFill = "heart.red.fill"
         static let heartBold = "heart.bold"
+        static let hand = "hand"
     }
     
 }
