@@ -52,7 +52,7 @@
 		A9B5979329C49B2C009ED305 /* FeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCell.swift; sourceTree = "<group>"; };
 		A9B597A029C9F9E2009ED305 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		A9B597A229C9FCD7009ED305 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		A9BA9D0D29F66FC4001CF6AB /* Demo4K60.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Demo4K60.mp4; sourceTree = "<group>"; };
+		A9BA9D0E29F6781E001CF6AB /* Demo1080p60.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Demo1080p60.mp4; sourceTree = "<group>"; };
 		A9DFEE0F29BB7E9D0059C3A7 /* FeedVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedVC.swift; sourceTree = "<group>"; };
 		A9DFEE1329BB7F010059C3A7 /* SettingsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
 		A9DFEE1529BB7F1C0059C3A7 /* UploadVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadVC.swift; sourceTree = "<group>"; };
@@ -127,7 +127,7 @@
 			isa = PBXGroup;
 			children = (
 				A9343C0829F163B6001FB439 /* Zoom in.mov */,
-				A9BA9D0D29F66FC4001CF6AB /* Demo4K60.mp4 */,
+				A9BA9D0E29F6781E001CF6AB /* Demo1080p60.mp4 */,
 			);
 			path = Media;
 			sourceTree = "<group>";
