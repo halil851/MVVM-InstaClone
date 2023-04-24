@@ -46,6 +46,7 @@ class FeedVC: UIViewController {
         super.viewDidLoad()
         initialSetup()
         viewModel.getDataFromFirestore(tableView: tableView)
+        
     }
     
     //MARK: - IBActions
@@ -60,6 +61,8 @@ class FeedVC: UIViewController {
         // Enable Refresh Check
         refreshControl.addTarget(self, action: #selector(refreshTableView), for: .valueChanged)
         tableView.addSubview(refreshControl)
+        //Nib register
+        tableView.register(UINib(nibName: K.FeedCell , bundle: nil), forCellReuseIdentifier: K.Cell )
         
     }
     
@@ -103,7 +106,7 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as? FeedCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: K.Cell, for: indexPath) as? FeedCell else {
             return UITableViewCell()
         }
 

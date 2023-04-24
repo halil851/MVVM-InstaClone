@@ -9,8 +9,9 @@ import Foundation
 
 struct K {
     static let Posts = "Posts"
-      
     static let media = "media"
+    static let FeedCell = "FeedCell"
+    static let Cell = "Cell"
     
     struct Document {
         static let date = "date"

@@ -23,6 +23,7 @@
 		A9B5979929C8702E009ED305 /* SDWebImageSVGCoder in Frameworks */ = {isa = PBXBuildFile; productRef = A9B5979829C8702E009ED305 /* SDWebImageSVGCoder */; };
 		A9B597A129C9F9E2009ED305 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B597A029C9F9E2009ED305 /* Constants.swift */; };
 		A9B597A329C9FCD7009ED305 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B597A229C9FCD7009ED305 /* Extensions.swift */; };
+		A9BA9D1329F6B8AA001CF6AB /* FeedCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9BA9D1129F6B8AA001CF6AB /* FeedCell.xib */; };
 		A9DFEE1029BB7E9D0059C3A7 /* FeedVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DFEE0F29BB7E9D0059C3A7 /* FeedVC.swift */; };
 		A9DFEE1429BB7F010059C3A7 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DFEE1329BB7F010059C3A7 /* SettingsVC.swift */; };
 		A9DFEE1629BB7F1C0059C3A7 /* UploadVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DFEE1529BB7F1C0059C3A7 /* UploadVC.swift */; };
@@ -52,6 +53,7 @@
 		A9B5979329C49B2C009ED305 /* FeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCell.swift; sourceTree = "<group>"; };
 		A9B597A029C9F9E2009ED305 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		A9B597A229C9FCD7009ED305 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		A9BA9D1129F6B8AA001CF6AB /* FeedCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FeedCell.xib; sourceTree = "<group>"; };
 		A9DFEE0F29BB7E9D0059C3A7 /* FeedVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedVC.swift; sourceTree = "<group>"; };
 		A9DFEE1329BB7F010059C3A7 /* SettingsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
 		A9DFEE1529BB7F1C0059C3A7 /* UploadVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadVC.swift; sourceTree = "<group>"; };
@@ -151,6 +153,7 @@
 			children = (
 				A9453BEC29CCAC0F00A62DB0 /* SignInVC.swift */,
 				A9B5979329C49B2C009ED305 /* FeedCell.swift */,
+				A9BA9D1129F6B8AA001CF6AB /* FeedCell.xib */,
 				A9DFEE0F29BB7E9D0059C3A7 /* FeedVC.swift */,
 				A9E2B69229D467F8008B1118 /* LikeListVC.swift */,
 				A9DFEE1529BB7F1C0059C3A7 /* UploadVC.swift */,
@@ -229,6 +232,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A91B4FA629BB19F0002CF7E9 /* LaunchScreen.storyboard in Resources */,
+				A9BA9D1329F6B8AA001CF6AB /* FeedCell.xib in Resources */,
 				A91B4FAE29BB1D19002CF7E9 /* GoogleService-Info.plist in Resources */,
 				A91B4FA329BB19F0002CF7E9 /* Assets.xcassets in Resources */,
 				A9343C0929F163B6001FB439 /* Zoom in.mov in Resources */,
