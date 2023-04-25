@@ -15,7 +15,8 @@ class ProfileVC: UIViewController {
     
     
     //MARK: - Properties
-
+    let viewModel = ProfileViewModel()
+    var images = [UIImage]()
   
     //MARK: - Life Cycles
 
@@ -26,6 +27,12 @@ class ProfileVC: UIViewController {
         
         let nibCell = UINib(nibName: K.MyPhotosCell, bundle: nil)
         collectionView.register(nibCell, forCellWithReuseIdentifier: K.MyPhotosCell)
+        
+        viewModel.getCurrentUsersPosts(completion: { image in
+            self.images.append(image)
+            self.collectionView.reloadData()
+        })
+        
         
     }
     //MARK: - IBActions
@@ -40,10 +47,10 @@ class ProfileVC: UIViewController {
 
 }
 
-//MARK: - Tableview Operations
+//MARK: - Collectionview Operations
 extension ProfileVC: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        10
+        images.count
     }
     
     
@@ -52,12 +59,30 @@ extension ProfileVC: UICollectionViewDataSource, UICollectionViewDelegate, UICol
             return UICollectionViewCell()
         }
         
-        cell.image.image = UIImage(named: K.Images.hand)
+        cell.image.image = images[indexPath.row]
         
         
         
         return cell
     }
+    
+    //MARK: - Cell Sizes and Edges
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: collectionView.frame.width/3, height: collectionView.frame.width/3)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        // İç boşluğu ayarla
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+           return 0.0
+       }
+       
+       func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+           return 0.0
+       }
     
     
     
@@ -68,7 +93,7 @@ extension ProfileVC: UICollectionViewDataSource, UICollectionViewDelegate, UICol
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: collectionView.frame.width, height: collectionView.frame.width / 3) // Height of header
+        return CGSize(width: collectionView.frame.width, height: collectionView.frame.width / 2) // Height of header
     }
     
     
