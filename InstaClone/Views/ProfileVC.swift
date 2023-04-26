@@ -68,21 +68,17 @@ extension ProfileVC: UICollectionViewDataSource, UICollectionViewDelegate, UICol
     
     //MARK: - Cell Sizes and Edges
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width/3, height: collectionView.frame.width/3)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        // İç boşluğu ayarla
-        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        return CGSize(width: collectionView.frame.width/3 - 4.0, height: collectionView.frame.width/3)
     }
 
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-           return 0.0
-       }
-       
-       func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-           return 0.0
-       }
+        return 2
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 2
+    }
     
     
     

@@ -17,7 +17,7 @@ struct ProfileViewModel {
         
         let query = db.collection(K.Posts)
             .whereField(K.Document.postedBy, isEqualTo: currentUserEmail)
-            .order(by: K.Document.date)
+            .order(by: K.Document.date, descending: true)
         
         query.getDocuments { snapshot, err in
             if err != nil {
