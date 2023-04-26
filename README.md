@@ -6,18 +6,21 @@ Instagram clone app.
 
 * MVVM Design Pattern  
 * UIKit - Storyboard
+* UICollectionView
     
 ### 3rd Party Libraries with Swift Package Manager
-* SDWebImage   
+* SDWebImage 
+* YPImagePicker  
 * Firebase 
 * Firestore Database
 * Firebase Authentication
 * Firebase Storage
      
 ### Features
+* Profile page
 * Double tap to like and undo like
 * Pinch to zoom in and out 
-* Adaptive Tableview Cells based on image size and comment legth
+* Dynamic Tableview Cells based on image size and comment legth
 * Like counting
 * Who liked
 * Dark mode

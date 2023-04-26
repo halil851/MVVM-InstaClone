@@ -11,8 +11,6 @@ class ProfileVC: UIViewController {
     
     //MARK: - IBOutlets
     @IBOutlet weak var collectionView: UICollectionView!
-
-    
     
     //MARK: - Properties
     let viewModel = ProfileViewModel()
@@ -27,12 +25,17 @@ class ProfileVC: UIViewController {
         
         let nibCell = UINib(nibName: K.MyPhotosCell, bundle: nil)
         collectionView.register(nibCell, forCellWithReuseIdentifier: K.MyPhotosCell)
-        
-        viewModel.getCurrentUsersPosts(completion: { image in
+          
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        images.removeAll()
+        viewModel.getCurrentUsersPosts(completion: { image, isReadyToReload  in
             self.images.append(image)
-            self.collectionView.reloadData()
+            
+            if isReadyToReload { self.collectionView.reloadData() }
+
         })
-        
         
     }
     //MARK: - IBActions
@@ -60,8 +63,6 @@ extension ProfileVC: UICollectionViewDataSource, UICollectionViewDelegate, UICol
         }
         
         cell.image.image = images[indexPath.row]
-        
-        
         
         return cell
     }
