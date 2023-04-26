@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import YPImagePicker
 
 protocol UploadVCProtocol {
     func uploadData(image: UIImageView,comment: String , completionHandler: @escaping(Error?)->())
@@ -26,11 +27,9 @@ class UploadVC: UIViewController {
         super.viewDidLoad()
         commentText.delegate = self
         setImageInteractable()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
         selectImage()
     }
+    
     
     //MARK: - IBActions
     @IBAction private func uploadTap(_ sender: UIButton) {
@@ -67,19 +66,48 @@ class UploadVC: UIViewController {
 }
 
 //MARK: - Image Picking
-extension UploadVC: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+extension UploadVC {
     @objc func selectImage() {
+     
+                                
+                                
+        var config = YPImagePickerConfiguration()
+        // [Edit configuration here ...]
+        // Build a picker with your configuration
+        config.onlySquareImagesFromCamera = false
+        config.startOnScreen = .library
+        let picker = YPImagePicker(configuration: config)
+        
+        picker.didFinishPicking { [unowned picker] items, _ in
+            if let photo = items.singlePhoto {
+//                print(photo.fromCamera) // Image source (camera or library)
+//                print(photo.image) // Final image selected by the user
+//                print(photo.originalImage) // original image selected by the user, unfiltered
+//                print(photo.modifiedImage) // Transformed image, can be nil
+//                print(photo.exifMeta) // Print exif meta data of original image.
+                self.image.image = photo.image
+            }
+            picker.dismiss(animated: true, completion: nil)
+        }
+        present(picker, animated: true, completion: nil)
+        
+                                
+
+       /*
         let picker = UIImagePickerController()
         picker.delegate = self
         picker.sourceType = .photoLibrary
         picker.allowsEditing = true
         present(picker, animated: true)
+        */
     }
+    /*
+     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+             image.image = info[.editedImage] as? UIImage
+             self.dismiss(animated: true)
+         }
+     */
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        image.image = info[.editedImage] as? UIImage
-        self.dismiss(animated: true)
-    }
     
 }
 
