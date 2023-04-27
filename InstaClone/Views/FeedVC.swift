@@ -49,6 +49,10 @@ class FeedVC: UIViewController {
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        tabBarController?.delegate = self
+    }
+    
     //MARK: - IBActions
     
     
@@ -146,7 +150,6 @@ extension FeedVC: UITabBarControllerDelegate {
             DispatchQueue.main.async {
                 self.tableView.setContentOffset(CGPointZero, animated: true)
             }
-            
         }
         lastTabBarIndex = tabBarController.selectedIndex
     }

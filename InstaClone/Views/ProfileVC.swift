@@ -85,7 +85,10 @@ extension ProfileVC: UICollectionViewDataSource, UICollectionViewDelegate, UICol
     
     //MARK: - Header Configurations
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: K.HeaderView, for: indexPath)
+        guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: K.HeaderView, for: indexPath) as? MyPhotosHeaderView else {
+            return UICollectionReusableView()
+        }
+        view.delegate = self
         return view
     }
     
@@ -94,4 +97,13 @@ extension ProfileVC: UICollectionViewDataSource, UICollectionViewDelegate, UICol
     }
     
     
+}
+
+
+
+//MARK: - Header View Protocol
+extension ProfileVC: HeaderViewToProfileVCProtocol {
+    func pickerPresent(picker: UIImagePickerController) {
+        present(picker, animated: true)
+    }
 }

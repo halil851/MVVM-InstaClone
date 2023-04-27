@@ -21,13 +21,16 @@ class UploadVC: UIViewController {
     
     //MARK: - Properties
     private var viewModel = UploadViewModel()
+    private var isSelectingImage = false
     
     //MARK: - Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         commentText.delegate = self
         setImageInteractable()
-        selectImage()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        if !isSelectingImage { selectImage() }
     }
     
     
@@ -68,17 +71,25 @@ class UploadVC: UIViewController {
 //MARK: - Image Picking
 extension UploadVC {
     @objc func selectImage() {
-                                
+        isSelectingImage = true
+        
         var config = YPImagePickerConfiguration()
         config.onlySquareImagesFromCamera = false
         config.startOnScreen = .library
+        #if targetEnvironment(simulator)
+            config.screens = [.library] // Only library can be seen when device is a simulator
+        #endif
         let picker = YPImagePicker(configuration: config)
         
-        picker.didFinishPicking { [unowned picker] items, _ in
-            if let photo = items.singlePhoto {
-                self.image.image = photo.image
-            }
+        picker.didFinishPicking { [unowned picker] items, cancelled in
+            guard let photo = items.singlePhoto else { return}
+            self.image.image = photo.image
+            
             picker.dismiss(animated: true, completion: nil)
+            //Avoid selectImage() method works after select an image or cancel selecting.
+            DispatchQueue.global().asyncAfter(deadline: .now()+0.1, execute: {
+                self.isSelectingImage = false
+            })
         }
         present(picker, animated: true, completion: nil)
 
@@ -97,3 +108,11 @@ extension UploadVC: UITextFieldDelegate {
     
     
 }
+
+//extension UploadVC: UITabBarControllerDelegate {
+//    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+//        if tabBarController.selectedIndex == 1 {
+//            selectImage()
+//        }
+//    }
+//}
