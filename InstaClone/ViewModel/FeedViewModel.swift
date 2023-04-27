@@ -61,6 +61,28 @@ class FeedViewModel: FeedVCProtocol {
         
     }
     
+    
+    private func prepareAppending(_ tableView: UITableView,_ snapshot: QuerySnapshot, getNewOnes: Bool) -> DocumentSnapshot? {
+
+        print("\(snapshot.count) data called")
+        var newLastSnapshot: DocumentSnapshot? = nil
+        
+        if isFirstRefreshAfterUploading, let firstImageURLString = snapshot.documents.first?.get(K.Document.imageUrl) as? String{
+            self.firstImageURLAfterUploading = firstImageURLString
+        }
+        //When pull to refresh run this works, and remove all arrays to make room for refresh. When paginating this is not running.
+        if getNewOnes {
+            self.removeAllArrays()
+        }
+        
+        for (index,document) in snapshot.documents.enumerated() {
+            
+            append(document, tableView, snapshotCount: snapshot.count, index: index)
+            newLastSnapshot = document
+        }
+        return newLastSnapshot
+    }
+    
 }
 
 //MARK: - Firebase Operations
@@ -189,27 +211,7 @@ extension FeedViewModel {
             })
         }
     }
-    
-    private func prepareAppending(_ tableView: UITableView,_ snapshot: QuerySnapshot, getNewOnes: Bool) -> DocumentSnapshot? {
-
-        print("\(snapshot.count) data called")
-        var newLastSnapshot: DocumentSnapshot? = nil
-        
-        if isFirstRefreshAfterUploading, let firstImageURLString = snapshot.documents.first?.get(K.Document.imageUrl) as? String{
-            self.firstImageURLAfterUploading = firstImageURLString
-        }
-        //When pull to refresh run this works, and remove all arrays to make room for refresh. When paginating this is not running.
-        if getNewOnes {
-            self.removeAllArrays()
-        }
-        
-        for (index,document) in snapshot.documents.enumerated() {
-            
-            append(document, tableView, snapshotCount: snapshot.count, index: index)
-            newLastSnapshot = document
-        }
-        return newLastSnapshot
-    }
+   
 }
 //MARK: - UI Operations
 extension FeedViewModel {

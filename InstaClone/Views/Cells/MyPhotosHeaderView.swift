@@ -16,6 +16,7 @@ class MyPhotosHeaderView: UICollectionReusableView {
     @IBOutlet weak var profilePicture: UIImageView!
     @IBOutlet weak var userNameLabel: UILabel!
     var viewModel = MyPhotosHeaderViewModel()
+    var id = String()
     
     weak var delegate: HeaderViewToProfileVCProtocol?
     
@@ -24,11 +25,13 @@ class MyPhotosHeaderView: UICollectionReusableView {
         userNameLabel.text = currentUserEmail
         setImageInteractable()
         
-        viewModel.getProfilePicture { image in
+        viewModel.getProfilePicture { image, id in
             self.profilePicture.image = image
+            self.id = id
         }
         profilePicture.layer.cornerRadius = profilePicture.frame.size.width / 2
         profilePicture.clipsToBounds = true
+        
         
     }
     
@@ -43,6 +46,7 @@ class MyPhotosHeaderView: UICollectionReusableView {
 
 extension MyPhotosHeaderView: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
     @objc func selectProfilePicture() {
+
         let picker = UIImagePickerController()
         picker.delegate = self
         picker.sourceType = .photoLibrary
@@ -56,14 +60,36 @@ extension MyPhotosHeaderView: UIImagePickerControllerDelegate & UINavigationCont
             print("Error: Selected item is not an image")
             return
         }
-        // ImageView'ı yuvarlak hale getirme
+        // Make ImageView Circle
         profilePicture.layer.cornerRadius = profilePicture.frame.size.width / 2
         profilePicture.clipsToBounds = true
+        
+        //If it is first picture then avoid deleting a file which doesn't exist
+        if self.profilePicture.image == UIImage(systemName: "person.crop.circle") {
+            
+            viewModel.addProfilePicture(image: profilePicture, completion: {
+                self.viewModel.getProfilePicture { _, id in
+                    self.id = id
+                }
+            })
+            
+            
+        } else {
+            viewModel.deleteProfilePicture(id: id, completion: { [self] isSuccessDeleting in
+                
+                if isSuccessDeleting {
+                    viewModel.addProfilePicture(image: profilePicture) {
+                        self.viewModel.getProfilePicture { _, id in
+                            self.id = id
+                        }
+                    }
+                }
+            })
+            
+        }
 
         profilePicture.image = image
         picker.dismiss(animated: true)
-        
-        viewModel.addProfilePicture(image: profilePicture)
         
     }
     

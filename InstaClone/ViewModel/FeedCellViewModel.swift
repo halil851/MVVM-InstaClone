@@ -56,9 +56,9 @@ struct FeedCellViewModel: FeedCellProtocol {
                                                         K.Document.likedBy: FieldValue.delete(),
                                                         K.Document.storageID: FieldValue.delete(),]) { err in     
             if let err = err {
-                print("Error updating document: \(err)")
+                print("Error deleting document: \(err)")
             } else {
-                print("Document successfully updated")
+                print("Document successfully deleted from Firebase Database")
             }
         }
         

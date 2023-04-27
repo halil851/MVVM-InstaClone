@@ -11,8 +11,10 @@ import SDWebImage
 
 struct MyPhotosHeaderViewModel {
     
-    func getProfilePicture(completion: @escaping (UIImage)-> Void) {
-        let db = Firestore.firestore()
+    let db = Firestore.firestore()
+    
+    func getProfilePicture(completion: @escaping (UIImage, String)-> Void) {
+        
         let query = db.collection(K.profilePictures)
             .whereField(K.Document.postedBy, isEqualTo: currentUserEmail)
         
@@ -28,6 +30,8 @@ struct MyPhotosHeaderViewModel {
             guard let imageUrlString = snapshot.documents.first?.get(K.Document.imageUrl) as? String else {return}
             let imageURL = URL(string: imageUrlString)
             
+            guard let id = snapshot.documents.first?.documentID else {return}
+            
             SDWebImageManager.shared.loadImage(with: imageURL, progress: nil) { image, data, error, cacheType, finished, _ in
                 if let error = error {
                     print("Error downloading image: \(error.localizedDescription)")
@@ -36,21 +40,14 @@ struct MyPhotosHeaderViewModel {
                 
                 guard let image = image else {return}
                 
-                completion(image)
+                completion(image, id)
             }
         }
         
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    func addProfilePicture(image: UIImageView) {
+
+    func addProfilePicture(image: UIImageView, completion: (() -> Void)? = nil) {
         let storage = Storage.storage()
         let storageRef = storage.reference()
         let mediaFolder = storageRef.child(K.profilePictures)
@@ -84,7 +81,8 @@ struct MyPhotosHeaderViewModel {
                     guard err == nil else {
                         return
                     }
-                    
+                    print("Profile Picture has successfully updated to Firebase server")
+                    completion?()
                 })
                 
             }
@@ -92,5 +90,54 @@ struct MyPhotosHeaderViewModel {
         }
         
     }
+    
+    
+    func deleteProfilePicture(id: String, completion: @escaping (_ isSuccesDeleting: Bool) -> Void) {
+        //Delete fields in selected document
+        db.collection(K.profilePictures).document(id).updateData([K.Document.imageUrl: FieldValue.delete(),
+                                                                  K.Document.postedBy: FieldValue.delete()]) { err in
+            if let err = err {
+                print("Error deleting document: \(err)")
+                return
+            } else {
+                print("Old Documents successfully deleted from Firebase Database")
+            }
+        }
+        
+        //Delete document ID
+        db.collection(K.profilePictures).document(id).delete { err in
+            if let err = err {
+                print("Error removing document: \(err)")
+                completion(false)
+            } else {
+                print("Old Document ID successfully removed!")
+                print("Ready to upload new one.")
+                completion(true)
+            }
+        }
+        //MARK: - No need to delete the last picture from Firebase storage, because overwriten
+        /*
+        //Delete photo from Firebase storage
+        // Get a reference to the storage service using the default Firebase App
+        let storage = Storage.storage()
+        // Create a storage reference from our storage service
+        let storageRef = storage.reference()
+        // Create a reference to the file to delete
+        let photoPath = storageRef.child(K.profilePictures).child("\(currentUserEmail).jpg")
+        // Delete the file
+        photoPath.delete { error in
+          if let error = error {
+              print(error.localizedDescription)
+              print("Maybe There are not any Profile Picture belong to current user.")
+              completion(false)
+          } else {
+              print("File deleted successfully from Firebase Storage")
+              completion(true)
+          }
+        }
+         */
+        
+    }
+    
     
 }
