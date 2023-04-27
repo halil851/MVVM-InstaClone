@@ -50,7 +50,7 @@ extension MyPhotosHeaderView: UIImagePickerControllerDelegate & UINavigationCont
             return
         }
         // ImageView'ı yuvarlak hale getirme
-        profilePicture.layer.cornerRadius = profilePicture.frame.size.height / 2
+        profilePicture.layer.cornerRadius = profilePicture.frame.size.width / 2
         profilePicture.clipsToBounds = true
 
         profilePicture.image = image
