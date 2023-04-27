@@ -10,6 +10,7 @@ import Foundation
 struct K {
     static let Posts = "Posts"
     static let media = "media"
+    static let profilePictures = "profilePictures"
     static let FeedCell = "FeedCell"
     static let Cell = "Cell"
     static let MyPhotosCell = "MyPhotosCell"

@@ -15,6 +15,7 @@ class MyPhotosHeaderView: UICollectionReusableView {
     
     @IBOutlet weak var profilePicture: UIImageView!
     @IBOutlet weak var userNameLabel: UILabel!
+    var viewModel = MyPhotosHeaderViewModel()
     
     weak var delegate: HeaderViewToProfileVCProtocol?
     
@@ -22,6 +23,12 @@ class MyPhotosHeaderView: UICollectionReusableView {
         super.awakeFromNib()
         userNameLabel.text = currentUserEmail
         setImageInteractable()
+        
+        viewModel.getProfilePicture { image in
+            self.profilePicture.image = image
+        }
+        profilePicture.layer.cornerRadius = profilePicture.frame.size.width / 2
+        profilePicture.clipsToBounds = true
         
     }
     
@@ -55,6 +62,8 @@ extension MyPhotosHeaderView: UIImagePickerControllerDelegate & UINavigationCont
 
         profilePicture.image = image
         picker.dismiss(animated: true)
+        
+        viewModel.addProfilePicture(image: profilePicture)
         
     }
     

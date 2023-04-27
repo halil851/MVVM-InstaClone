@@ -35,7 +35,6 @@ struct UploadViewModel {
             imageRef.downloadURL { url, error in
                 guard error == nil else{return}
                 
-//                guard let currentUserEmail = Auth.auth().currentUser?.email,
                 guard let imageUrl = url?.absoluteString else {return}
                 
                 //DATABASE

@@ -17,6 +17,7 @@ Instagram clone app.
 * Firebase Storage
      
 ### Features
+* Pagination
 * Profile page
 * Double tap to like and undo like
 * Pinch to zoom in and out 
