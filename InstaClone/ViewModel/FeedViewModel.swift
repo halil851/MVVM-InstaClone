@@ -25,12 +25,15 @@ class FeedViewModel: FeedVCProtocol {
     private let pageSize = 5
     var isPaginating = false
     private var lastDocumentSnapshot: DocumentSnapshot? = nil
+    let vm = MyPhotosHeaderViewModel()
     
+    //MARK: - Firebase Operations
     // First call you get 5 photo, then get new 5...
-    func getDataFromFirestore(tableView: UITableView, limit: Int?, pagination: Bool = false, getNewOnes: Bool = false) {
+    func getDataFromFirestore(_ tableView: UITableView, limit: Int?, pagination: Bool = false, getNewOnes: Bool = false) {
         if pagination {
             isPaginating = true
         }
+       
         
         
         //MARK: - new query
@@ -56,6 +59,7 @@ class FeedViewModel: FeedVCProtocol {
                 self.lastDocumentSnapshot = newLastSnapshot
             }
         }
+    
         
         
         
@@ -83,10 +87,7 @@ class FeedViewModel: FeedVCProtocol {
         return newLastSnapshot
     }
     
-}
-
-//MARK: - Firebase Operations
-extension FeedViewModel {
+    
     
     private func removeAllArrays() {
         self.emails.removeAll()
@@ -210,6 +211,16 @@ extension FeedViewModel {
                 
             })
         }
+    }
+    
+    
+    func getSmallProfilePictures(userMail: String, completion: @escaping (UIImage?) -> Void) {
+        
+        vm.getProfilePicture(who: userMail) {  image, _ in
+            completion(image)
+        }
+       
+        
     }
    
 }

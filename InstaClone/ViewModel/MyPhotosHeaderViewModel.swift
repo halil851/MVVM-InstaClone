@@ -9,20 +9,27 @@ import Firebase
 import FirebaseStorage
 import SDWebImage
 
-struct MyPhotosHeaderViewModel {
+
+class MyPhotosHeaderViewModel {
     
-    let db = Firestore.firestore()
+    private let db = Firestore.firestore()
+    private var myDict = [[String: (UIImage, String)]]()
     
-    func getProfilePicture(completion: @escaping (UIImage, String)-> Void) {
+    static var isNewProfilePicture = false
+    
+    func getProfilePicture(who: String = currentUserEmail, isRequestFromProfilePage: Bool = false, completion: @escaping (UIImage?, String?)-> Void) {
+      
         
         let query = db.collection(K.profilePictures)
-            .whereField(K.Document.postedBy, isEqualTo: currentUserEmail)
-        
+            .whereField(K.Document.postedBy, isEqualTo: who)
+       
+            
         query.getDocuments { snapshot, err in
             if err != nil {
                 print(err.debugDescription)
                 return}
-            
+            print(who)
+
             guard let snapshot = snapshot else {
                 print(err.debugDescription)
                 return}
@@ -39,10 +46,16 @@ struct MyPhotosHeaderViewModel {
                 }
                 
                 guard let image = image else {return}
+                self.myDict.append([ who: (image,id)])
+//                print("snapshottan gelen ID: \(id)")
+                completion(image,id)
                 
-                completion(image, id)
             }
+            
+            
         }
+
+        
         
     }
     
@@ -93,6 +106,7 @@ struct MyPhotosHeaderViewModel {
     
     
     func deleteProfilePicture(id: String, completion: @escaping (_ isSuccesDeleting: Bool) -> Void) {
+        print("silinmeye çalışılan ID: \(id)")
         //Delete fields in selected document
         db.collection(K.profilePictures).document(id).updateData([K.Document.imageUrl: FieldValue.delete(),
                                                                   K.Document.postedBy: FieldValue.delete()]) { err in

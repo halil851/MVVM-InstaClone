@@ -17,15 +17,16 @@ protocol FeedVCProtocol {
     var whoLiked: [[String]] {get set}
     var date: [DateComponents] {get set}
     var isPaginating: Bool {get}
-    func getDataFromFirestore(tableView: UITableView, limit: Int?, pagination: Bool, getNewOnes: Bool)
+    func getDataFromFirestore(_ tableView: UITableView, limit: Int?, pagination: Bool, getNewOnes: Bool)
+    func getSmallProfilePictures(userMail: String, completion: @escaping (UIImage?) -> Void)
     func likeOrLikes(indexRow: Int) -> String
     func uploadDate(indexRow: Int) -> String
     func isOptionsButtonHidden(user: String) -> Bool
 }
 
 extension FeedVCProtocol {
-    func getDataFromFirestore (tableView: UITableView, limit: Int? = nil, pagination: Bool = false, getNewOnes: Bool = false){
-        getDataFromFirestore(tableView: tableView, limit: limit, pagination: pagination, getNewOnes: getNewOnes)
+    func getDataFromFirestore (_ tableView: UITableView, limit: Int? = nil, pagination: Bool = false, getNewOnes: Bool = false){
+        getDataFromFirestore(tableView, limit: limit, pagination: pagination, getNewOnes: getNewOnes)
     }
 }
 
@@ -45,7 +46,7 @@ class FeedVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initialSetup()
-        viewModel.getDataFromFirestore(tableView: tableView)
+        viewModel.getDataFromFirestore(tableView)
         
     }
     
@@ -89,11 +90,11 @@ class FeedVC: UIViewController {
         spinner.startAnimating()
         return footerView
     }
-    
+    //MARK: - Refresh Control
     // Get data and stop refreshing
     @objc func refreshTableView() {
         // Refresh Data
-        viewModel.getDataFromFirestore(tableView: tableView, limit: 5, pagination: false, getNewOnes: true)
+        viewModel.getDataFromFirestore(tableView, limit: 5, pagination: false, getNewOnes: true)
         // Stop Refreshing
         DispatchQueue.main.async {
             self.refreshControl.endRefreshing()
@@ -115,6 +116,12 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         }
 
         cell.delegate = self
+        viewModel.getSmallProfilePictures(userMail: viewModel.emails[indexPath.row], completion: { image in
+            cell.smallProfilePicture.image = image
+
+
+//            print("index: \(indexPath.row),  \(self.boldAndRegularText(indexRow: indexPath.row).string) ")
+        })
         cell.userImage.image = viewModel.images[indexPath.row]
         cell.imageHeight.constant = viewModel.imagesHeights[indexPath.row]
         cell.userEmailLabel.text = viewModel.emails[indexPath.row]
@@ -236,7 +243,7 @@ extension FeedVC: UIScrollViewDelegate {
             isScrollingToBottom = true
             
             self.tableView.tableFooterView = self.createSpinnerFooter()
-            self.viewModel.getDataFromFirestore(tableView: self.tableView,limit: 4, pagination: true)
+            self.viewModel.getDataFromFirestore(self.tableView, limit: 4, pagination: true)
             
             DispatchQueue.global().asyncAfter(deadline: .now()+2, execute: {
                 DispatchQueue.main.async { [self] in

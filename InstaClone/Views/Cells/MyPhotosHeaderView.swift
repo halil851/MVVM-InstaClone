@@ -25,11 +25,19 @@ class MyPhotosHeaderView: UICollectionReusableView {
         userNameLabel.text = currentUserEmail
         setImageInteractable()
         
-        viewModel.getProfilePicture { image, id in
+        viewModel.getProfilePicture() { image, id in
             self.profilePicture.image = image
+            guard let id = id else {return}
             self.id = id
+            print("awakeFromNib ID: \(id)")
+            
+            
         }
-        profilePicture.layer.cornerRadius = profilePicture.frame.size.width / 2
+        
+        print("profilePicture.frame.width: \(profilePicture.frame.width)")
+        print("profilePicture.frame.height: \(profilePicture.frame.height)")
+
+        profilePicture.layer.cornerRadius = profilePicture.frame.height / 2
         profilePicture.clipsToBounds = true
         
         
@@ -65,10 +73,11 @@ extension MyPhotosHeaderView: UIImagePickerControllerDelegate & UINavigationCont
         profilePicture.clipsToBounds = true
         
         //If it is first picture then avoid deleting a file which doesn't exist
-        if self.profilePicture.image == UIImage(systemName: "person.crop.circle") {
-            
+        if self.profilePicture.image == UIImage(systemName: "person") {
+            profilePicture.image = image
             viewModel.addProfilePicture(image: profilePicture, completion: {
-                self.viewModel.getProfilePicture { _, id in
+                self.viewModel.getProfilePicture(isRequestFromProfilePage: true) { _, id in
+                    guard let id = id else {return}
                     self.id = id
                 }
             })
@@ -78,8 +87,11 @@ extension MyPhotosHeaderView: UIImagePickerControllerDelegate & UINavigationCont
             viewModel.deleteProfilePicture(id: id, completion: { [self] isSuccessDeleting in
                 
                 if isSuccessDeleting {
+                    profilePicture.image = image
                     viewModel.addProfilePicture(image: profilePicture) {
-                        self.viewModel.getProfilePicture { _, id in
+                        self.viewModel.getProfilePicture(isRequestFromProfilePage: true) { _, id in
+                            print(id)
+                            guard let id = id else {return}
                             self.id = id
                         }
                     }
@@ -87,8 +99,8 @@ extension MyPhotosHeaderView: UIImagePickerControllerDelegate & UINavigationCont
             })
             
         }
-
-        profilePicture.image = image
+        MyPhotosHeaderViewModel.isNewProfilePicture = true
+        
         picker.dismiss(animated: true)
         
     }

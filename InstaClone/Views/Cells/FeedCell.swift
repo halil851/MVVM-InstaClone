@@ -25,6 +25,7 @@ protocol FeedCellToFeedVCProtocol {
 
 class FeedCell: UITableViewCell {
     //MARK: - IBOutlets
+    @IBOutlet weak var smallProfilePicture: UIImageView!
     @IBOutlet weak var userEmailLabel: UILabel!
     @IBOutlet private weak var heartImage: UIImageView!
     @IBOutlet weak var userImage: UIImageView!
@@ -55,6 +56,9 @@ class FeedCell: UITableViewCell {
         clickableLabel()
         optionsPopUp()
         pinchToZoomSetup()
+        // Make ImageView Circle
+        smallProfilePicture.layer.cornerRadius = smallProfilePicture.frame.size.width / 2
+        smallProfilePicture.clipsToBounds = true
     }
     
     //MARK: - IBActions
@@ -197,6 +201,7 @@ class FeedCell: UITableViewCell {
                 self.commentLabel.isHidden = hideItems
                 self.dateLabel.isHidden = hideItems
                 self.buttons.isHidden = hideItems
+                self.smallProfilePicture.isHidden = hideItems
                 
                 if self.userEmailLabel.text == currentUserEmail {
                     self.optionsOutlet.isHidden = hideItems

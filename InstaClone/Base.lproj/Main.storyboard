@@ -99,7 +99,6 @@
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hand" translatesAutoresizingMaskIntoConstraints="NO" id="j6W-p2-aHs">
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="372"/>
-                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </imageView>
                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0hh-RZ-zDj">
                                 <rect key="frame" x="16" y="392" width="361" height="34"/>
@@ -216,8 +215,9 @@
                                     <rect key="frame" x="0.0" y="0.0" width="393" height="199"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person.crop.circle" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="bh4-Ia-LrG">
-                                            <rect key="frame" x="16" y="24" width="139.33333333333334" height="138"/>
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="bh4-Ia-LrG">
+                                            <rect key="frame" x="16" y="24.666666666666657" width="139.33333333333334" height="136.66666666666671"/>
+                                            <color key="tintColor" systemColor="labelColor"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="bh4-Ia-LrG" secondAttribute="height" multiplier="126:126" id="Sx5-IH-7VI" userLabel="aspect = 1:1"/>
                                             </constraints>
@@ -384,9 +384,12 @@
         <image name="hand" width="111.5" height="148.5"/>
         <image name="house.fill" catalog="system" width="128" height="104"/>
         <image name="icloud.and.arrow.up.fill" catalog="system" width="128" height="108"/>
-        <image name="person.crop.circle" catalog="system" width="128" height="123"/>
+        <image name="person" catalog="system" width="128" height="121"/>
         <image name="person.crop.circle.fill" catalog="system" width="128" height="123"/>
         <image name="square.and.arrow.down.on.square" catalog="system" width="122" height="128"/>
+        <systemColor name="labelColor">
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
