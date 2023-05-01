@@ -31,6 +31,7 @@
 		A9BA9D1A29F6CAF6001CF6AB /* MyPhotosCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9BA9D1829F6CAF6001CF6AB /* MyPhotosCell.xib */; };
 		A9BA9D1C29F6E830001CF6AB /* MyPhotosHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BA9D1B29F6E830001CF6AB /* MyPhotosHeaderView.swift */; };
 		A9BA9D1E29F6EB5C001CF6AB /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BA9D1D29F6EB5C001CF6AB /* ProfileViewModel.swift */; };
+		A9C5B53F29FFF1B20097558E /* MyCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9C5B53D29FFF1B20097558E /* MyCollectionViewCell.xib */; };
 		A9DFEE1029BB7E9D0059C3A7 /* FeedVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DFEE0F29BB7E9D0059C3A7 /* FeedVC.swift */; };
 		A9DFEE1429BB7F010059C3A7 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DFEE1329BB7F010059C3A7 /* SettingsVC.swift */; };
 		A9DFEE1629BB7F1C0059C3A7 /* UploadVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DFEE1529BB7F1C0059C3A7 /* UploadVC.swift */; };
@@ -67,6 +68,7 @@
 		A9BA9D1829F6CAF6001CF6AB /* MyPhotosCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MyPhotosCell.xib; sourceTree = "<group>"; };
 		A9BA9D1B29F6E830001CF6AB /* MyPhotosHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPhotosHeaderView.swift; sourceTree = "<group>"; };
 		A9BA9D1D29F6EB5C001CF6AB /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		A9C5B53D29FFF1B20097558E /* MyCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MyCollectionViewCell.xib; sourceTree = "<group>"; };
 		A9DFEE0F29BB7E9D0059C3A7 /* FeedVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedVC.swift; sourceTree = "<group>"; };
 		A9DFEE1329BB7F010059C3A7 /* SettingsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
 		A9DFEE1529BB7F1C0059C3A7 /* UploadVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadVC.swift; sourceTree = "<group>"; };
@@ -169,6 +171,7 @@
 			children = (
 				A9B5979329C49B2C009ED305 /* FeedCell.swift */,
 				A9BA9D1129F6B8AA001CF6AB /* FeedCell.xib */,
+				A9C5B53D29FFF1B20097558E /* MyCollectionViewCell.xib */,
 				A9BA9D1B29F6E830001CF6AB /* MyPhotosHeaderView.swift */,
 				A9BA9D1729F6CAF6001CF6AB /* MyPhotosCell.swift */,
 				A9BA9D1829F6CAF6001CF6AB /* MyPhotosCell.xib */,
@@ -268,6 +271,7 @@
 				A91B4FA329BB19F0002CF7E9 /* Assets.xcassets in Resources */,
 				A9343C0929F163B6001FB439 /* Zoom in.mov in Resources */,
 				A91B4FA129BB19EF002CF7E9 /* Main.storyboard in Resources */,
+				A9C5B53F29FFF1B20097558E /* MyCollectionViewCell.xib in Resources */,
 				A9BA9D1A29F6CAF6001CF6AB /* MyPhotosCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

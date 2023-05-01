@@ -14,10 +14,8 @@ class MyPhotosHeaderViewModel {
     
     private let db = Firestore.firestore()
     private var myDict = [[String: (UIImage, String)]]()
-    
-    static var isNewProfilePicture = false
-    
-    func getProfilePicture(who: String = currentUserEmail, isRequestFromProfilePage: Bool = false, completion: @escaping (UIImage?, String?)-> Void) {
+        
+    func getProfilePicture(who: String = currentUserEmail, isRequestFromProfilePage: Bool = false, completion: @escaping (UIImage, String?)-> Void) {
       
         
         let query = db.collection(K.profilePictures)
@@ -28,7 +26,6 @@ class MyPhotosHeaderViewModel {
             if err != nil {
                 print(err.debugDescription)
                 return}
-            print(who)
 
             guard let snapshot = snapshot else {
                 print(err.debugDescription)
@@ -47,7 +44,6 @@ class MyPhotosHeaderViewModel {
                 
                 guard let image = image else {return}
                 self.myDict.append([ who: (image,id)])
-//                print("snapshottan gelen ID: \(id)")
                 completion(image,id)
                 
             }

@@ -217,8 +217,17 @@ class FeedCell: UITableViewCell {
     
     private func clickableLabel() {
         likeCounter.isUserInteractionEnabled = true
-        let click = UITapGestureRecognizer(target: self, action: #selector(performSegue))
-        likeCounter.addGestureRecognizer(click)
+        let clickLikeCounter = UITapGestureRecognizer(target: self, action: #selector(performSegue))
+        likeCounter.addGestureRecognizer(clickLikeCounter)
+        
+        userEmailLabel.isUserInteractionEnabled = true
+        let clickUserEmailLabel = UITapGestureRecognizer(target: self, action: #selector(visitProfilePage))
+        userEmailLabel.addGestureRecognizer(clickUserEmailLabel)
+    }
+    
+    @objc private func visitProfilePage() {
+        print("working")
+        
     }
     
     @objc private func performSegue(){

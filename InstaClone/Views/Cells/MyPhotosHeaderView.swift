@@ -24,7 +24,7 @@ class MyPhotosHeaderView: UICollectionReusableView {
         super.awakeFromNib()
         userNameLabel.text = currentUserEmail
         setImageInteractable()
-        
+        makeImageCircle()
         viewModel.getProfilePicture() { image, id in
             self.profilePicture.image = image
             guard let id = id else {return}
@@ -34,13 +34,11 @@ class MyPhotosHeaderView: UICollectionReusableView {
             
         }
         
-        print("profilePicture.frame.width: \(profilePicture.frame.width)")
-        print("profilePicture.frame.height: \(profilePicture.frame.height)")
-
+    }
+    
+    private func makeImageCircle() {
         profilePicture.layer.cornerRadius = profilePicture.frame.height / 2
         profilePicture.clipsToBounds = true
-        
-        
     }
     
     private func setImageInteractable() {
@@ -68,9 +66,7 @@ extension MyPhotosHeaderView: UIImagePickerControllerDelegate & UINavigationCont
             print("Error: Selected item is not an image")
             return
         }
-        // Make ImageView Circle
-        profilePicture.layer.cornerRadius = profilePicture.frame.size.width / 2
-        profilePicture.clipsToBounds = true
+        makeImageCircle()
         
         //If it is first picture then avoid deleting a file which doesn't exist
         if self.profilePicture.image == UIImage(systemName: "person") {
@@ -90,7 +86,6 @@ extension MyPhotosHeaderView: UIImagePickerControllerDelegate & UINavigationCont
                     profilePicture.image = image
                     viewModel.addProfilePicture(image: profilePicture) {
                         self.viewModel.getProfilePicture(isRequestFromProfilePage: true) { _, id in
-                            print(id)
                             guard let id = id else {return}
                             self.id = id
                         }
@@ -99,8 +94,6 @@ extension MyPhotosHeaderView: UIImagePickerControllerDelegate & UINavigationCont
             })
             
         }
-        MyPhotosHeaderViewModel.isNewProfilePicture = true
-        
         picker.dismiss(animated: true)
         
     }

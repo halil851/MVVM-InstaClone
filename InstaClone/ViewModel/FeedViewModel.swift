@@ -20,6 +20,7 @@ class FeedViewModel: FeedVCProtocol {
     var storageID = [String]()
     var whoLiked = [[String]]()
     var date = [DateComponents]()
+    var profilePictureSDictionary = [String:UIImage]()
 
     private var firstImageURLAfterUploading = String()
     private let pageSize = 5
@@ -204,6 +205,8 @@ class FeedViewModel: FeedVCProtocol {
                        let like = document.get(K.Document.likedBy) as? [String],
                        let date = document.get(K.Document.date) as? Timestamp{
                         
+                        self.getSmallProfilePictures(userMail: postedBy)
+                        
                         complation(postedBy, storageID, comment, like, date)
                     }
                 }
@@ -214,10 +217,10 @@ class FeedViewModel: FeedVCProtocol {
     }
     
     
-    func getSmallProfilePictures(userMail: String, completion: @escaping (UIImage?) -> Void) {
+    func getSmallProfilePictures(userMail: String) {
         
         vm.getProfilePicture(who: userMail) {  image, _ in
-            completion(image)
+            self.profilePictureSDictionary.updateValue(image, forKey: userMail)
         }
        
         

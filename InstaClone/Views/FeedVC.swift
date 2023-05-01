@@ -18,10 +18,11 @@ protocol FeedVCProtocol {
     var date: [DateComponents] {get set}
     var isPaginating: Bool {get}
     func getDataFromFirestore(_ tableView: UITableView, limit: Int?, pagination: Bool, getNewOnes: Bool)
-    func getSmallProfilePictures(userMail: String, completion: @escaping (UIImage?) -> Void)
+    func getSmallProfilePictures(userMail: String)
     func likeOrLikes(indexRow: Int) -> String
     func uploadDate(indexRow: Int) -> String
     func isOptionsButtonHidden(user: String) -> Bool
+    var profilePictureSDictionary: [String:UIImage] {get}
 }
 
 extension FeedVCProtocol {
@@ -46,7 +47,7 @@ class FeedVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initialSetup()
-        viewModel.getDataFromFirestore(tableView)
+        viewModel.getDataFromFirestore(tableView, getNewOnes: true)
         
     }
     
@@ -114,17 +115,19 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: K.Cell, for: indexPath) as? FeedCell else {
             return UITableViewCell()
         }
-
+        let email = viewModel.emails[indexPath.row]
         cell.delegate = self
-        viewModel.getSmallProfilePictures(userMail: viewModel.emails[indexPath.row], completion: { image in
-            cell.smallProfilePicture.image = image
-
-
+//        viewModel.getSmallProfilePictures(userMail: email, completion: { image in
+//            cell.smallProfilePicture.image = image
+//
+//
 //            print("index: \(indexPath.row),  \(self.boldAndRegularText(indexRow: indexPath.row).string) ")
-        })
+//        })
+        cell.smallProfilePicture.image = viewModel.profilePictureSDictionary[email]
+        viewModel.getSmallProfilePictures(userMail: email)
         cell.userImage.image = viewModel.images[indexPath.row]
         cell.imageHeight.constant = viewModel.imagesHeights[indexPath.row]
-        cell.userEmailLabel.text = viewModel.emails[indexPath.row]
+        cell.userEmailLabel.text = email
         cell.commentLabel.attributedText = boldAndRegularText(indexRow: indexPath.row)
         cell.likeCounter.text = viewModel.likeOrLikes(indexRow: indexPath.row)
         cell.checkIfLiked(likesList: viewModel.whoLiked[indexPath.row])
@@ -132,7 +135,7 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
                      ids: viewModel.ids,
                      whoLikeIt: viewModel.whoLiked,
                      storageID: viewModel.storageID)
-        cell.optionsOutlet.isHidden = viewModel.isOptionsButtonHidden(user: viewModel.emails[indexPath.row])
+        cell.optionsOutlet.isHidden = viewModel.isOptionsButtonHidden(user: email)
         cell.dateLabel.text = viewModel.uploadDate(indexRow: indexPath.row)
         
         
