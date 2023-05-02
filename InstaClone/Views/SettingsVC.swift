@@ -14,6 +14,7 @@ protocol SettingVCProtocol {
 class SettingsVC: UIViewController {
     //MARK: - IBOutlets
     @IBOutlet weak var currentUser: UILabel!
+    @IBOutlet weak var reusableView: ReusableView!
     
     //MARK: - Properties
     private var viewModel: SettingVCProtocol = SettingsViewModel()
@@ -37,6 +38,9 @@ class SettingsVC: UIViewController {
             self.performSegue(withIdentifier: "toSignIn", sender: nil)
             
         }
+    }
+    @IBAction func buttonTap(_ sender: Any) {
+        reusableView.isHidden = false
     }
     //MARK: - Functions
 

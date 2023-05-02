@@ -52,7 +52,10 @@ class FeedVC: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        tabBarController?.delegate = self
+        navigationController?.setNavigationBarHidden(true, animated: false)
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.setNavigationBarHidden(false, animated: false)
     }
     
     //MARK: - IBActions
@@ -115,14 +118,9 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: K.Cell, for: indexPath) as? FeedCell else {
             return UITableViewCell()
         }
+        
         let email = viewModel.emails[indexPath.row]
         cell.delegate = self
-//        viewModel.getSmallProfilePictures(userMail: email, completion: { image in
-//            cell.smallProfilePicture.image = image
-//
-//
-//            print("index: \(indexPath.row),  \(self.boldAndRegularText(indexRow: indexPath.row).string) ")
-//        })
         cell.smallProfilePicture.image = viewModel.profilePictureSDictionary[email]
         viewModel.getSmallProfilePictures(userMail: email)
         cell.userImage.image = viewModel.images[indexPath.row]
@@ -215,8 +213,21 @@ extension FeedVC: FeedCellToFeedVCProtocol {
         let sendList: [Any] = [likeList, likeCount]
         performSegue(withIdentifier: "likeList", sender: sendList)
     }
+    func goToVisitProfile() {
+        performSegue(withIdentifier: "visitProfile", sender: nil)
+    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "visitProfile",
+           let destinationVC = segue.destination as? VisitProfileVC{
+            
+           
+            
+            
+            return
+        }
+        
         guard let object = sender as? [Any] else {return}
         guard let likeList = object[0] as? [String] else {return}
         guard let likeCount = object[1] as? String else {return}
@@ -227,6 +238,8 @@ extension FeedVC: FeedCellToFeedVCProtocol {
             destinationVC.likedUser = likeList
             destinationVC.numberOfLikesStr = likeCount
         }
+        
+        
     }
     
 }

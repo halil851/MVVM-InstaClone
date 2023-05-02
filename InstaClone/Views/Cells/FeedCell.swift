@@ -21,6 +21,7 @@ protocol FeedCellToFeedVCProtocol {
     func showAlert(alert: UIAlertController)
     func manageUIChanges(action: Action,_ indexRow: Int)
     func deleteAIndex(indexPaths: [IndexPath])
+    func goToVisitProfile()
 }
 
 class FeedCell: UITableViewCell {
@@ -226,8 +227,7 @@ class FeedCell: UITableViewCell {
     }
     
     @objc private func visitProfilePage() {
-        print("working")
-        
+        delegate?.goToVisitProfile()
     }
     
     @objc private func performSegue(){
