@@ -11,6 +11,9 @@ class ReusableView: UIView {
 
     @IBOutlet weak var userEmail: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var profilePicture: UIImageView!
+    @IBOutlet weak var viewHeight: NSLayoutConstraint!
+    @IBOutlet weak var headerViewHeight: NSLayoutConstraint!
     
     let nibName = "ReusableView"
     
@@ -33,6 +36,11 @@ class ReusableView: UIView {
     func loadViewFromNib() -> UIView? {
         let nib = UINib(nibName: nibName, bundle: nil)
         return nib.instantiate(withOwner: self, options: nil).first as? UIView
+    }
+    
+    override func awakeFromNib() {
+        profilePicture.layer.cornerRadius = profilePicture.frame.width / 2
+        profilePicture.clipsToBounds = true
     }
     
 }

@@ -29,8 +29,7 @@ class MyPhotosHeaderView: UICollectionReusableView {
             self.profilePicture.image = image
             guard let id = id else {return}
             self.id = id
-            print("awakeFromNib ID: \(id)")
-            
+//            print("awakeFromNib ID: \(id)")
             
         }
         

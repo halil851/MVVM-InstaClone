@@ -11,6 +11,8 @@ class VisitProfileVC: UIViewController {
     
     @IBOutlet weak var reusableView: ReusableView!
     var images = [UIImage]()
+    var email = String()
+    var image: UIImage? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,24 +22,49 @@ class VisitProfileVC: UIViewController {
         
         let nibCell = UINib(nibName: K.MyPhotosCell, bundle: nil)
         reusableView.collectionView.register(nibCell, forCellWithReuseIdentifier: K.MyPhotosCell)
+        
+        navigationItem.title = email
+        reusableView.userEmail.text = email
+        reusableView.profilePicture.image = image
+        
+        let profileVM = ProfileViewModel()
+        profileVM.getCurrentUsersPosts(with: email) { [self] image, isReadyToReload in
+            self.images.append(image)
+            if isReadyToReload {
+                calculateCollectionViewHeight(with: images.count)
+                self.reusableView.collectionView.reloadData()
+            }
+        }
+        
     }
     
-
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.backItem?.title = ""
+    }
+    
+    private func calculateCollectionViewHeight(with imageCount: Int) {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {return}
+        let screenHeight = windowScene.screen.bounds.size.height
+        let headerViewHeight = screenHeight * reusableView.headerViewHeight.multiplier
+        let collectionViewCellHeight = reusableView.collectionView.frame.width/3
+        let howManyRows = CGFloat(imageCount / 3) + 1
+        let collectionViewHeight = howManyRows * collectionViewCellHeight
+        reusableView.viewHeight.constant = headerViewHeight + collectionViewHeight - screenHeight
+    }
    
 
 }
 //MARK: - Collectionview Operations
 extension VisitProfileVC: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        images.count
-        4
+        images.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: K.MyPhotosCell, for: indexPath) as? MyPhotosCell else {
             return UICollectionViewCell()
         }
-        cell.image.image = UIImage(systemName: "person")
+        cell.image.image = images[indexPath.row]
         
         return cell
     }

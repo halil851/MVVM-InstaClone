@@ -47,7 +47,7 @@ class FeedVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initialSetup()
-        viewModel.getDataFromFirestore(tableView, getNewOnes: true)
+        viewModel.getDataFromFirestore(tableView, pagination: true, getNewOnes: true)
         
     }
     
@@ -121,8 +121,8 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         
         let email = viewModel.emails[indexPath.row]
         cell.delegate = self
-        cell.smallProfilePicture.image = viewModel.profilePictureSDictionary[email]
         viewModel.getSmallProfilePictures(userMail: email)
+        cell.smallProfilePicture.image = viewModel.profilePictureSDictionary[email]
         cell.userImage.image = viewModel.images[indexPath.row]
         cell.imageHeight.constant = viewModel.imagesHeights[indexPath.row]
         cell.userEmailLabel.text = email
@@ -142,9 +142,9 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let charNumber = viewModel.comments[indexPath.row].count + viewModel.emails[indexPath.row].count
-        let coefficient = Double(charNumber) / Double(50) //50 is allowed char number of a row
-        let height: Double = Double(coefficient * 19)  // 19 is a row height
-        return viewModel.imagesHeights[indexPath.row] + 140 + CGFloat(height)
+        let coefficient = Double(charNumber) / Double(45) //45 is allowed char number of a row
+        let height: Double = Double(coefficient * 20)  // 20 is a row height
+        return viewModel.imagesHeights[indexPath.row] + 145 + CGFloat(height)
     }
     
 }
@@ -213,17 +213,23 @@ extension FeedVC: FeedCellToFeedVCProtocol {
         let sendList: [Any] = [likeList, likeCount]
         performSegue(withIdentifier: "likeList", sender: sendList)
     }
-    func goToVisitProfile() {
-        performSegue(withIdentifier: "visitProfile", sender: nil)
+    func goToVisitProfile(with userEmail: String?, indexRow: Int) {
+        guard let userEmail = userEmail else {return}
+        guard let image = viewModel.profilePictureSDictionary[viewModel.emails[indexRow]] else {return}
+        
+        let sendList: [Any] = [userEmail, image]
+        performSegue(withIdentifier: "visitProfile", sender: sendList)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "visitProfile",
-           let destinationVC = segue.destination as? VisitProfileVC{
+           let destinationVC = segue.destination as? VisitProfileVC,
+           let object = sender as? [Any],
+           let email = object[0] as? String{
             
-           
-            
+            destinationVC.email = email
+            destinationVC.image = object[1] as? UIImage
             
             return
         }

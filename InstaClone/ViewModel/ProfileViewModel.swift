@@ -13,10 +13,10 @@ struct ProfileViewModel {
     
     private let db = Firestore.firestore()
     
-    func getCurrentUsersPosts(completion: @escaping(UIImage, _ isReadyToReload: Bool) -> Void) {
+    func getCurrentUsersPosts(with userEmail: String,completion: @escaping(UIImage, _ isReadyToReload: Bool) -> Void) {
         
         let query = db.collection(K.Posts)
-            .whereField(K.Document.postedBy, isEqualTo: currentUserEmail)
+            .whereField(K.Document.postedBy, isEqualTo: userEmail)
             .order(by: K.Document.date, descending: true)
         
         query.getDocuments { snapshot, err in

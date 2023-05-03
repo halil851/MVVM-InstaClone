@@ -30,7 +30,7 @@ class ProfileVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         images.removeAll()
-        viewModel.getCurrentUsersPosts(completion: { image, isReadyToReload  in
+        viewModel.getCurrentUsersPosts(with: currentUserEmail, completion: { image, isReadyToReload  in
             self.images.append(image)
             
             if isReadyToReload { self.collectionView.reloadData() }

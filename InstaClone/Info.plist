@@ -6,8 +6,6 @@
 	<string>This app needs to access your photo library to pick a photo.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>In some cases the app needs to use microphone.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>This app needs to access camero to take a photo.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

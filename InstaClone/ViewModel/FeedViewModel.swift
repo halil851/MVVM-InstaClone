@@ -75,7 +75,7 @@ class FeedViewModel: FeedVCProtocol {
         if isFirstRefreshAfterUploading, let firstImageURLString = snapshot.documents.first?.get(K.Document.imageUrl) as? String{
             self.firstImageURLAfterUploading = firstImageURLString
         }
-        //When pull to refresh run this works, and remove all arrays to make room for refresh. When paginating this is not running.
+        //When pull to refresh run this works, and remove all arrays to make room for refreshing. When paginating this is not running.
         if getNewOnes {
             self.removeAllArrays()
         }
