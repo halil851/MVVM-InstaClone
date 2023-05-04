@@ -18,24 +18,15 @@ class ProfileVC: UIViewController {
     var image: UIImage?
     var email: String?
     var id = String()
+    var isOwnerVisiting = false
   
     //MARK: - Life Cycles
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        reusableView.collectionView.dataSource = self
-        reusableView.collectionView.delegate = self
-        
-        let nibCell = UINib(nibName: K.MyPhotosCell, bundle: nil)
-        reusableView.collectionView.register(nibCell, forCellWithReuseIdentifier: K.MyPhotosCell)
-        
-        navigationItem.title = email
-        reusableView.userEmail.text = email
-        
-        
-//        reusableView.profilePicture.image = image
-        
-        viewModel.getCurrentUsersPosts(with: email ?? currentUserEmail) { [self] image, isReadyToReload in
+        initialSetup()
+                
+        viewModel.getUsersPosts(with: email ?? currentUserEmail) { [unowned self] image, isReadyToReload in
            
             self.images.append(image)
             if isReadyToReload {
@@ -43,37 +34,31 @@ class ProfileVC: UIViewController {
                 self.reusableView.collectionView.reloadData()
             }
         }
-        
-        
-        
+                
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.backItem?.title = ""
-        
-        if image == nil {
-            setProfilePicture()
-        } else {
-            reusableView.profilePicture.image = image
-        }
-        
-//        print("viewWillAppear")
-//        performSegue(withIdentifier: "YourProfile", sender: nil)
-//        images.removeAll()
-//        viewModel.getCurrentUsersPosts(with: currentUserEmail, completion: { image, isReadyToReload  in
-//            self.images.append(image)
-//
-////            if isReadyToReload { self.collectionView.reloadData() }
-//
-//        })
-        
+        email == nil ? isOwnerVisiting = true : ()
+        determineProfilePicture()
     }
+    
+    
     //MARK: - IBActions
     
     
     
     //MARK: - Functions
+    private func initialSetup() {
+        reusableView.collectionView.dataSource = self
+        reusableView.collectionView.delegate = self
+        reusableView.delegate = self
+        
+        let nibCell = UINib(nibName: K.MyPhotosCell, bundle: nil)
+        reusableView.collectionView.register(nibCell, forCellWithReuseIdentifier: K.MyPhotosCell)
+    }
+    
     private func calculateCollectionViewHeight(with imageCount: Int) {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {return}
         let screenHeight = windowScene.screen.bounds.size.height
@@ -84,32 +69,36 @@ class ProfileVC: UIViewController {
         reusableView.viewHeight.constant = headerViewHeight + collectionViewHeight - screenHeight
     }
     
-    private func setProfilePicture(){
-
-        viewModel.getProfilePicture() { fetchedImage, id in
-            guard let id = id else {return}
+    
+    private func ownerVisiting() async {
+        do{
+            let (fetchedImage, id) = try await viewModel.getProfilePicture()
             self.id = id
             self.reusableView.profilePicture.image = fetchedImage
-
+            self.reusableView.userEmail.text = currentUserEmail
+            self.reusableView.setImageInteractable()
+            
+        } catch {
+            print("\(ErrorTypes.noDocumentId) or \(ErrorTypes.noDocumentId)")
         }
-
-    }
-  
-//    private func setProfilePicture() async -> UIImage? {
-//
-//        let image: UIImage? = await viewModel.getProfilePicture() { fetchedImage, id in
-//            guard let id = id else {return}
-//            self.id = id
-//            self.reusableView.profilePicture.image = fetchedImage
-//
-//
-//        }
-//        return image
-//
-//    }
     
-   
-
+    }
+    
+    private func determineProfilePicture() {
+        
+        if isOwnerVisiting {
+            Task {
+                await ownerVisiting()
+            }
+        } else {
+            reusableView.profilePicture.image = image
+            navigationItem.title = email
+            reusableView.userEmail.text = email
+        }
+       
+    }
+    
+    
 
 }
 
@@ -146,6 +135,36 @@ extension ProfileVC: UICollectionViewDataSource, UICollectionViewDelegate, UICol
     
     
     
+
+}
+
+//MARK: - ReusableViewToProfileVCProtocol
+extension ProfileVC: ReusableViewToProfileVCProtocol {
+    
+    func addNewProfilePicture(image: UIImage) async {
+        viewModel.deleteProfilePicture(id: id) { [self] isSuccesDeleting in
+            
+            if isSuccesDeleting {
+                reusableView.profilePicture.image = image
+                
+                viewModel.addProfilePicture(image: reusableView.profilePicture) { [self] in
+                    
+                    Task{
+                        let (_, id) = try await viewModel.getProfilePicture()
+                        self.id = id
+                    }
+                    
+                                 
+                }
+            }
+        }
+    }
+    
+    func pickerPresent(picker: UIImagePickerController) {
+        present(picker, animated: true)
+    }
+}
+
 //    //MARK: - Header Configurations
 //    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
 //        guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: K.HeaderView, for: indexPath) as? MyPhotosHeaderView else {
@@ -160,13 +179,3 @@ extension ProfileVC: UICollectionViewDataSource, UICollectionViewDelegate, UICol
 //    }
 //
 //
-}
-
-
-
-//MARK: - Header View Protocol
-extension ProfileVC: HeaderViewToProfileVCProtocol {
-    func pickerPresent(picker: UIImagePickerController) {
-        present(picker, animated: true)
-    }
-}

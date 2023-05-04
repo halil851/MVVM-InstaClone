@@ -21,6 +21,24 @@ enum Action {
     case NoMoreLiking
 }
 
+enum ErrorTypes: LocalizedError {
+    case noImageUrl
+    case noDocumentId
+    case invalidUrl
+    case imageLoadFailed
 
+    var errorDescription: String? {
+        switch self {
+        case .noImageUrl:
+            return "No image URL found in Firestore snapshot"
+        case .noDocumentId:
+            return "No document ID found in Firestore snapshot"
+        case .invalidUrl:
+            return "Invalid image URL"
+        case .imageLoadFailed:
+            return "Failed to load image"
+        }
+    }
+}
 
 

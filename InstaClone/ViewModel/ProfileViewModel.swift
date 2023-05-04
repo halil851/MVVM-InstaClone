@@ -15,7 +15,7 @@ class ProfileViewModel {
     private let db = Firestore.firestore()
     private var myDict = [[String: (UIImage, String)]]()
     
-    func getCurrentUsersPosts(with userEmail: String,completion: @escaping(UIImage, _ isReadyToReload: Bool) -> Void) {
+    func getUsersPosts(with userEmail: String,completion: @escaping(UIImage, _ isReadyToReload: Bool) -> Void) {
         
         let query = db.collection(K.Posts)
             .whereField(K.Document.postedBy, isEqualTo: userEmail)
@@ -58,46 +58,7 @@ class ProfileViewModel {
 }
 
 extension ProfileViewModel {
-    func getProfilePicture(who: String = currentUserEmail, isRequestFromProfilePage: Bool = false, completion: @escaping (UIImage, String?)-> Void) {
-      
-        
-        let query = db.collection(K.profilePictures)
-            .whereField(K.Document.postedBy, isEqualTo: who)
-       
-            
-        query.getDocuments { snapshot, err in
-            if err != nil {
-                print(err.debugDescription)
-                return}
-
-            guard let snapshot = snapshot else {
-                print(err.debugDescription)
-                return}
-            
-            guard let imageUrlString = snapshot.documents.first?.get(K.Document.imageUrl) as? String else {return}
-            let imageURL = URL(string: imageUrlString)
-            
-            guard let id = snapshot.documents.first?.documentID else {return}
-            
-            SDWebImageManager.shared.loadImage(with: imageURL, progress: nil) { image, data, error, cacheType, finished, _ in
-                if let error = error {
-                    print("Error downloading image: \(error.localizedDescription)")
-                    return
-                }
-                
-                guard let image = image else {return}
-                self.myDict.append([ who: (image,id)])
-                completion(image,id)
-                
-            }
-            
-            
-        }
-
-        
-        
-    }
-    
+   
     func addProfilePicture(image: UIImageView, completion: (() -> Void)? = nil) {
         let storage = Storage.storage()
         let storageRef = storage.reference()
@@ -141,7 +102,53 @@ extension ProfileViewModel {
         }
         
     }
+     
+  
     
+    func getProfilePicture(who: String = currentUserEmail, isRequestFromProfilePage: Bool = false) async throws -> (UIImage, String) {
+            
+        let query = db.collection(K.profilePictures)
+            .whereField(K.Document.postedBy, isEqualTo: who)
+
+        let snapshot = try await query.getDocuments()
+        
+        guard let imageUrlString = snapshot.documents.first?.get(K.Document.imageUrl) as? String else {
+            throw ErrorTypes.noImageUrl
+        }
+        guard let id = snapshot.documents.first?.documentID else {
+            throw ErrorTypes.noDocumentId
+        }
+        
+        let imageURL = URL(string: imageUrlString)
+        let image = try await loadImage(with: imageURL)
+        
+        myDict.append([who: (image, id)])
+        
+        return (image, id)
+    }
+
+    func loadImage(with url: URL?) async throws -> UIImage {
+        guard let url = url else {
+            throw ErrorTypes.invalidUrl
+        }
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            SDWebImageManager.shared.loadImage(with: url, progress: nil) { image, _, error, _, _, _ in
+                
+                switch (image, error) {
+                case let (_, error?):
+                    continuation.resume(throwing: error)
+                case let (image?, _):
+                    continuation.resume(returning: image)
+                default:
+                    continuation.resume(throwing: ErrorTypes.imageLoadFailed)
+                }
+            }
+        }
+    }
+
+   
+
     func deleteProfilePicture(id: String, completion: @escaping (_ isSuccesDeleting: Bool) -> Void) {
         print("silinmeye çalışılan ID: \(id)")
         //Delete fields in selected document

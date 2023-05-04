@@ -252,32 +252,12 @@
                     <connections>
                         <outlet property="tableView" destination="NLD-Ys-I0G" id="W1e-GG-AHP"/>
                         <segue destination="rch-sG-FMz" kind="showDetail" identifier="likeList" id="Wfe-Lv-IGa"/>
-                        <segue destination="XBx-VC-ezO" kind="show" identifier="visitProfileyedek" id="K8L-Zg-LD3"/>
                         <segue destination="m3L-Md-9EX" kind="show" identifier="visitProfile" id="lF3-ya-h8n"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Sc9-5l-eSB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1385.4961832061067" y="-635.91549295774655"/>
-        </scene>
-        <!--Account owner mail-->
-        <scene sceneID="Nhe-Td-rpB">
-            <objects>
-                <viewController id="XBx-VC-ezO" customClass="VisitProfileVC" customModule="InstaClone" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="EXg-bu-ezi">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <viewLayoutGuide key="safeArea" id="jmK-7G-Swc"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                    </view>
-                    <navigationItem key="navigationItem" title="Account owner mail" leftItemsSupplementBackButton="YES" id="N0a-RT-7L5"/>
-                    <connections>
-                        <outlet property="reusableView" destination="ejs-hH-INL" id="Vo4-IH-tqD"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="85H-OZ-jDT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2646.5648854961833" y="-1053.5211267605634"/>
         </scene>
         <!--Like ListVC-->
         <scene sceneID="tDt-tj-eN8">
@@ -337,7 +317,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yKF-qs-cUc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2663.3587786259541" y="-309.15492957746483"/>
+            <point key="canvasLocation" x="2361" y="-636"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="Jxn-Nr-qrE">
@@ -385,7 +365,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="lF3-ya-h8n"/>
+        <segue reference="ynG-gh-Af7"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="hand" width="111.5" height="148.5"/>

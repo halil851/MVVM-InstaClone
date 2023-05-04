@@ -28,7 +28,7 @@ class VisitProfileVC: UIViewController {
         reusableView.profilePicture.image = image
         
         let profileVM = ProfileViewModel()
-        profileVM.getCurrentUsersPosts(with: email) { [self] image, isReadyToReload in
+        profileVM.getUsersPosts(with: email) { [self] image, isReadyToReload in
             self.images.append(image)
             if isReadyToReload {
                 calculateCollectionViewHeight(with: images.count)
