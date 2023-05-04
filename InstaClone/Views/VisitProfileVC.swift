@@ -86,8 +86,8 @@ extension VisitProfileVC: UICollectionViewDataSource, UICollectionViewDelegate, 
 }
 
 //MARK: - Header View Protocol
-extension VisitProfileVC: HeaderViewToProfileVCProtocol {
-    func pickerPresent(picker: UIImagePickerController) {
-        present(picker, animated: true)
-    }
-}
+//extension VisitProfileVC: HeaderViewToProfileVCProtocol {
+//    func pickerPresent(picker: UIImagePickerController) {
+//        present(picker, animated: true)
+//    }
+//}

@@ -263,7 +263,6 @@
 				A9F6F4A829BB4FF200C45192 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				A9B5979729C8702E009ED305 /* XCRemoteSwiftPackageReference "SDWebImageSVGCoder" */,
 				A94FB10F29F9436200778543 /* XCRemoteSwiftPackageReference "YPImagePicker" */,
-				A94FB11229FA702400778543 /* XCRemoteSwiftPackageReference "RSKImageCropper" */,
 			);
 			productRefGroup = A91B4F9729BB19EF002CF7E9 /* Products */;
 			projectDirPath = "";
@@ -401,6 +400,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -454,6 +454,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -544,14 +545,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 5.0.0;
-			};
-		};
-		A94FB11229FA702400778543 /* XCRemoteSwiftPackageReference "RSKImageCropper" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/ruslanskorb/RSKImageCropper.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.0.0;
 			};
 		};
 		A9B5979729C8702E009ED305 /* XCRemoteSwiftPackageReference "SDWebImageSVGCoder" */ = {

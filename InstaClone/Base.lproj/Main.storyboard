@@ -201,66 +201,24 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="QO6-j4-kru">
-                                <rect key="frame" x="0.0" y="0.0" width="393" height="803"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ejs-hH-INL" customClass="ReusableView" customModule="InstaClone" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="44" width="393" height="759"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="C55-cr-m8i">
-                                    <size key="itemSize" width="100" height="100"/>
-                                    <size key="headerReferenceSize" width="35" height="199"/>
-                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                </collectionViewFlowLayout>
-                                <cells/>
-                                <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="HeaderView" id="ORK-HU-Dz6" userLabel="HeaderView" customClass="MyPhotosHeaderView" customModule="InstaClone" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="0.0" width="393" height="199"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="bh4-Ia-LrG">
-                                            <rect key="frame" x="16" y="24.666666666666657" width="139.33333333333334" height="136.66666666666669"/>
-                                            <color key="tintColor" systemColor="labelColor"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" secondItem="bh4-Ia-LrG" secondAttribute="height" multiplier="126:126" id="Sx5-IH-7VI" userLabel="aspect = 1:1"/>
-                                            </constraints>
-                                        </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="User Name" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sl9-zq-cLB">
-                                            <rect key="frame" x="179" y="82.333333333333329" width="196" height="20.333333333333329"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstAttribute="trailingMargin" secondItem="sl9-zq-cLB" secondAttribute="trailing" constant="10" id="8fs-G4-S6D"/>
-                                        <constraint firstItem="sl9-zq-cLB" firstAttribute="centerY" secondItem="bh4-Ia-LrG" secondAttribute="centerY" id="9GB-IK-3th"/>
-                                        <constraint firstItem="sl9-zq-cLB" firstAttribute="leading" secondItem="bh4-Ia-LrG" secondAttribute="trailing" constant="23.670000000000002" id="EbI-bc-9uh"/>
-                                        <constraint firstAttribute="trailingMargin" secondItem="sl9-zq-cLB" secondAttribute="trailing" constant="10" id="QBa-g9-7Ka"/>
-                                        <constraint firstAttribute="bottomMargin" secondItem="bh4-Ia-LrG" secondAttribute="bottom" constant="28.670000000000002" id="nYS-fF-j4j"/>
-                                        <constraint firstItem="bh4-Ia-LrG" firstAttribute="top" secondItem="ORK-HU-Dz6" secondAttribute="topMargin" constant="15" id="rjU-an-GkH"/>
-                                        <constraint firstItem="bh4-Ia-LrG" firstAttribute="leading" secondItem="ORK-HU-Dz6" secondAttribute="leadingMargin" constant="8" id="y31-2U-PR1"/>
-                                    </constraints>
-                                    <connections>
-                                        <outlet property="profilePicture" destination="bh4-Ia-LrG" id="zog-na-PZJ"/>
-                                        <outlet property="userNameLabel" destination="sl9-zq-cLB" id="WXZ-Fl-UzP"/>
-                                    </connections>
-                                </collectionReusableView>
-                                <connections>
-                                    <outlet property="dataSource" destination="m3L-Md-9EX" id="pq2-ko-UbT"/>
-                                    <outlet property="delegate" destination="m3L-Md-9EX" id="ij8-TN-YZW"/>
-                                </connections>
-                            </collectionView>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Bnf-RM-uI6"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="QO6-j4-kru" firstAttribute="top" secondItem="Bnf-RM-uI6" secondAttribute="top" id="2ao-4M-7Tw"/>
-                            <constraint firstItem="QO6-j4-kru" firstAttribute="leading" secondItem="Bnf-RM-uI6" secondAttribute="leading" id="8Go-bK-wZx"/>
-                            <constraint firstItem="QO6-j4-kru" firstAttribute="trailing" secondItem="Bnf-RM-uI6" secondAttribute="trailing" id="G7P-2j-Zoq"/>
-                            <constraint firstItem="QO6-j4-kru" firstAttribute="bottom" secondItem="Bnf-RM-uI6" secondAttribute="bottom" id="vVI-Qs-LgP"/>
+                            <constraint firstItem="ejs-hH-INL" firstAttribute="trailing" secondItem="Bnf-RM-uI6" secondAttribute="trailing" id="JSe-Uf-vL8"/>
+                            <constraint firstItem="ejs-hH-INL" firstAttribute="leading" secondItem="Bnf-RM-uI6" secondAttribute="leading" id="TAn-ZS-wbc"/>
+                            <constraint firstItem="ejs-hH-INL" firstAttribute="top" secondItem="sUa-Vk-6Wi" secondAttribute="top" constant="44" id="ZFr-jn-dny"/>
+                            <constraint firstItem="ejs-hH-INL" firstAttribute="bottom" secondItem="Bnf-RM-uI6" secondAttribute="bottom" id="xQs-k2-s76"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Profile" image="person.crop.circle.fill" catalog="system" id="4dh-gz-qVy"/>
+                    <navigationItem key="navigationItem" id="YRa-Y5-XtV"/>
                     <connections>
-                        <outlet property="collectionView" destination="QO6-j4-kru" id="kiL-6g-HRI"/>
+                        <outlet property="reusableView" destination="ejs-hH-INL" id="PIY-ID-mDU"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xbR-iA-ARU" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -294,7 +252,8 @@
                     <connections>
                         <outlet property="tableView" destination="NLD-Ys-I0G" id="W1e-GG-AHP"/>
                         <segue destination="rch-sG-FMz" kind="showDetail" identifier="likeList" id="Wfe-Lv-IGa"/>
-                        <segue destination="XBx-VC-ezO" kind="show" identifier="visitProfile" id="K8L-Zg-LD3"/>
+                        <segue destination="XBx-VC-ezO" kind="show" identifier="visitProfileyedek" id="K8L-Zg-LD3"/>
+                        <segue destination="m3L-Md-9EX" kind="show" identifier="visitProfile" id="lF3-ya-h8n"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Sc9-5l-eSB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -308,20 +267,8 @@
                     <view key="view" contentMode="scaleToFill" id="EXg-bu-ezi">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ejs-hH-INL" customClass="ReusableView" customModule="InstaClone" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                            </view>
-                        </subviews>
                         <viewLayoutGuide key="safeArea" id="jmK-7G-Swc"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstItem="ejs-hH-INL" firstAttribute="top" secondItem="EXg-bu-ezi" secondAttribute="top" id="V8q-ec-eXV"/>
-                            <constraint firstAttribute="bottom" secondItem="ejs-hH-INL" secondAttribute="bottom" id="gN3-yZ-tE9"/>
-                            <constraint firstItem="ejs-hH-INL" firstAttribute="leading" secondItem="jmK-7G-Swc" secondAttribute="leading" id="v0f-Za-8wv"/>
-                            <constraint firstItem="ejs-hH-INL" firstAttribute="trailing" secondItem="jmK-7G-Swc" secondAttribute="trailing" id="yhW-gm-tJM"/>
-                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Account owner mail" leftItemsSupplementBackButton="YES" id="N0a-RT-7L5"/>
                     <connections>
@@ -437,16 +384,15 @@
             <point key="canvasLocation" x="458.77862595419845" y="-635.91549295774655"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="lF3-ya-h8n"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <image name="hand" width="111.5" height="148.5"/>
         <image name="house.fill" catalog="system" width="128" height="104"/>
         <image name="icloud.and.arrow.up.fill" catalog="system" width="128" height="108"/>
-        <image name="person" catalog="system" width="128" height="121"/>
         <image name="person.crop.circle.fill" catalog="system" width="128" height="123"/>
         <image name="square.and.arrow.down.on.square" catalog="system" width="122" height="128"/>
-        <systemColor name="labelColor">
-            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

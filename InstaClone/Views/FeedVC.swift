@@ -224,7 +224,7 @@ extension FeedVC: FeedCellToFeedVCProtocol {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "visitProfile",
-           let destinationVC = segue.destination as? VisitProfileVC,
+           let destinationVC = segue.destination as? ProfileVC,
            let object = sender as? [Any],
            let email = object[0] as? String{
             
