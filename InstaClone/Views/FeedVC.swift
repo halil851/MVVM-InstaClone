@@ -18,7 +18,7 @@ protocol FeedVCProtocol {
     var date: [DateComponents] {get set}
     var isPaginating: Bool {get}
     func getDataFromFirestore(_ tableView: UITableView, limit: Int?, pagination: Bool, getNewOnes: Bool)
-    func getSmallProfilePictures(userMail: String)
+    func fetchThumbnail(userMail: String) 
     func likeOrLikes(indexRow: Int) -> String
     func uploadDate(indexRow: Int) -> String
     func isOptionsButtonHidden(user: String) -> Bool
@@ -111,7 +111,7 @@ class FeedVC: UIViewController {
 //MARK: - Tableview Operations
 extension FeedVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.imagesHeights.count
+        return viewModel.images.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -121,8 +121,7 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         
         let email = viewModel.emails[indexPath.row]
         cell.delegate = self
-        viewModel.getSmallProfilePictures(userMail: email)
-        cell.smallProfilePicture.image = viewModel.profilePictureSDictionary[email]
+        viewModel.fetchThumbnail(userMail: email)
         cell.userImage.image = viewModel.images[indexPath.row]
         cell.imageHeight.constant = viewModel.imagesHeights[indexPath.row]
         cell.userEmailLabel.text = email
@@ -135,7 +134,7 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
                      storageID: viewModel.storageID)
         cell.optionsOutlet.isHidden = viewModel.isOptionsButtonHidden(user: email)
         cell.dateLabel.text = viewModel.uploadDate(indexRow: indexPath.row)
-        
+        cell.smallProfilePicture.image = viewModel.profilePictureSDictionary[email]
         
         return cell
     }

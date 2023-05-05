@@ -13,7 +13,7 @@ import SDWebImage
 class ProfileViewModel {
     
     private let db = Firestore.firestore()
-    private var myDict = [[String: (UIImage, String)]]()
+//    private var myDict = [[String: (UIImage, String)]]()
     
     func getUsersPosts(with userEmail: String,completion: @escaping(UIImage, _ isReadyToReload: Bool) -> Void) {
         
@@ -120,9 +120,9 @@ extension ProfileViewModel {
         }
         
         let imageURL = URL(string: imageUrlString)
-        let image = try await loadImage(with: imageURL)
+        let image =  try await loadImage(with: imageURL)
         
-        myDict.append([who: (image, id)])
+//        myDict.append([who: (image, id)])
         
         return (image, id)
     }

@@ -19,6 +19,7 @@ class ReusableView: UIView, UIImagePickerControllerDelegate & UINavigationContro
     @IBOutlet weak var profilePicture: UIImageView!
     @IBOutlet weak var viewHeight: NSLayoutConstraint!
     @IBOutlet weak var headerViewHeight: NSLayoutConstraint!
+    @IBOutlet weak var profilePictureWidthRatio: NSLayoutConstraint!
     
     let nibName = "ReusableView"
     
@@ -46,9 +47,10 @@ class ReusableView: UIView, UIImagePickerControllerDelegate & UINavigationContro
     }
     
     override func awakeFromNib() {
-        profilePicture.layer.cornerRadius = profilePicture.frame.width / 2
-        profilePicture.clipsToBounds = true
-        
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {return}
+        let screenWeight = windowScene.screen.bounds.size.width
+        let profilePictureWidth = screenWeight * profilePictureWidthRatio.multiplier
+        profilePicture.layer.cornerRadius = profilePictureWidth / 2
     }
     
      func setImageInteractable() {

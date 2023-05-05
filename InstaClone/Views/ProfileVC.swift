@@ -25,20 +25,21 @@ class ProfileVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initialSetup()
-                
+
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        self.images.removeAll()
+        
         viewModel.getUsersPosts(with: email ?? currentUserEmail) { [unowned self] image, isReadyToReload in
-           
+            
             self.images.append(image)
             if isReadyToReload {
                 calculateCollectionViewHeight(with: images.count)
                 self.reusableView.collectionView.reloadData()
             }
         }
-                
         
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.backItem?.title = ""
         email == nil ? isOwnerVisiting = true : ()
         determineProfilePicture()
@@ -95,6 +96,9 @@ class ProfileVC: UIViewController {
             navigationItem.title = email
             reusableView.userEmail.text = email
         }
+//        print(reusableView.profilePicture.frame.width)
+//        reusableView.profilePicture.layer.cornerRadius = reusableView.profilePicture.frame.width / 2
+//        reusableView.profilePicture.clipsToBounds = true
        
     }
     
