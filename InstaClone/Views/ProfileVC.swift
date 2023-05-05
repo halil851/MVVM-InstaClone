@@ -31,13 +31,12 @@ class ProfileVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         self.images.removeAll()
         
-        viewModel.getUsersPosts(with: email ?? currentUserEmail) { [unowned self] image, isReadyToReload in
+        Task {
+            guard let images = await viewModel.getUsersPosts(with: email ?? currentUserEmail) else {return}
+            self.images = images
             
-            self.images.append(image)
-            if isReadyToReload {
-                calculateCollectionViewHeight(with: images.count)
-                self.reusableView.collectionView.reloadData()
-            }
+            calculateCollectionViewHeight(with: images.count)
+            self.reusableView.collectionView.reloadData()
         }
         
         navigationController?.navigationBar.backItem?.title = ""
@@ -136,9 +135,6 @@ extension ProfileVC: UICollectionViewDataSource, UICollectionViewDelegate, UICol
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 2
     }
-    
-    
-    
 
 }
 
@@ -146,20 +142,13 @@ extension ProfileVC: UICollectionViewDataSource, UICollectionViewDelegate, UICol
 extension ProfileVC: ReusableViewToProfileVCProtocol {
     
     func addNewProfilePicture(image: UIImage) async {
-        viewModel.deleteProfilePicture(id: id) { [self] isSuccesDeleting in
-            
-            if isSuccesDeleting {
-                reusableView.profilePicture.image = image
+        Task{
+            if await viewModel.isSuccesDeletingProfilePicture(id: id) {
                 
-                viewModel.addProfilePicture(image: reusableView.profilePicture) { [self] in
-                    
-                    Task{
-                        let (_, id) = try await viewModel.getProfilePicture()
-                        self.id = id
-                    }
-                    
-                                 
-                }
+                reusableView.profilePicture.image = image
+                await viewModel.addProfilePicture(image: reusableView.profilePicture)
+                let (_, id) = try await viewModel.getProfilePicture()
+                self.id = id
             }
         }
     }

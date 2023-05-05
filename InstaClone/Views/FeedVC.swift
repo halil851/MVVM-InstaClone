@@ -121,7 +121,6 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         
         let email = viewModel.emails[indexPath.row]
         cell.delegate = self
-        viewModel.fetchThumbnail(userMail: email)
         cell.userImage.image = viewModel.images[indexPath.row]
         cell.imageHeight.constant = viewModel.imagesHeights[indexPath.row]
         cell.userEmailLabel.text = email

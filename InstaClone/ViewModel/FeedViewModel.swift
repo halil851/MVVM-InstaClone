@@ -21,7 +21,6 @@ class FeedViewModel: FeedVCProtocol {
     var whoLiked = [[String]]()
     var date = [DateComponents]()
     var profilePictureSDictionary = [String:UIImage]()
-    private var myDict = [[String: (UIImage, String)]]()
     let vm = ProfileViewModel()
 
     private var firstImageURLAfterUploading = String()
@@ -162,21 +161,6 @@ class FeedViewModel: FeedVCProtocol {
                         self.whoLiked.insert(like, at: 0)
                         self.date.insert(dateConfig(date), at: 0)
                     }
-                    /*
-                    Task{
-                        do {
-                            let (postedBy, storageID, comment, like, date) = try await getPostInfo()
-                            self.ids.insert(id, at: 0)
-                            self.emails.insert(postedBy!, at: 0)
-                            self.storageID.insert(storageID!, at: 0)
-                            self.comments.insert(comment!, at: 0)
-                            self.whoLiked.insert(like!, at: 0)
-                            self.date.insert(dateConfig(date!), at: 0)
-                        } catch {
-                            
-                        }
-                    }
-                     */
                     
                     //Reload table, after first snapshot called from Firebase
                     DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
@@ -195,25 +179,6 @@ class FeedViewModel: FeedVCProtocol {
                         self.whoLiked.append(like)
                         self.date.append(dateConfig(date))
                     }
-                    
-                    /*
-                    Task{
-                        do{
-                            let (postedBy, storageID, comment, like, date) = try await getPostInfo()
-                            self.ids.append(id)
-                            self.emails.append(postedBy!)
-                            self.storageID.append(storageID!)
-                            self.comments.append(comment!)
-                            self.whoLiked.append(like!)
-                            self.date.append(dateConfig(date!))
-                        } catch {
-                            
-                        }
-                        
-                    }*/
-                    
-                
-                    
                     
                     //Reload table, after all data called from Firebase
                     if index == snapshotCount - 1 {
@@ -247,20 +212,6 @@ class FeedViewModel: FeedVCProtocol {
                         complation(postedBy, storageID, comment, like, date)
                     }
                 }
-                /*
-                @Sendable func getPostInfo() async throws -> (String?, String?, String?, [String]?, Timestamp?){
-                    if let postedBy = document.get(K.Document.postedBy) as? String,
-                       let storageID = document.get(K.Document.storageID) as? String,
-                       let comment = document.get(K.Document.postComment) as? String,
-                       let like = document.get(K.Document.likedBy) as? [String],
-                       let date = document.get(K.Document.date) as? Timestamp{
-                        
-                        await self.fetchThumbnail(userMail: postedBy)
-                        
-                        return (postedBy, storageID, comment, like, date)
-                    }
-                     
-                }*/
 
                 
             })
@@ -269,25 +220,14 @@ class FeedViewModel: FeedVCProtocol {
     
     
     func fetchThumbnail(userMail: String) {
-//        do {
-//            let (image, _) = try await vm.getProfilePicture(who: userMail)
-//            self.profilePictureSDictionary.updateValue(image, forKey: userMail)
-//            print(profilePictureSDictionary.count)
-//
-//        } catch {
-//            print("oops")
-//        }
-//
-        
-         
-         
+
         getProfilePicture(who: userMail) {  image, _ in
             self.profilePictureSDictionary.updateValue(image, forKey: userMail)
         }
-         
-
         
     }
+    
+    
     func getProfilePicture(who: String = currentUserEmail, isRequestFromProfilePage: Bool = false, completion: @escaping (UIImage, String?)-> Void) {
       
         
