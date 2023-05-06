@@ -17,7 +17,7 @@ protocol FeedVCProtocol {
     var whoLiked: [[String]] {get set}
     var date: [DateComponents] {get set}
     var isPaginating: Bool {get}
-    func getDataFromFirestore(_ tableView: UITableView, limit: Int?, pagination: Bool, getNewOnes: Bool)
+    func getDataFromFirestore(_ tableView: UITableView, limit: Int?, pagination: Bool, getNewOnes: Bool) async
     func fetchThumbnail(userMail: String) 
     func likeOrLikes(indexRow: Int) -> String
     func uploadDate(indexRow: Int) -> String
@@ -26,8 +26,8 @@ protocol FeedVCProtocol {
 }
 
 extension FeedVCProtocol {
-    func getDataFromFirestore (_ tableView: UITableView, limit: Int? = nil, pagination: Bool = false, getNewOnes: Bool = false){
-        getDataFromFirestore(tableView, limit: limit, pagination: pagination, getNewOnes: getNewOnes)
+    func getDataFromFirestore (_ tableView: UITableView, limit: Int? = nil, pagination: Bool = false, getNewOnes: Bool = false) async{
+       await getDataFromFirestore(tableView, limit: limit, pagination: pagination, getNewOnes: getNewOnes)
     }
 }
 
@@ -47,7 +47,10 @@ class FeedVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initialSetup()
-        viewModel.getDataFromFirestore(tableView, pagination: true, getNewOnes: true)
+        Task{
+            await viewModel.getDataFromFirestore(tableView, pagination: true, getNewOnes: true)
+        }
+        
         
     }
     
@@ -96,14 +99,15 @@ class FeedVC: UIViewController {
     }
     //MARK: - Refresh Control
     // Get data and stop refreshing
-    @objc func refreshTableView() {
-        // Refresh Data
-        viewModel.getDataFromFirestore(tableView, limit: 5, pagination: false, getNewOnes: true)
-        // Stop Refreshing
-        DispatchQueue.main.async {
-            self.refreshControl.endRefreshing()
-        }
-        
+     @objc func refreshTableView()  {
+         Task{ // Without Task {} You get Error
+             // Refresh Data
+             await viewModel.getDataFromFirestore(tableView, limit: 5, pagination: false, getNewOnes: true)
+             // Stop Refreshing
+             DispatchQueue.main.async {
+                 self.refreshControl.endRefreshing()
+             }
+         }
     }
     
 }
@@ -202,10 +206,6 @@ extension FeedVC: FeedCellToFeedVCProtocol {
     func showAlert(alert: UIAlertController) {
         present(alert, animated: true)
     }
-   
-    func refreshAfterActionPost() {
-        refreshTableView()
-    }
     
     func performSegue(cellIndex: Int, likeList: [String], likeCount: String) {
         let sendList: [Any] = [likeList, likeCount]
@@ -252,8 +252,8 @@ extension FeedVC: FeedCellToFeedVCProtocol {
 extension FeedVC: UIScrollViewDelegate {
     // Trigger when scroll down
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
-        guard !viewModel.isPaginating else {return}
+        guard viewModel.emails.count > 0 else {return} // Means there is no post on the screen yet. So avoid Scrolling Down.
+        guard !viewModel.isPaginating else {return} //
          
         let position = scrollView.contentOffset.y
         
@@ -263,15 +263,18 @@ extension FeedVC: UIScrollViewDelegate {
             isScrollingToBottom = true
             
             self.tableView.tableFooterView = self.createSpinnerFooter()
-            self.viewModel.getDataFromFirestore(self.tableView, limit: 4, pagination: true)
-            
-            DispatchQueue.global().asyncAfter(deadline: .now()+2, execute: {
-                DispatchQueue.main.async { [self] in
-                    
-                    tableView.tableFooterView = nil
-                }
-            })
-            isScrollingToBottom = false
+            Task {
+                await self.viewModel.getDataFromFirestore(self.tableView, limit: 4, pagination: true)
+                
+                DispatchQueue.global().asyncAfter(deadline: .now()+2, execute: {
+                    DispatchQueue.main.async { [self] in
+                        
+                        tableView.tableFooterView = nil
+                    }
+                })
+                isScrollingToBottom = false
+            }
+           
         }
     }
      

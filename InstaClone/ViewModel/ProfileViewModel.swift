@@ -27,7 +27,7 @@ class ProfileViewModel {
             
                 guard let imageUrlString = document.get(K.Document.imageUrl) as? String  else {return nil}
                 let imageURL = URL(string: imageUrlString)
-                let image = try await loadImage(with: imageURL)
+                let image = try await ProfileViewModel.loadImage(with: imageURL)
                 images.append(image)
             }
             return images
@@ -92,7 +92,7 @@ class ProfileViewModel {
         }
         
         let imageURL = URL(string: imageUrlString)
-        let image =  try await loadImage(with: imageURL)
+        let image =  try await ProfileViewModel.loadImage(with: imageURL)
                 
         return (image, id)
     }
@@ -119,7 +119,7 @@ class ProfileViewModel {
         // No need to delete the last picture from Firebase storage, because overwriten
     }
     
-    func loadImage(with url: URL?) async throws -> UIImage {
+    static func loadImage(with url: URL?) async throws -> UIImage {
         guard let url = url else {
             throw ErrorTypes.invalidUrl
         }

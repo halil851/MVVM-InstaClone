@@ -17,7 +17,6 @@ protocol FeedCellProtocol {
 
 protocol FeedCellToFeedVCProtocol {
     func performSegue(cellIndex: Int, likeList: [String], likeCount: String)
-    func refreshAfterActionPost()
     func showAlert(alert: UIAlertController)
     func manageUIChanges(action: Action,_ indexRow: Int)
     func deleteAIndex(indexPaths: [IndexPath])

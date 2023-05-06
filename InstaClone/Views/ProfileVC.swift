@@ -34,7 +34,6 @@ class ProfileVC: UIViewController {
         Task {
             guard let images = await viewModel.getUsersPosts(with: email ?? currentUserEmail) else {return}
             self.images = images
-            
             calculateCollectionViewHeight(with: images.count)
             self.reusableView.collectionView.reloadData()
         }
@@ -44,10 +43,7 @@ class ProfileVC: UIViewController {
         determineProfilePicture()
     }
     
-    
     //MARK: - IBActions
-    
-    
     
     //MARK: - Functions
     private func initialSetup() {
@@ -69,21 +65,6 @@ class ProfileVC: UIViewController {
         reusableView.viewHeight.constant = headerViewHeight + collectionViewHeight - screenHeight
     }
     
-    
-    private func ownerVisiting() async {
-        do{
-            let (fetchedImage, id) = try await viewModel.getProfilePicture()
-            self.id = id
-            self.reusableView.profilePicture.image = fetchedImage
-            self.reusableView.userEmail.text = currentUserEmail
-            self.reusableView.setImageInteractable()
-            
-        } catch {
-            print("\(ErrorTypes.noDocumentId) or \(ErrorTypes.noDocumentId)")
-        }
-    
-    }
-    
     private func determineProfilePicture() {
         
         if isOwnerVisiting {
@@ -95,14 +76,20 @@ class ProfileVC: UIViewController {
             navigationItem.title = email
             reusableView.userEmail.text = email
         }
-//        print(reusableView.profilePicture.frame.width)
-//        reusableView.profilePicture.layer.cornerRadius = reusableView.profilePicture.frame.width / 2
-//        reusableView.profilePicture.clipsToBounds = true
-       
     }
     
-    
-
+    private func ownerVisiting() async {
+        do{
+            let (fetchedImage, id) = try await viewModel.getProfilePicture()
+            self.id = id
+            self.reusableView.profilePicture.image = fetchedImage
+            self.reusableView.userEmail.text = currentUserEmail
+            self.reusableView.setImageInteractable()
+            
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
 }
 
 //MARK: - Collectionview Operations
@@ -110,7 +97,6 @@ extension ProfileVC: UICollectionViewDataSource, UICollectionViewDelegate, UICol
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         images.count
     }
-    
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: K.MyPhotosCell, for: indexPath) as? MyPhotosCell else {
@@ -142,7 +128,7 @@ extension ProfileVC: UICollectionViewDataSource, UICollectionViewDelegate, UICol
 extension ProfileVC: ReusableViewToProfileVCProtocol {
     
     func addNewProfilePicture(image: UIImage) async {
-        Task{
+        do {
             if await viewModel.isSuccesDeletingProfilePicture(id: id) {
                 
                 reusableView.profilePicture.image = image
@@ -150,6 +136,8 @@ extension ProfileVC: ReusableViewToProfileVCProtocol {
                 let (_, id) = try await viewModel.getProfilePicture()
                 self.id = id
             }
+        } catch {
+            print(error.localizedDescription)
         }
     }
     
