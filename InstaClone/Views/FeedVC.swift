@@ -17,8 +17,8 @@ protocol FeedVCProtocol {
     var whoLiked: [[String]] {get set}
     var date: [DateComponents] {get set}
     var isPaginating: Bool {get}
-    func getDataFromFirestore(_ tableView: UITableView, limit: Int?, pagination: Bool, getNewOnes: Bool) async
-    func fetchThumbnail(userMail: String) 
+    func getDataFromFirestore(_ tableView: UITableView, limit: Int?, pagination: Bool, getNewOnes: Bool, whosePost: String?) async
+    func fetchThumbnail(userMail: String)
     func likeOrLikes(indexRow: Int) -> String
     func uploadDate(indexRow: Int) -> String
     func isOptionsButtonHidden(user: String) -> Bool
@@ -26,8 +26,8 @@ protocol FeedVCProtocol {
 }
 
 extension FeedVCProtocol {
-    func getDataFromFirestore (_ tableView: UITableView, limit: Int? = nil, pagination: Bool = false, getNewOnes: Bool = false) async{
-       await getDataFromFirestore(tableView, limit: limit, pagination: pagination, getNewOnes: getNewOnes)
+    func getDataFromFirestore (_ tableView: UITableView, limit: Int? = nil, pagination: Bool = false, getNewOnes: Bool = false, whosePost: String? = nil) async{
+       await getDataFromFirestore(tableView, limit: limit, pagination: pagination, getNewOnes: getNewOnes, whosePost: whosePost)
     }
 }
 
@@ -41,6 +41,7 @@ class FeedVC: UIViewController {
     private var lastTabBarIndex = 0
     private var refreshControl = UIRefreshControl()
     private var isScrollingToBottom = false
+    static var passedEmail: String? = nil
     
     
     //MARK: - Life Cycles
@@ -48,14 +49,15 @@ class FeedVC: UIViewController {
         super.viewDidLoad()
         initialSetup()
         Task{
-            await viewModel.getDataFromFirestore(tableView, pagination: true, getNewOnes: true)
+            await viewModel.getDataFromFirestore(tableView, pagination: true, getNewOnes: true, whosePost: FeedVC.passedEmail)
         }
-        
         
     }
     
+    
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.setNavigationBarHidden(true, animated: false)
+        
     }
     override func viewWillDisappear(_ animated: Bool) {
         navigationController?.setNavigationBarHidden(false, animated: false)
@@ -102,7 +104,7 @@ class FeedVC: UIViewController {
      @objc func refreshTableView()  {
          Task{ // Without Task {} You get Error
              // Refresh Data
-             await viewModel.getDataFromFirestore(tableView, limit: 5, pagination: false, getNewOnes: true)
+             await viewModel.getDataFromFirestore(tableView, limit: 5, pagination: false, getNewOnes: true,whosePost: FeedVC.passedEmail)
              // Stop Refreshing
              DispatchQueue.main.async {
                  self.refreshControl.endRefreshing()
@@ -160,6 +162,10 @@ extension FeedVC: UITabBarControllerDelegate {
             DispatchQueue.main.async {
                 self.tableView.setContentOffset(CGPointZero, animated: true)
             }
+        }
+        
+        if tabBarController.selectedIndex == 0 {
+            FeedVC.passedEmail = nil
         }
         lastTabBarIndex = tabBarController.selectedIndex
     }
@@ -264,7 +270,7 @@ extension FeedVC: UIScrollViewDelegate {
             
             self.tableView.tableFooterView = self.createSpinnerFooter()
             Task {
-                await self.viewModel.getDataFromFirestore(self.tableView, limit: 4, pagination: true)
+                await self.viewModel.getDataFromFirestore(self.tableView, limit: 4, pagination: true, whosePost: FeedVC.passedEmail)
                 
                 DispatchQueue.global().asyncAfter(deadline: .now()+2, execute: {
                     DispatchQueue.main.async { [self] in

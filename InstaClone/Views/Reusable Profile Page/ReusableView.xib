@@ -12,6 +12,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ReusableView" customModule="InstaClone" customModuleProvider="target">
             <connections>
                 <outlet property="collectionView" destination="6XC-0T-mqc" id="fHn-57-Y8A"/>
+                <outlet property="contentView" destination="iN0-l3-epB" id="sbl-Qt-gVG"/>
                 <outlet property="headerViewHeight" destination="vCL-VQ-zyR" id="oNn-WQ-9hE"/>
                 <outlet property="profilePicture" destination="kgN-3C-s1M" id="KQY-hL-qHb"/>
                 <outlet property="profilePictureWidthRatio" destination="Nuf-MH-c09" id="xNA-1T-D11"/>
@@ -59,12 +60,16 @@
                                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="6XC-0T-mqc">
                                     <rect key="frame" x="0.0" y="213" width="393" height="639"/>
                                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="zt0-j3-lIK">
+                                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="IQw-OB-361">
                                         <size key="itemSize" width="128" height="128"/>
                                         <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                         <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                         <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                     </collectionViewFlowLayout>
+                                    <connections>
+                                        <outlet property="dataSource" destination="-1" id="xXA-nm-oWW"/>
+                                        <outlet property="delegate" destination="-1" id="5Jw-Pl-17z"/>
+                                    </connections>
                                 </collectionView>
                             </subviews>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -87,17 +92,18 @@
                     </constraints>
                 </scrollView>
             </subviews>
-            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <viewLayoutGuide key="safeArea" id="0ub-L4-Euj"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="UY0-SS-0BE" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="2mT-3z-OP4"/>
+                <constraint firstItem="UY0-SS-0BE" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="2mT-3z-OP4"/>
                 <constraint firstItem="KQR-3k-8Xe" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" id="42b-WQ-utC"/>
                 <constraint firstItem="KQR-3k-8Xe" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" id="Ba6-zb-8nF"/>
                 <constraint firstAttribute="bottom" secondItem="UY0-SS-0BE" secondAttribute="bottom" id="H7c-7G-cuM"/>
-                <constraint firstItem="UY0-SS-0BE" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="Se8-Mv-kGu"/>
+                <constraint firstItem="UY0-SS-0BE" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailing" id="Se8-Mv-kGu"/>
                 <constraint firstItem="x79-3Q-FqJ" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" multiplier="0.25" id="vCL-VQ-zyR"/>
                 <constraint firstItem="UY0-SS-0BE" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="vs5-k9-xpz"/>
             </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <point key="canvasLocation" x="-287.78625954198475" y="226.05633802816902"/>
         </view>
     </objects>

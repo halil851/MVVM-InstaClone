@@ -11,9 +11,10 @@ protocol ReusableViewToProfileVCProtocol: AnyObject {
     func pickerPresent(picker: UIImagePickerController)
     func addNewProfilePicture(image: UIImage) async
 }
-
+//@IBDesignable
 class ReusableView: UIView, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
 
+    @IBOutlet var contentView: UIView!
     @IBOutlet weak var userEmail: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var profilePicture: UIImageView!
@@ -47,6 +48,12 @@ class ReusableView: UIView, UIImagePickerControllerDelegate & UINavigationContro
     }
     
     override func awakeFromNib() {
+//        let nibCell = UINib(nibName: K.MyPhotosCell, bundle: nil)
+//        collectionView.register(nibCell, forCellWithReuseIdentifier: K.MyPhotosCell)
+//        
+//        collectionView.dataSource = self
+//        collectionView.delegate = self
+        
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {return}
         let screenWeight = windowScene.screen.bounds.size.width
         let profilePictureWidth = screenWeight * profilePictureWidthRatio.multiplier
@@ -82,6 +89,24 @@ class ReusableView: UIView, UIImagePickerControllerDelegate & UINavigationContro
         
         picker.dismiss(animated: true)
         
+    }
+    
+}
+
+extension ReusableView: UICollectionViewDelegate, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        4
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: K.MyPhotosCell, for: indexPath) as? MyPhotosCell else {
+            return UICollectionViewCell()
+        }
+        cell.image.image = UIImage(systemName: "person")
+        return cell
+    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print(indexPath)
     }
     
 }

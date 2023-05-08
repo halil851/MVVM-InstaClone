@@ -102,17 +102,21 @@ extension ProfileVC: UICollectionViewDataSource, UICollectionViewDelegate, UICol
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: K.MyPhotosCell, for: indexPath) as? MyPhotosCell else {
             return UICollectionViewCell()
         }
-        
+        cell.delegate = self
         cell.image.image = images[indexPath.row]
         
         return cell
     }
     
+    
     //MARK: - Cell Sizes and Edges
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: collectionView.frame.width/3 - 2.0, height: collectionView.frame.width/3)
     }
-
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "PersonsPosts", sender: nil)
+        
+    }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 1
@@ -144,6 +148,25 @@ extension ProfileVC: ReusableViewToProfileVCProtocol {
     func pickerPresent(picker: UIImagePickerController) {
         present(picker, animated: true)
     }
+}
+
+extension ProfileVC: MyPhotosCellToProfileVCProtocol {
+    func performSegue() {
+        performSegue(withIdentifier: "PersonsPosts", sender: nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "PersonsPosts"{
+            FeedVC.passedEmail = email ?? currentUserEmail
+//            if let destinationVC = segue.destination as? FeedVC { //Somehow it doesnt work
+//                print("Finally destinationVC is FeedVC")
+//            }
+            
+        }
+        
+    }
+    
+    
 }
 
 //    //MARK: - Header Configurations

@@ -22,6 +22,7 @@ class FeedViewModel: FeedVCProtocol {
     var date = [DateComponents]()
     var profilePictureSDictionary = [String:UIImage]()
     var isPaginating = false
+    var query: Query?
     
     private var firstImageURLAfterUploading = String()
     private let pageSize = 5
@@ -29,15 +30,25 @@ class FeedViewModel: FeedVCProtocol {
     
     //MARK: - Firebase Operations
     // First call you get 5 photo, then get new 5...
-    func getDataFromFirestore(_ tableView: UITableView, limit: Int?, pagination: Bool = false, getNewOnes: Bool = false) async {
+    func getDataFromFirestore(_ tableView: UITableView, limit: Int?, pagination: Bool = false, getNewOnes: Bool = false, whosePost: String? = nil) async {
         if pagination {
             isPaginating = true
         }
         
-        //MARK: - new query
-        var query = db.collection(K.Posts)
-            .order(by: K.Document.date, descending: true)
-            .limit(to: limit ?? pageSize)
+        if whosePost != nil {
+            var tempQuery = db.collection(K.Posts)
+                .order(by: K.Document.date, descending: true)
+                .limit(to: limit ?? pageSize)
+                .whereField(K.Document.postedBy, isEqualTo: whosePost!)
+            query = tempQuery
+        } else {
+            var tempQuery = db.collection(K.Posts)
+                .order(by: K.Document.date, descending: true)
+                .limit(to: limit ?? pageSize)
+            query = tempQuery
+        }
+        guard var query = query else {return}
+            
         
         //If Firebase datas have been called before, and not refreshing. It gets last post and adds ONLY new ones.
         if let lastSnapshot = lastDocumentSnapshot, !getNewOnes {
@@ -77,63 +88,17 @@ class FeedViewModel: FeedVCProtocol {
         return newLastSnapshot
     }
     
-    
-    
-    private func removeAllArrays() {
-        self.emails.removeAll()
-        self.comments.removeAll()
-        self.ids.removeAll()
-        self.storageID.removeAll()
-        self.whoLiked.removeAll()
-        self.date.removeAll()
-        self.images.removeAll()
-        self.imagesHeights.removeAll()
-    }
-    
-    private func downloadImages(_ imageURL: String) async {
-        let imageUrl = URL(string: imageURL)
-        do {
-            let image = try await ProfileViewModel.loadImage(with: imageUrl)
-                        
-            // It only works after uploading a photo and refresh the tableview.
-            if isFirstRefreshAfterUploading, imageURL == self.firstImageURLAfterUploading {
-                self.images.insert(image, at: 0)
-                self.calculateNewImageSize(image, isFirstAfterUpload: true)
-                
-            } else { // Add the image to the array
-                self.images.append(image)
-                self.calculateNewImageSize(image)
-            }
-            
-        } catch {
-            print(error.localizedDescription)
-        }
-        
-    }
-    
-    private func calculateNewImageSize(_ image: UIImage, isFirstAfterUpload: Bool = false) {
-        //Takes orijinal image sizes and calculate to fit the screen by keeping aspect ratio.
-        let imageSize = image.size
-        let phoneScreenWidth = UIScreen.main.bounds.width
-        let coefficient = imageSize.width / phoneScreenWidth
-        let newHeight = imageSize.height / coefficient
-        
-        if isFirstAfterUpload {
-            imagesHeights.insert(newHeight, at: 0)
-        } else {
-            imagesHeights.append(newHeight)
-        }
-    }
+   
     
     private func append(_ document: QueryDocumentSnapshot, _ tableView: UITableView, snapshotCount: Int, index: Int) async{
         if let imageUrl = document.get(K.Document.imageUrl) as? String {
             //Appending start first with downloading images. When ONE image downloaded, next others.
-            await downloadImages(imageUrl)
+            await downloadImagesAndAppend(imageUrl)
                         
             let id = document.documentID
             //After upload a post and refresh table, this "if" run and insert the post info to the first place. If not, user can not see the new posted at top.
             if isFirstRefreshAfterUploading, imageUrl == self.firstImageURLAfterUploading {
-                
+
                 getPostInfo { postedBy, storageID, comment, like, date in
                     self.ids.insert(id, at: 0)
                     self.emails.insert(postedBy, at: 0)
@@ -141,14 +106,16 @@ class FeedViewModel: FeedVCProtocol {
                     self.comments.insert(comment, at: 0)
                     self.whoLiked.insert(like, at: 0)
                     self.date.insert(dateConfig(date), at: 0)
+                    
+                    //Reload table, after first snapshot called from Firebase
+                    DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
+//                        tableView.reloadData()
+                        self.isPaginating = false
+                        isFirstRefreshAfterUploading = false
+                    })
                 }
+
                 
-                //Reload table, after first snapshot called from Firebase
-                DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
-                    tableView.reloadData()
-                    self.isPaginating = false
-                    isFirstRefreshAfterUploading = false
-                })
                 
             } else {
                 //Add items when reloading. Mostly run this part.
@@ -159,15 +126,19 @@ class FeedViewModel: FeedVCProtocol {
                     self.comments.append(comment)
                     self.whoLiked.append(like)
                     self.date.append(dateConfig(date))
+                    
+                    //Reload table, after all data called from Firebase
+                    if index == snapshotCount - 1 {
+                        DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
+                            tableView.reloadData()
+                            let indexPath = IndexPath(row: 0, section: 0)
+                            tableView.scrollToRow(at: indexPath, at: .middle, animated: false)
+                            self.isPaginating = false
+                        })
+                    }
                 }
                 
-                //Reload table, after all data called from Firebase
-                if index == snapshotCount - 1 {
-                    DispatchQueue.main.asyncAfter(deadline: .now()+0.25, execute: {
-                        tableView.reloadData()
-                        self.isPaginating = false
-                    })
-                }
+                
                 
             }
             
@@ -189,13 +160,46 @@ class FeedViewModel: FeedVCProtocol {
                    let date = document.get(K.Document.date) as? Timestamp{
                     
                     self.fetchThumbnail(userMail: postedBy)
-                    
                     complation(postedBy, storageID, comment, like, date)
                 }
             }
            
         }
     }
+     
+     private func downloadImagesAndAppend(_ imageURL: String) async {
+         let imageUrl = URL(string: imageURL)
+         do {
+             let image = try await ProfileViewModel.loadImage(with: imageUrl)
+                         
+             // It only works after uploading a photo and refresh the tableview.
+             if isFirstRefreshAfterUploading, imageURL == self.firstImageURLAfterUploading {
+                 self.images.insert(image, at: 0)
+                 self.calculateNewImageSize(image, isFirstAfterUpload: true)
+
+             } else { // Add the image to the array
+                 self.images.append(image)
+                 self.calculateNewImageSize(image)
+             }
+             
+         } catch {
+             print(error.localizedDescription)
+         }
+     }
+     
+     private func calculateNewImageSize(_ image: UIImage, isFirstAfterUpload: Bool = false) {
+         //Takes orijinal image sizes and calculate to fit the screen by keeping aspect ratio.
+         let imageSize = image.size
+         let phoneScreenWidth = UIScreen.main.bounds.width
+         let coefficient = imageSize.width / phoneScreenWidth
+         let newHeight = imageSize.height / coefficient
+         
+         if isFirstAfterUpload {
+             imagesHeights.insert(newHeight, at: 0)
+         } else {
+             imagesHeights.append(newHeight)
+         }
+     }
     
     
     func fetchThumbnail(userMail: String) {
@@ -238,6 +242,16 @@ class FeedViewModel: FeedVCProtocol {
                 
             }
         }
+    }
+    private func removeAllArrays() {
+        self.emails.removeAll()
+        self.comments.removeAll()
+        self.ids.removeAll()
+        self.storageID.removeAll()
+        self.whoLiked.removeAll()
+        self.date.removeAll()
+        self.images.removeAll()
+        self.imagesHeights.removeAll()
     }
    
 }
