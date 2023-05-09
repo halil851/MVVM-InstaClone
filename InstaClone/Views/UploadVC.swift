@@ -43,7 +43,7 @@ class UploadVC: UIViewController {
         let screenHeight = windowScene.screen.bounds.size.height
         let heightOfUploadButtonFromBottom = screenHeight - uploadOutlet.frame.maxY
         guard heightOfUploadButtonFromBottom < keyboardSize.height else {return}
-        let upValue = uploadOutlet.frame.maxY - commentText.frame.maxY
+        let upValue = keyboardSize.height - heightOfUploadButtonFromBottom + heightOfUploadButtonFromBottom * 0.15
         
         if self.view.frame.origin.y == 0 {
             self.view.frame.origin.y -= upValue
