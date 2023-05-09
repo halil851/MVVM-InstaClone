@@ -175,6 +175,7 @@ extension FeedVC: UITabBarControllerDelegate {
         if tabBarController.selectedIndex == 0 {
             FeedVC.passedEmail = nil
             FeedViewModel.indexPath = nil
+            dismissButton.isHidden = true
         }
         lastTabBarIndex = tabBarController.selectedIndex
     }
@@ -228,13 +229,12 @@ extension FeedVC: FeedCellToFeedVCProtocol {
     func goToVisitProfile(with userEmail: String?, indexRow: Int) {
         guard let userEmail = userEmail else {return}
         guard let image = viewModel.profilePictureSDictionary[viewModel.emails[indexRow]] else {return}
-        
+        lastTabBarIndex = 3
         if userEmail == currentUserEmail {
             tabBarController?.selectedIndex = 3
         } else {
             let sendList: [Any] = [userEmail, image]
             performSegue(withIdentifier: "visitProfile", sender: sendList)
-            lastTabBarIndex = 3
         }
     }
     

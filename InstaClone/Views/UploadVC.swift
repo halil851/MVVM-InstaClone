@@ -28,9 +28,33 @@ class UploadVC: UIViewController {
         super.viewDidLoad()
         commentText.delegate = self
         setImageInteractable()
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
     }
     override func viewWillAppear(_ animated: Bool) {
         if !isSelectingImage { selectImage() }
+    }
+    
+    @objc func keyboardWillShow(notification: NSNotification) {
+        
+        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {return}
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {return}
+        let screenHeight = windowScene.screen.bounds.size.height
+        let heightOfUploadButtonFromBottom = screenHeight - uploadOutlet.frame.maxY
+        guard heightOfUploadButtonFromBottom < keyboardSize.height else {return}
+        let upValue = uploadOutlet.frame.maxY - commentText.frame.maxY
+        
+        if self.view.frame.origin.y == 0 {
+            self.view.frame.origin.y -= upValue
+        }
+        
+    }
+    
+    @objc func keyboardWillHide(notification: NSNotification) {
+        if self.view.frame.origin.y != 0 {
+            self.view.frame.origin.y = 0
+        }
     }
     
     
