@@ -42,6 +42,9 @@ class ProfileVC: UIViewController {
         email == nil ? isOwnerVisiting = true : ()
         determineProfilePicture()
     }
+    override func viewWillDisappear(_ animated: Bool) {
+        FeedVC.passedEmail = nil
+    }
     
     //MARK: - IBActions
     
@@ -114,6 +117,7 @@ extension ProfileVC: UICollectionViewDataSource, UICollectionViewDelegate, UICol
         return CGSize(width: collectionView.frame.width/3 - 2.0, height: collectionView.frame.width/3)
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        FeedViewModel.indexPath = indexPath
         performSegue(withIdentifier: "PersonsPosts", sender: nil)
         
     }

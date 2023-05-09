@@ -52,10 +52,7 @@ class FeedCell: UITableViewCell {
     //MARK: - Life Cycles
     override func awakeFromNib() {
         super.awakeFromNib()
-        doubleTapSetup()
-        clickableLabel()
-        optionsPopUp()
-        pinchToZoomSetup()
+        setups()
         // Make ImageView Circle
         smallProfilePicture.layer.cornerRadius = smallProfilePicture.frame.size.width / 2
         smallProfilePicture.clipsToBounds = true
@@ -94,13 +91,19 @@ class FeedCell: UITableViewCell {
         lastLikeCount = firebaseLikeCount
         likeCounter.text = viewModel.likeOrLikes(indexRow: indexPath.row, likeCount: lastLikeCount)
         
-        temporaryIntArray.append(indexPath.row)
-        
-        
+        temporaryIntArray.append(indexPath.row)        
     }
     
     
     //MARK: - Functions
+    
+    private func setups() {
+        if FeedVC.passedEmail == nil { clickableUserEmailLabelSetup() }
+        clickableLikeCounterLabelSetup()
+        doubleTapSetup()
+        optionsPopUp()
+        pinchToZoomSetup()
+    }
     func getInfo(indexPath: IndexPath, ids: [String], whoLikeIt: [[String]], storageID: [String]) {
         self.indexPath = indexPath
         self.ids = ids
@@ -171,17 +174,17 @@ class FeedCell: UITableViewCell {
             startAndStopZooming(hideItems: true)
             let pinchCenter = CGPoint(x: touch.x - userImage.bounds.midX,
                                       y: touch.y - userImage.bounds.midY)
+            
             let transform = userImage.transform.translatedBy(x: pinchCenter.x, y: pinchCenter.y)
                 .scaledBy(x: scale, y: scale)
                 .translatedBy(x: -pinchCenter.x, y: -pinchCenter.y)
+            
             userImage.transform = transform
             sender.scale = 1
             
-    
         case .ended, .cancelled, .failed:
             startAndStopZooming(hideItems: false)
             UIView.animate(withDuration: duration, animations: {
-                
                 self.userImage.transform = .identity
             })
        
@@ -210,16 +213,15 @@ class FeedCell: UITableViewCell {
             
             
         }
-       
-        
             
     }
     
-    private func clickableLabel() {
+    private func clickableLikeCounterLabelSetup() {
         likeCounter.isUserInteractionEnabled = true
         let clickLikeCounter = UITapGestureRecognizer(target: self, action: #selector(performSegue))
         likeCounter.addGestureRecognizer(clickLikeCounter)
-        
+    }
+    private func clickableUserEmailLabelSetup() {
         userEmailLabel.isUserInteractionEnabled = true
         let clickUserEmailLabel = UITapGestureRecognizer(target: self, action: #selector(visitProfilePage))
         userEmailLabel.addGestureRecognizer(clickUserEmailLabel)

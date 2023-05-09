@@ -22,11 +22,14 @@ class FeedViewModel: FeedVCProtocol {
     var date = [DateComponents]()
     var profilePictureSDictionary = [String:UIImage]()
     var isPaginating = false
-    var query: Query?
     
+    private var query: Query? = nil
     private var firstImageURLAfterUploading = String()
     private let pageSize = 5
     private var lastDocumentSnapshot: DocumentSnapshot? = nil
+    private var isFirstProfileVisit = true
+    
+    static var indexPath: IndexPath? = nil
     
     //MARK: - Firebase Operations
     // First call you get 5 photo, then get new 5...
@@ -35,17 +38,34 @@ class FeedViewModel: FeedVCProtocol {
             isPaginating = true
         }
         
-        if whosePost != nil {
-            var tempQuery = db.collection(K.Posts)
+        
+        if whosePost != nil { // Visiting Person's Page
+            print("PERSON VISIT")
+            
+            if isFirstProfileVisit {
+                guard let indexRow = FeedViewModel.indexPath?.row else {return}
+                let tempQuery = db.collection(K.Posts)
+                    .order(by: K.Document.date, descending: true)
+                    .whereField(K.Document.postedBy, isEqualTo: whosePost!)
+                    .limit(to: indexRow + 2)
+                query = tempQuery
+                
+            } else {
+                let tempQuery = db.collection(K.Posts)
+                    .order(by: K.Document.date, descending: true)
+                    .whereField(K.Document.postedBy, isEqualTo: whosePost!)
+                    .limit(to: 2)
+                query = tempQuery
+            }
+                            
+        } else {  // Main Page
+            print("MAIN PAGE")
+            let tempQuery = db.collection(K.Posts)
                 .order(by: K.Document.date, descending: true)
                 .limit(to: limit ?? pageSize)
-                .whereField(K.Document.postedBy, isEqualTo: whosePost!)
             query = tempQuery
-        } else {
-            var tempQuery = db.collection(K.Posts)
-                .order(by: K.Document.date, descending: true)
-                .limit(to: limit ?? pageSize)
-            query = tempQuery
+            isFirstProfileVisit = true
+            
         }
         guard var query = query else {return}
             
@@ -109,13 +129,16 @@ class FeedViewModel: FeedVCProtocol {
                     
                     //Reload table, after first snapshot called from Firebase
                     DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
-//                        tableView.reloadData()
+                        tableView.reloadData()
+                        
+                        if FeedViewModel.indexPath != nil {
+                            tableView.scrollToRow(at: FeedViewModel.indexPath!, at: .middle, animated: false)
+                        }
                         self.isPaginating = false
                         isFirstRefreshAfterUploading = false
                     })
                 }
 
-                
                 
             } else {
                 //Add items when reloading. Mostly run this part.
@@ -131,8 +154,12 @@ class FeedViewModel: FeedVCProtocol {
                     if index == snapshotCount - 1 {
                         DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
                             tableView.reloadData()
-                            let indexPath = IndexPath(row: 0, section: 0)
-                            tableView.scrollToRow(at: indexPath, at: .middle, animated: false)
+                            
+                            if FeedViewModel.indexPath != nil {
+                                tableView.scrollToRow(at: FeedViewModel.indexPath!, at: .top, animated: false)
+                                FeedViewModel.indexPath = nil
+                                self.isFirstProfileVisit = false
+                            }
                             self.isPaginating = false
                         })
                     }

@@ -12,7 +12,6 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ReusableView" customModule="InstaClone" customModuleProvider="target">
             <connections>
                 <outlet property="collectionView" destination="6XC-0T-mqc" id="fHn-57-Y8A"/>
-                <outlet property="contentView" destination="iN0-l3-epB" id="sbl-Qt-gVG"/>
                 <outlet property="headerViewHeight" destination="vCL-VQ-zyR" id="oNn-WQ-9hE"/>
                 <outlet property="profilePicture" destination="kgN-3C-s1M" id="KQY-hL-qHb"/>
                 <outlet property="profilePictureWidthRatio" destination="Nuf-MH-c09" id="xNA-1T-D11"/>

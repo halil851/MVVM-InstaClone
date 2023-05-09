@@ -35,6 +35,7 @@ class FeedVC: UIViewController {
     
     //MARK: - IBOutlets
     @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet weak var dismissButton: UIButton!
     
     //MARK: - Properties
     var viewModel: FeedVCProtocol = FeedViewModel()
@@ -43,7 +44,6 @@ class FeedVC: UIViewController {
     private var isScrollingToBottom = false
     static var passedEmail: String? = nil
     
-    
     //MARK: - Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,19 +51,23 @@ class FeedVC: UIViewController {
         Task{
             await viewModel.getDataFromFirestore(tableView, pagination: true, getNewOnes: true, whosePost: FeedVC.passedEmail)
         }
-        
     }
-    
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.setNavigationBarHidden(true, animated: false)
-        
+        dismissButton.isHidden = true
+        if FeedVC.passedEmail != nil { dismissButton.isHidden = false }
     }
     override func viewWillDisappear(_ animated: Bool) {
         navigationController?.setNavigationBarHidden(false, animated: false)
+        dismissButton.isHidden = true
     }
     
     //MARK: - IBActions
+    @IBAction func dismissTap(_ sender: UIButton) {
+        dismiss(animated: true)
+        FeedVC.passedEmail = nil
+    }
     
     
     //MARK: - Functions
@@ -101,7 +105,11 @@ class FeedVC: UIViewController {
     }
     //MARK: - Refresh Control
     // Get data and stop refreshing
-     @objc func refreshTableView()  {
+     @objc func refreshTableView() {
+         guard FeedVC.passedEmail == nil else {
+             self.refreshControl.endRefreshing()
+             return}
+         
          Task{ // Without Task {} You get Error
              // Refresh Data
              await viewModel.getDataFromFirestore(tableView, limit: 5, pagination: false, getNewOnes: true,whosePost: FeedVC.passedEmail)
@@ -124,7 +132,6 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: K.Cell, for: indexPath) as? FeedCell else {
             return UITableViewCell()
         }
-        
         let email = viewModel.emails[indexPath.row]
         cell.delegate = self
         cell.userImage.image = viewModel.images[indexPath.row]
@@ -137,9 +144,10 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
                      ids: viewModel.ids,
                      whoLikeIt: viewModel.whoLiked,
                      storageID: viewModel.storageID)
-        cell.optionsOutlet.isHidden = viewModel.isOptionsButtonHidden(user: email)
+        
         cell.dateLabel.text = viewModel.uploadDate(indexRow: indexPath.row)
         cell.smallProfilePicture.image = viewModel.profilePictureSDictionary[email]
+        if FeedVC.passedEmail != nil {cell.optionsOutlet.isHidden = viewModel.isOptionsButtonHidden(user: email)}
         
         return cell
     }
@@ -166,6 +174,7 @@ extension FeedVC: UITabBarControllerDelegate {
         
         if tabBarController.selectedIndex == 0 {
             FeedVC.passedEmail = nil
+            FeedViewModel.indexPath = nil
         }
         lastTabBarIndex = tabBarController.selectedIndex
     }
@@ -198,7 +207,6 @@ extension FeedVC: FeedCellToFeedVCProtocol {
         if action == .NoMoreLiking {
             for user in viewModel.whoLiked[indexRow] {
                 if user == currentUserEmail {
-                    
                     viewModel.whoLiked[indexRow].removeAll(where: {$0 == currentUserEmail})
                 }
             }
@@ -208,7 +216,6 @@ extension FeedVC: FeedCellToFeedVCProtocol {
         }
     }
     
-    
     func showAlert(alert: UIAlertController) {
         present(alert, animated: true)
     }
@@ -217,12 +224,18 @@ extension FeedVC: FeedCellToFeedVCProtocol {
         let sendList: [Any] = [likeList, likeCount]
         performSegue(withIdentifier: "likeList", sender: sendList)
     }
+    
     func goToVisitProfile(with userEmail: String?, indexRow: Int) {
         guard let userEmail = userEmail else {return}
         guard let image = viewModel.profilePictureSDictionary[viewModel.emails[indexRow]] else {return}
         
-        let sendList: [Any] = [userEmail, image]
-        performSegue(withIdentifier: "visitProfile", sender: sendList)
+        if userEmail == currentUserEmail {
+            tabBarController?.selectedIndex = 3
+        } else {
+            let sendList: [Any] = [userEmail, image]
+            performSegue(withIdentifier: "visitProfile", sender: sendList)
+            lastTabBarIndex = 3
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -234,7 +247,6 @@ extension FeedVC: FeedCellToFeedVCProtocol {
             
             destinationVC.email = email
             destinationVC.image = object[1] as? UIImage
-            
             return
         }
         
@@ -248,10 +260,7 @@ extension FeedVC: FeedCellToFeedVCProtocol {
             destinationVC.likedUser = likeList
             destinationVC.numberOfLikesStr = likeCount
         }
-        
-        
     }
-    
 }
 
 //MARK: - ScrollView Operations
@@ -262,8 +271,7 @@ extension FeedVC: UIScrollViewDelegate {
         guard !viewModel.isPaginating else {return} //
          
         let position = scrollView.contentOffset.y
-        
-        if position > (tableView.contentSize.height - 50 - scrollView.frame.size.height) {
+        if position > (tableView.contentSize.height - 150 - scrollView.frame.size.height) {
             
             guard !isScrollingToBottom else {return}
             isScrollingToBottom = true
@@ -280,10 +288,6 @@ extension FeedVC: UIScrollViewDelegate {
                 })
                 isScrollingToBottom = false
             }
-           
         }
     }
-     
 }
-
-
