@@ -149,7 +149,6 @@ class FeedViewModel: FeedVCProtocol {
                     self.comments.append(comment)
                     self.whoLiked.append(like)
                     self.date.append(dateConfig(date))
-                    print("APPEND")
                     
                     //Reload table, after all data called from Firebase
                     if index == snapshotCount - 1 {

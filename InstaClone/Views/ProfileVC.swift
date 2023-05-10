@@ -10,9 +10,10 @@ import UIKit
 class ProfileVC: UIViewController {
     
     //MARK: - IBOutlets
-    
-    //MARK: - Properties
     @IBOutlet weak var reusableView: ReusableView!
+
+    //MARK: - Properties
+
     let viewModel = ProfileViewModel()
     var images = [UIImage]()
     var image: UIImage?
@@ -27,17 +28,10 @@ class ProfileVC: UIViewController {
         initialSetup()
 
     }
+
     
     override func viewWillAppear(_ animated: Bool) {
-        self.images.removeAll()
-        
-        Task {
-            guard let images = await viewModel.getUsersPosts(with: email ?? currentUserEmail) else {return}
-            self.images = images
-            calculateCollectionViewHeight(with: images.count)
-            self.reusableView.collectionView.reloadData()
-        }
-        
+        fetchImages()
         navigationController?.navigationBar.backItem?.title = ""
         email == nil ? isOwnerVisiting = true : ()
         determineProfilePicture()
@@ -56,6 +50,17 @@ class ProfileVC: UIViewController {
         
         let nibCell = UINib(nibName: K.MyPhotosCell, bundle: nil)
         reusableView.collectionView.register(nibCell, forCellWithReuseIdentifier: K.MyPhotosCell)
+    }
+    
+    private func fetchImages() {
+        self.images.removeAll()
+        
+        Task {
+            guard let images = await viewModel.getUsersPosts(with: email ?? currentUserEmail) else {return}
+            self.images = images
+            calculateCollectionViewHeight(with: images.count)
+            self.reusableView.collectionView.reloadData()
+        }
     }
     
     private func calculateCollectionViewHeight(with imageCount: Int) {
@@ -162,12 +167,20 @@ extension ProfileVC: MyPhotosCellToProfileVCProtocol {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "PersonsPosts"{
             FeedVC.passedEmail = email ?? currentUserEmail
-//            if let destinationVC = segue.destination as? FeedVC { //Somehow it doesnt work
-//                print("Finally destinationVC is FeedVC")
-//            }
+            
+            if let destinationVC = segue.destination as? FeedVC {
+                destinationVC.delegate = self
+            }
             
         }
         
+    }
+    
+}
+
+extension ProfileVC: FeedVCtoProfilVCProtocol {
+    func reloadAfterDismissModalPresentation() {
+        viewWillAppear(true)
     }
     
     
@@ -187,3 +200,4 @@ extension ProfileVC: MyPhotosCellToProfileVCProtocol {
 //    }
 //
 //
+

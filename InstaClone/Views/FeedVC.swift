@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol FeedVCtoProfilVCProtocol: AnyObject {
+    func reloadAfterDismissModalPresentation()
+}
+
 protocol FeedVCProtocol {
     var emails: [String] {get set}
     var comments: [String] {get set}
@@ -31,7 +35,7 @@ extension FeedVCProtocol {
     }
 }
 
-class FeedVC: UIViewController {
+class FeedVC: UIViewController, UIAdaptivePresentationControllerDelegate {
     
     //MARK: - IBOutlets
     @IBOutlet private weak var tableView: UITableView!
@@ -43,6 +47,8 @@ class FeedVC: UIViewController {
     private var refreshControl = UIRefreshControl()
     private var isScrollingToBottom = false
     static var passedEmail: String? = nil
+    
+    weak var delegate: FeedVCtoProfilVCProtocol?
     
     //MARK: - Life Cycles
     override func viewDidLoad() {
@@ -57,11 +63,18 @@ class FeedVC: UIViewController {
         navigationController?.setNavigationBarHidden(true, animated: false)
         dismissButton.isHidden = true
         if FeedVC.passedEmail != nil { dismissButton.isHidden = false }
+        
+        
     }
     override func viewWillDisappear(_ animated: Bool) {
         navigationController?.setNavigationBarHidden(false, animated: false)
         dismissButton.isHidden = true
+        if FeedVC.passedEmail != nil {
+            delegate?.reloadAfterDismissModalPresentation()
+        }
+        
     }
+    
     
     //MARK: - IBActions
     @IBAction func dismissTap(_ sender: UIButton) {
@@ -128,7 +141,7 @@ class FeedVC: UIViewController {
 //MARK: - Tableview Operations
 extension FeedVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print("images count: \(viewModel.images.count)")
+        print("post count: \(viewModel.images.count)")
         return viewModel.images.count
     }
     
@@ -159,7 +172,6 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        print(indexPath.row)
         guard viewModel.comments.isEmpty == false,
               viewModel.emails.isEmpty == false else {
             print("comments and emails are empty")
@@ -214,7 +226,6 @@ extension FeedVC: FeedCellToFeedVCProtocol {
         tableView.endUpdates()
         tableView.reloadData()
     }
-    
     
     func manageUIChanges(action: Action,_ indexRow: Int) {
         

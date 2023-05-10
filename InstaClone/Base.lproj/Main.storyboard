@@ -244,16 +244,16 @@
             </objects>
             <point key="canvasLocation" x="461.83206106870227" y="770.4225352112677"/>
         </scene>
-        <!--Profile-->
+        <!--ProfileVC-->
         <scene sceneID="eND-5p-Dfd">
             <objects>
                 <viewController id="m3L-Md-9EX" customClass="ProfileVC" customModule="InstaClone" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="sUa-Vk-6Wi">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ejs-hH-INL" customClass="ReusableView" customModule="InstaClone" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="44" width="393" height="759"/>
+                                <rect key="frame" x="0.0" y="44" width="393" height="798"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
                         </subviews>
@@ -266,31 +266,30 @@
                             <constraint firstItem="ejs-hH-INL" firstAttribute="bottom" secondItem="Bnf-RM-uI6" secondAttribute="bottom" id="xQs-k2-s76"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Profile" image="person.crop.circle.fill" catalog="system" id="4dh-gz-qVy"/>
                     <navigationItem key="navigationItem" id="YRa-Y5-XtV"/>
                     <connections>
                         <outlet property="reusableView" destination="ejs-hH-INL" id="PIY-ID-mDU"/>
-                        <segue destination="KwV-OB-t5C" kind="presentation" identifier="PersonsPosts" id="6xH-Sh-Az3"/>
+                        <segue destination="RQJ-gs-c6d" kind="presentation" identifier="PersonsPosts" id="CqZ-ho-qch"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xbR-iA-ARU" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="462" y="-1410"/>
+            <point key="canvasLocation" x="1323" y="-1411"/>
         </scene>
         <!--FeedVC-->
         <scene sceneID="gG0-g4-5KI">
             <objects>
                 <viewController id="RQJ-gs-c6d" customClass="FeedVC" customModule="InstaClone" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="wth-PT-XkS">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="NLD-Ys-I0G">
-                                <rect key="frame" x="0.0" y="44" width="393" height="759"/>
+                                <rect key="frame" x="0.0" y="56" width="393" height="786"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mpe-Ht-uTN">
-                                <rect key="frame" x="0.0" y="44" width="40" height="40"/>
+                                <rect key="frame" x="0.0" y="56" width="40" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="40" id="Dmh-iL-xqA"/>
                                     <constraint firstAttribute="height" constant="40" id="KrD-g2-puK"/>
@@ -322,23 +321,23 @@
                         <outlet property="dismissButton" destination="mpe-Ht-uTN" id="Ggj-s3-Uwu"/>
                         <outlet property="tableView" destination="NLD-Ys-I0G" id="W1e-GG-AHP"/>
                         <segue destination="rch-sG-FMz" kind="showDetail" identifier="likeList" id="Wfe-Lv-IGa"/>
-                        <segue destination="m3L-Md-9EX" kind="show" identifier="visitProfile" id="lF3-ya-h8n"/>
+                        <segue destination="m3L-Md-9EX" kind="show" identifier="visitProfile" id="6e6-iX-wxE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Sc9-5l-eSB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1382.4427480916031" y="-635.91549295774655"/>
+            <point key="canvasLocation" x="1363" y="-637"/>
         </scene>
         <!--Like ListVC-->
         <scene sceneID="tDt-tj-eN8">
             <objects>
                 <viewController id="rch-sG-FMz" customClass="LikeListVC" customModule="InstaClone" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="0vl-fO-4y0">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Qmw-Uq-0Dt">
-                                <rect key="frame" x="16" y="98" width="361" height="685"/>
+                                <rect key="frame" x="16" y="110" width="361" height="712"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="whoLikedCell" id="9af-cw-bAN">
@@ -352,13 +351,13 @@
                                 </prototypes>
                             </tableView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Liked by" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EaE-Rt-mp9">
-                                <rect key="frame" x="30" y="64" width="68" height="21"/>
+                                <rect key="frame" x="30" y="76" width="68" height="21"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dy5-BA-0d7">
-                                <rect key="frame" x="332.66666666666669" y="64" width="44.333333333333314" height="21"/>
+                                <rect key="frame" x="332.66666666666669" y="76" width="44.333333333333314" height="21"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -403,7 +402,7 @@
                         <segue destination="KwV-OB-t5C" kind="relationship" relationship="viewControllers" id="Yvg-Da-Qzg"/>
                         <segue destination="lHK-GW-tXs" kind="relationship" relationship="viewControllers" id="qDX-4x-YJd"/>
                         <segue destination="RYB-Vn-461" kind="relationship" relationship="viewControllers" id="6Ig-tc-MWf"/>
-                        <segue destination="m3L-Md-9EX" kind="relationship" relationship="viewControllers" id="ynG-gh-Af7"/>
+                        <segue destination="Y7p-xE-yBy" kind="relationship" relationship="viewControllers" id="ynG-gh-Af7"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="670-tZ-lry" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -434,10 +433,30 @@
             </objects>
             <point key="canvasLocation" x="458.77862595419845" y="-635.91549295774655"/>
         </scene>
+        <!--Profile-->
+        <scene sceneID="xZS-3J-7J4">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Y7p-xE-yBy" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Profile" image="person.crop.circle.fill" catalog="system" id="4dh-gz-qVy"/>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="RuY-6e-VEo"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="ZWr-rV-GWP">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="m3L-Md-9EX" kind="relationship" relationship="rootViewController" id="ORT-eM-ywz"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="oM0-JM-kQO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="461.83206106870227" y="-1410.5633802816901"/>
+        </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="Yvg-Da-Qzg"/>
-        <segue reference="lF3-ya-h8n"/>
+        <segue reference="CqZ-ho-qch"/>
+        <segue reference="6e6-iX-wxE"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="chevron.backward" catalog="system" width="97" height="128"/>
