@@ -170,7 +170,7 @@ extension ProfileVC: MyPhotosCellToProfileVCProtocol {
             
             if let destinationVC = segue.destination as? FeedVC {
                 destinationVC.delegate = self
-                destinationVC.demoEmail = email ?? currentUserEmail
+                destinationVC.visitedUser = email ?? currentUserEmail
             }
             
         }

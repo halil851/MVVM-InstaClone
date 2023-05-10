@@ -46,7 +46,7 @@ class FeedVC: UIViewController, UIAdaptivePresentationControllerDelegate {
     private var lastTabBarIndex = 0
     private var refreshControl = UIRefreshControl()
     private var isScrollingToBottom = false
-    var demoEmail: String? = nil
+    var visitedUser: String? = nil
     var isProfilVisiting = false
     
     weak var delegate: FeedVCtoProfilVCProtocol?
@@ -56,14 +56,13 @@ class FeedVC: UIViewController, UIAdaptivePresentationControllerDelegate {
         super.viewDidLoad()
         initialSetup()
         Task{
-            await viewModel.getDataFromFirestore(tableView, pagination: true, getNewOnes: true, whosePost: demoEmail)
+            await viewModel.getDataFromFirestore(tableView, pagination: true, getNewOnes: true, whosePost: visitedUser)
         }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.setNavigationBarHidden(true, animated: false)
         dismissButton.isHidden = true
-//        if demoEmail != nil { dismissButton.isHidden = false }
         if isProfilVisiting { dismissButton.isHidden = false }
         
         
@@ -71,7 +70,6 @@ class FeedVC: UIViewController, UIAdaptivePresentationControllerDelegate {
     override func viewWillDisappear(_ animated: Bool) {
         navigationController?.setNavigationBarHidden(false, animated: false)
         dismissButton.isHidden = true
-//        if demoEmail != nil { delegate?.reloadAfterDismissModalPresentation() }
         if isProfilVisiting { delegate?.reloadAfterDismissModalPresentation() }
         
     }
@@ -80,7 +78,7 @@ class FeedVC: UIViewController, UIAdaptivePresentationControllerDelegate {
     //MARK: - IBActions
     @IBAction func dismissTap(_ sender: UIButton) {
         dismiss(animated: true)
-        demoEmail = nil
+        visitedUser = nil
         isProfilVisiting = false
         delegate?.reloadAfterDismissModalPresentation()
     }
@@ -88,7 +86,7 @@ class FeedVC: UIViewController, UIAdaptivePresentationControllerDelegate {
     
     //MARK: - Functions
     private func initialSetup() {
-        if demoEmail != nil {isProfilVisiting = true }
+        if visitedUser != nil {isProfilVisiting = true }
         tabBarController?.delegate = self
         tableView.delegate = self
         tableView.dataSource = self
@@ -123,7 +121,6 @@ class FeedVC: UIViewController, UIAdaptivePresentationControllerDelegate {
     //MARK: - Refresh Control
     // Get data and stop refreshing
      @objc func refreshTableView() {
-//         guard demoEmail == nil else {
          guard !isProfilVisiting else {
              self.refreshControl.endRefreshing()
              return}
@@ -132,7 +129,7 @@ class FeedVC: UIViewController, UIAdaptivePresentationControllerDelegate {
          
          Task{ // Without Task {} You get Error
              // Refresh Data
-             await viewModel.getDataFromFirestore(tableView, limit: 5, pagination: false, getNewOnes: true, whosePost: demoEmail)
+             await viewModel.getDataFromFirestore(tableView, limit: 5, pagination: false, getNewOnes: true, whosePost: visitedUser)
              
              DispatchQueue.main.async {
                  self.refreshControl.endRefreshing()
@@ -168,11 +165,10 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
                      ids: viewModel.ids,
                      whoLikeIt: viewModel.whoLiked,
                      storageID: viewModel.storageID,
-                     demoEmail: demoEmail)
+                     demoEmail: visitedUser)
         
         cell.dateLabel.text = viewModel.uploadDate(indexRow: indexPath.row)
         cell.smallProfilePicture.image = viewModel.profilePictureSDictionary[email]
-//        if demoEmail != nil {cell.optionsOutlet.isHidden = viewModel.isOptionsButtonHidden(user: email)}
         if isProfilVisiting {cell.optionsOutlet.isHidden = viewModel.isOptionsButtonHidden(user: email)}
         
         return cell
@@ -205,8 +201,7 @@ extension FeedVC: UITabBarControllerDelegate {
         }
         
         if tabBarController.selectedIndex == 0 {
-//            FeedVC.passedEmail = nil
-            demoEmail = nil
+            visitedUser = nil
             isProfilVisiting = false
             FeedViewModel.indexPath = nil
             dismissButton.isHidden = true
@@ -311,7 +306,7 @@ extension FeedVC: UIScrollViewDelegate {
 
             self.tableView.tableFooterView = self.createSpinnerFooter()
             Task {
-                await self.viewModel.getDataFromFirestore(self.tableView, limit: 4, pagination: true, whosePost: demoEmail)
+                await self.viewModel.getDataFromFirestore(self.tableView, limit: 4, pagination: true, whosePost: visitedUser)
 
                 DispatchQueue.global().asyncAfter(deadline: .now()+2, execute: {
                     DispatchQueue.main.async { [self] in

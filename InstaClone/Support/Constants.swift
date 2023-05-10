@@ -33,5 +33,3 @@ struct K {
     }
     
 }
-
-var isFirstRefreshAfterUploading = false

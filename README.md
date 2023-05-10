@@ -6,7 +6,12 @@ Instagram clone app.
 
 * MVVM Design Pattern  
 * UIKit - Storyboard
-* UICollectionView
+* UICollectionView - UITableView
+* Reusable Views
+* Protocols - Delegates
+* Async - Await Functions
+* UITableViewCell with nib
+* UICollectionViewCell with nib
     
 ### 3rd Party Libraries with Swift Package Manager
 * SDWebImage 
@@ -18,14 +23,19 @@ Instagram clone app.
      
 ### Features
 * Pagination
+* Dark and Light mode support
+* Photo filters
+* Pull to refresh
+* Dynamic views based on keyboard status
+* Dynamic Tableview Cells based on image size and comment legth
 * Profile page
+* Delete own post at profile page
+* All post of a specific user
 * Double tap to like and undo like
 * Pinch to zoom in and out 
-* Dynamic Tableview Cells based on image size and comment legth
 * Like counting
-* Who liked
-* Dark mode
-* Delete own post
+* Like list
+
    
 
 ---

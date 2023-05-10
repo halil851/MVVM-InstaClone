@@ -138,7 +138,7 @@
                                 <color key="tintColor" systemColor="labelColor"/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lPp-hg-8LZ">
-                                <rect key="frame" x="80" y="484.66666666666669" width="77" height="35.000000000000057"/>
+                                <rect key="frame" x="80" y="501.66666666666674" width="77" height="35"/>
                                 <color key="tintColor" systemColor="systemRedColor"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="Cancel"/>
@@ -147,7 +147,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A1C-H5-XuG">
-                                <rect key="frame" x="234.33333333333334" y="484.66666666666669" width="78.666666666666657" height="35.000000000000057"/>
+                                <rect key="frame" x="234.33333333333334" y="501.66666666666674" width="78.666666666666657" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="Upload"/>
                                 <connections>
@@ -155,7 +155,7 @@
                                 </connections>
                             </button>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="I1T-uv-kN7">
-                                <rect key="frame" x="16" y="412" width="361" height="42.666666666666686"/>
+                                <rect key="frame" x="16" y="412" width="361" height="59.666666666666686"/>
                                 <color key="backgroundColor" systemColor="systemFillColor"/>
                                 <color key="textColor" systemColor="labelColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -179,7 +179,7 @@
                             <constraint firstItem="j6W-p2-aHs" firstAttribute="leading" secondItem="VJy-D0-UW7" secondAttribute="leading" id="27v-BS-fmx"/>
                             <constraint firstItem="j6W-p2-aHs" firstAttribute="top" secondItem="VJy-D0-UW7" secondAttribute="top" id="Gjg-3I-crg"/>
                             <constraint firstItem="A1C-H5-XuG" firstAttribute="top" secondItem="I1T-uv-kN7" secondAttribute="bottom" constant="30" id="Gyc-xG-q2u"/>
-                            <constraint firstItem="I1T-uv-kN7" firstAttribute="height" secondItem="iaM-4S-m3t" secondAttribute="height" multiplier="0.05" id="UcZ-b5-1MZ"/>
+                            <constraint firstItem="I1T-uv-kN7" firstAttribute="height" secondItem="iaM-4S-m3t" secondAttribute="height" multiplier="0.07" id="UcZ-b5-1MZ"/>
                             <constraint firstItem="VJy-D0-UW7" firstAttribute="trailing" secondItem="A1C-H5-XuG" secondAttribute="trailing" constant="80" id="XXk-uR-AHA"/>
                             <constraint firstItem="VJy-D0-UW7" firstAttribute="trailing" secondItem="I1T-uv-kN7" secondAttribute="trailing" constant="16" id="jFs-gp-Yp3"/>
                             <constraint firstItem="I1T-uv-kN7" firstAttribute="top" secondItem="j6W-p2-aHs" secondAttribute="bottom" constant="40" id="k1x-BK-VmY"/>
@@ -249,11 +249,11 @@
             <objects>
                 <viewController id="m3L-Md-9EX" customClass="ProfileVC" customModule="InstaClone" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="sUa-Vk-6Wi">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ejs-hH-INL" customClass="ReusableView" customModule="InstaClone" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="44" width="393" height="798"/>
+                                <rect key="frame" x="0.0" y="44" width="393" height="774"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
                         </subviews>
@@ -333,11 +333,11 @@
             <objects>
                 <viewController id="rch-sG-FMz" customClass="LikeListVC" customModule="InstaClone" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="0vl-fO-4y0">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Qmw-Uq-0Dt">
-                                <rect key="frame" x="16" y="110" width="361" height="712"/>
+                                <rect key="frame" x="16" y="157" width="361" height="641"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="whoLikedCell" id="9af-cw-bAN">
@@ -351,13 +351,13 @@
                                 </prototypes>
                             </tableView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Liked by" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EaE-Rt-mp9">
-                                <rect key="frame" x="30" y="76" width="68" height="21"/>
+                                <rect key="frame" x="30" y="123" width="68" height="21"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dy5-BA-0d7">
-                                <rect key="frame" x="332.66666666666669" y="76" width="44.333333333333314" height="21"/>
+                                <rect key="frame" x="332.66666666666669" y="123" width="44.333333333333314" height="21"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>

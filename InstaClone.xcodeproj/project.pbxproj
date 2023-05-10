@@ -175,9 +175,9 @@
 		A9DFEE1129BB7ED20059C3A7 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				A9453BEC29CCAC0F00A62DB0 /* SignInVC.swift */,
 				A9BA9D1429F6BE85001CF6AB /* Cells */,
 				A991F1ED2A00E1B800B41781 /* Reusable Profile Page */,
+				A9453BEC29CCAC0F00A62DB0 /* SignInVC.swift */,
 				A9DFEE0F29BB7E9D0059C3A7 /* FeedVC.swift */,
 				A9BA9D1529F6C418001CF6AB /* ProfileVC.swift */,
 				A9E2B69229D467F8008B1118 /* LikeListVC.swift */,
