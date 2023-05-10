@@ -7,6 +7,7 @@
 
 import Firebase
 import FirebaseStorage
+import UIKit.UIImage
 
 var currentUserEmail: String = Auth.auth().currentUser?.email ?? "No One"
 

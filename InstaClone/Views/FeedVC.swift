@@ -110,13 +110,16 @@ class FeedVC: UIViewController {
              self.refreshControl.endRefreshing()
              return}
          
+         self.tableView.setContentOffset(CGPointZero, animated: true)
+         
          Task{ // Without Task {} You get Error
              // Refresh Data
-             await viewModel.getDataFromFirestore(tableView, limit: 5, pagination: false, getNewOnes: true,whosePost: FeedVC.passedEmail)
-             // Stop Refreshing
+             await viewModel.getDataFromFirestore(tableView, limit: 5, pagination: false, getNewOnes: true, whosePost: FeedVC.passedEmail)
+             
              DispatchQueue.main.async {
                  self.refreshControl.endRefreshing()
              }
+             
          }
     }
     
@@ -125,13 +128,16 @@ class FeedVC: UIViewController {
 //MARK: - Tableview Operations
 extension FeedVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        print("images count: \(viewModel.images.count)")
         return viewModel.images.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: K.Cell, for: indexPath) as? FeedCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: K.Cell, for: indexPath) as? FeedCell,
+              viewModel.emails.isEmpty == false else {
             return UITableViewCell()
         }
+        
         let email = viewModel.emails[indexPath.row]
         cell.delegate = self
         cell.userImage.image = viewModel.images[indexPath.row]
@@ -153,6 +159,13 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        print(indexPath.row)
+        guard viewModel.comments.isEmpty == false,
+              viewModel.emails.isEmpty == false else {
+            print("comments and emails are empty")
+            return 700
+        }
+        
         let charNumber = viewModel.comments[indexPath.row].count + viewModel.emails[indexPath.row].count
         let coefficient = Double(charNumber) / Double(45) //45 is allowed char number of a row
         let height: Double = Double(coefficient * 20)  // 20 is a row height
@@ -269,20 +282,20 @@ extension FeedVC: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard viewModel.emails.count > 0 else {return} // Means there is no post on the screen yet. So avoid Scrolling Down.
         guard !viewModel.isPaginating else {return} //
-         
+
         let position = scrollView.contentOffset.y
         if position > (tableView.contentSize.height - 150 - scrollView.frame.size.height) {
-            
+
             guard !isScrollingToBottom else {return}
             isScrollingToBottom = true
-            
+
             self.tableView.tableFooterView = self.createSpinnerFooter()
             Task {
                 await self.viewModel.getDataFromFirestore(self.tableView, limit: 4, pagination: true, whosePost: FeedVC.passedEmail)
-                
+
                 DispatchQueue.global().asyncAfter(deadline: .now()+2, execute: {
                     DispatchQueue.main.async { [self] in
-                        
+
                         tableView.tableFooterView = nil
                     }
                 })

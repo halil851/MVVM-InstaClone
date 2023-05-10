@@ -15,7 +15,7 @@ protocol UploadVCProtocol {
 
 class UploadVC: UIViewController {
     //MARK: - IBOutlets
-    @IBOutlet private weak var commentText: UITextField!
+    @IBOutlet weak var commentTextView: UITextView!
     @IBOutlet private weak var image: UIImageView!
     @IBOutlet private weak var uploadOutlet: UIButton!
     
@@ -26,7 +26,7 @@ class UploadVC: UIViewController {
     //MARK: - Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
-        commentText.delegate = self
+        commentTextView.delegate = self
         setImageInteractable()
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -66,21 +66,21 @@ class UploadVC: UIViewController {
             return
         }
         
-        viewModel.uploadData(image: image, comment: commentText.text ?? "") { err in
+        viewModel.uploadData(image: image, comment: commentTextView.text ?? "") { err in
             if err != nil {
                 self.showAlert(mainTitle: "Error!", message: err?.localizedDescription ?? "Error in metadata", actionButtonTitle: "OK")
             }
         }
         
         //Go to Feed when uploading is done
-        self.commentText.text = ""
+        self.commentTextView.text = ""
         self.image.image = UIImage(named: K.Images.hand)
         self.tabBarController?.selectedIndex = 0
     }
     
     @IBAction func cancelTap(_ sender: UIButton) {
         self.image.image = UIImage(named: K.Images.hand)
-        self.commentText.text = ""
+        self.commentTextView.text = ""
     }
     //MARK: - Functions
     
@@ -125,12 +125,12 @@ extension UploadVC {
 }
 
 //MARK: - Text Field
-extension UploadVC: UITextFieldDelegate {
+extension UploadVC: UITextViewDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        commentText.endEditing(true)
+        commentTextView.endEditing(true)
     }
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        commentText.endEditing(true)
+        commentTextView.endEditing(true)
     }
     
     

@@ -41,19 +41,20 @@ class FeedViewModel: FeedVCProtocol {
         
         if whosePost != nil { // Visiting Person's Page
             print("PERSON VISIT")
+            guard let whosePost = whosePost else {return}
             
             if isFirstProfileVisit {
                 guard let indexRow = FeedViewModel.indexPath?.row else {return}
                 let tempQuery = db.collection(K.Posts)
                     .order(by: K.Document.date, descending: true)
-                    .whereField(K.Document.postedBy, isEqualTo: whosePost!)
+                    .whereField(K.Document.postedBy, isEqualTo: whosePost)
                     .limit(to: indexRow + 2)
                 query = tempQuery
                 
             } else {
                 let tempQuery = db.collection(K.Posts)
                     .order(by: K.Document.date, descending: true)
-                    .whereField(K.Document.postedBy, isEqualTo: whosePost!)
+                    .whereField(K.Document.postedBy, isEqualTo: whosePost)
                     .limit(to: 2)
                 query = tempQuery
             }
@@ -83,7 +84,6 @@ class FeedViewModel: FeedVCProtocol {
         } catch {
             print(error.localizedDescription)
         }
-        
     }
     
     
@@ -116,9 +116,9 @@ class FeedViewModel: FeedVCProtocol {
             await downloadImagesAndAppend(imageUrl)
                         
             let id = document.documentID
+            
             //After upload a post and refresh table, this "if" run and insert the post info to the first place. If not, user can not see the new posted at top.
             if isFirstRefreshAfterUploading, imageUrl == self.firstImageURLAfterUploading {
-
                 getPostInfo { postedBy, storageID, comment, like, date in
                     self.ids.insert(id, at: 0)
                     self.emails.insert(postedBy, at: 0)
@@ -128,7 +128,7 @@ class FeedViewModel: FeedVCProtocol {
                     self.date.insert(dateConfig(date), at: 0)
                     
                     //Reload table, after first snapshot called from Firebase
-                    DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
+                    DispatchQueue.main.asyncAfter(deadline: .now()+2, execute: {
                         tableView.reloadData()
                         
                         if FeedViewModel.indexPath != nil {
@@ -149,6 +149,7 @@ class FeedViewModel: FeedVCProtocol {
                     self.comments.append(comment)
                     self.whoLiked.append(like)
                     self.date.append(dateConfig(date))
+                    print("APPEND")
                     
                     //Reload table, after all data called from Firebase
                     if index == snapshotCount - 1 {
@@ -185,6 +186,8 @@ class FeedViewModel: FeedVCProtocol {
                    let comment = document.get(K.Document.postComment) as? String,
                    let like = document.get(K.Document.likedBy) as? [String],
                    let date = document.get(K.Document.date) as? Timestamp{
+//                    print(comment)
+//                    print(postedBy)
                     
                     self.fetchThumbnail(userMail: postedBy)
                     complation(postedBy, storageID, comment, like, date)

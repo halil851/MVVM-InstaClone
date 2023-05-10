@@ -32,7 +32,7 @@ class SignInVC: UIViewController {
     }
  
     //MARK: - IBActions
-    @IBAction private func signInTap(_ sender: UIButton) {
+    @IBAction private func signInTap(_ sender: UIButton? = nil) {
         // If Textfields are empty then return with an alert.
         guard textFields().isItEmpty == false else {return}
         
@@ -103,8 +103,16 @@ extension SignInVC: UITextFieldDelegate {
         
     }
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        eMailField.endEditing(true)
-        return passwordField.endEditing(true)
+        
+        if textField == eMailField {
+            passwordField.becomeFirstResponder()
+            return false
+        } else {
+            passwordField.endEditing(true)
+            eMailField.endEditing(true)
+            signInTap()
+            return true
+        }
     }
 }
 

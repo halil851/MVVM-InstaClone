@@ -49,7 +49,7 @@ struct UploadViewModel {
                 
                 //Saving to Firestore Database
                 firestoreRef = firestoreDatabase.collection(K.Posts).addDocument(data: firestorePost, completion: { err in
-                    isFirstRefreshAfterUploading = true
+//                    isFirstRefreshAfterUploading = true
                     guard err == nil else {
                         completionHandler(err)
                         return

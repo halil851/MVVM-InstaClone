@@ -24,7 +24,7 @@
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="userEmail" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fdJ-lk-vDq">
-                        <rect key="frame" x="50" y="11" width="280" height="18"/>
+                        <rect key="frame" x="54" y="11" width="276" height="18"/>
                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -85,27 +85,29 @@
                         <state key="normal" title=""/>
                         <buttonConfiguration key="configuration" style="plain" image="ellipsis"/>
                     </button>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="heart.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="wYo-Je-9cQ">
-                        <rect key="frame" x="159" y="163.66666666666666" width="82" height="55.666666666666657"/>
-                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    </imageView>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person.crop.circle" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="VaD-T2-zD1">
-                        <rect key="frame" x="8" y="4.9999999999999982" width="32" height="30.666666666666664"/>
+                        <rect key="frame" x="8" y="3" width="36" height="34.666666666666671"/>
                         <color key="tintColor" systemColor="labelColor"/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="VaD-T2-zD1" secondAttribute="height" multiplier="1:1" id="E7N-tt-jhK"/>
                         </constraints>
                     </imageView>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="heart.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="wYo-Je-9cQ">
+                        <rect key="frame" x="133.66666666666666" y="126.66666666666669" width="132.99999999999997" height="130"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="wYo-Je-9cQ" secondAttribute="height" multiplier="1:1" id="iBL-1O-meH"/>
+                        </constraints>
+                    </imageView>
                 </subviews>
                 <constraints>
                     <constraint firstItem="VaD-T2-zD1" firstAttribute="leading" secondItem="jHz-zr-rtw" secondAttribute="leading" constant="8" id="85q-Rs-hvQ"/>
-                    <constraint firstItem="VaD-T2-zD1" firstAttribute="width" secondItem="wYo-Je-9cQ" secondAttribute="width" multiplier="0.387805" id="B4A-HZ-alA"/>
                     <constraint firstItem="0Sy-dN-4rC" firstAttribute="top" secondItem="1Ff-Z2-wtw" secondAttribute="bottom" constant="7.5" id="CjS-IM-T5q"/>
                     <constraint firstItem="ekE-z8-Hbo" firstAttribute="top" secondItem="jHz-zr-rtw" secondAttribute="topMargin" constant="1" id="FaV-UB-ehv"/>
                     <constraint firstItem="uIv-mj-q94" firstAttribute="leading" secondItem="jHz-zr-rtw" secondAttribute="leadingMargin" id="HOa-nm-zM8"/>
+                    <constraint firstItem="VaD-T2-zD1" firstAttribute="width" secondItem="jHz-zr-rtw" secondAttribute="width" multiplier="0.09" id="ISy-gd-4I3"/>
                     <constraint firstItem="1Ff-Z2-wtw" firstAttribute="top" secondItem="fdJ-lk-vDq" secondAttribute="bottom" constant="12" id="IyH-bD-KYF"/>
                     <constraint firstItem="0Sy-dN-4rC" firstAttribute="leading" secondItem="jHz-zr-rtw" secondAttribute="leadingMargin" id="Lix-rG-cJG"/>
-                    <constraint firstItem="wYo-Je-9cQ" firstAttribute="width" secondItem="1Ff-Z2-wtw" secondAttribute="width" multiplier="0.205333" id="MZ0-wx-Hcm"/>
                     <constraint firstItem="M0f-i9-q26" firstAttribute="top" secondItem="0Sy-dN-4rC" secondAttribute="bottom" constant="5" id="P8w-Uf-erw"/>
                     <constraint firstItem="VaD-T2-zD1" firstAttribute="centerY" secondItem="fdJ-lk-vDq" secondAttribute="centerY" id="S1a-ch-EHX"/>
                     <constraint firstItem="fdJ-lk-vDq" firstAttribute="trailing" secondItem="jHz-zr-rtw" secondAttribute="trailingMargin" constant="-50" id="Se8-lc-Mny"/>
@@ -120,7 +122,7 @@
                     <constraint firstItem="FJ1-a8-n3E" firstAttribute="top" secondItem="M0f-i9-q26" secondAttribute="bottom" constant="4.5" id="fjI-Sf-rYy"/>
                     <constraint firstItem="qwL-SH-5xD" firstAttribute="width" secondItem="jHz-zr-rtw" secondAttribute="width" multiplier="0.055" id="hQP-7M-nat"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="FJ1-a8-n3E" secondAttribute="trailing" constant="20" symbolic="YES" id="kzh-Mm-yEA"/>
-                    <constraint firstItem="wYo-Je-9cQ" firstAttribute="height" secondItem="1Ff-Z2-wtw" secondAttribute="height" multiplier="0.196" id="nJz-4W-hVG"/>
+                    <constraint firstItem="wYo-Je-9cQ" firstAttribute="height" secondItem="jHz-zr-rtw" secondAttribute="height" multiplier="0.25" id="nEs-EW-fby"/>
                     <constraint firstItem="1Ff-Z2-wtw" firstAttribute="width" secondItem="jHz-zr-rtw" secondAttribute="width" id="qAi-q1-yF5"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="M0f-i9-q26" secondAttribute="trailing" constant="20" symbolic="YES" id="txd-5u-yB2"/>
                     <constraint firstAttribute="trailing" secondItem="1Ff-Z2-wtw" secondAttribute="trailing" id="uYN-Ok-kpC"/>
