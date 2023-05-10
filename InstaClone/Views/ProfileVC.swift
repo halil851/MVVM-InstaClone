@@ -37,7 +37,7 @@ class ProfileVC: UIViewController {
         determineProfilePicture()
     }
     override func viewWillDisappear(_ animated: Bool) {
-        FeedVC.passedEmail = nil
+//        FeedVC.passedEmail = nil
     }
     
     //MARK: - IBActions
@@ -166,10 +166,11 @@ extension ProfileVC: MyPhotosCellToProfileVCProtocol {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "PersonsPosts"{
-            FeedVC.passedEmail = email ?? currentUserEmail
+//            FeedVC.passedEmail = email ?? currentUserEmail
             
             if let destinationVC = segue.destination as? FeedVC {
                 destinationVC.delegate = self
+                destinationVC.demoEmail = email ?? currentUserEmail
             }
             
         }

@@ -98,18 +98,18 @@ class FeedCell: UITableViewCell {
     //MARK: - Functions
     
     private func setups() {
-        if FeedVC.passedEmail == nil { clickableUserEmailLabelSetup() }
         clickableLikeCounterLabelSetup()
         doubleTapSetup()
         optionsPopUp()
         pinchToZoomSetup()
     }
-    func getInfo(indexPath: IndexPath, ids: [String], whoLikeIt: [[String]], storageID: [String]) {
+    func getInfo(indexPath: IndexPath, ids: [String], whoLikeIt: [[String]], storageID: [String], demoEmail: String?) {
         self.indexPath = indexPath
         self.ids = ids
         self.wholiked = whoLikeIt
         self.storageID = storageID
         self.temporaryLikedList = wholiked[indexPath.row]
+        if demoEmail == nil { clickableUserEmailLabelSetup() }
     }
     
     //Manage like list without Firebase to show user.

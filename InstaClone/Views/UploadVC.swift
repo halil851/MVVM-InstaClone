@@ -62,7 +62,7 @@ class UploadVC: UIViewController {
     @IBAction private func uploadTap(_ sender: UIButton) {
         
         if image.image == UIImage(named: K.Images.hand) {
-            showAlert(mainTitle: "Select image", message: "Select an image before update!", actionButtonTitle: "OK")
+            showAlert(mainTitle: "Select image", message: "Select an image before sharing!", actionButtonTitle: "OK")
             return
         }
         
