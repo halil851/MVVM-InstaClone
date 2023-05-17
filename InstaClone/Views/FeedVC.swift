@@ -22,7 +22,6 @@ protocol FeedVCProtocol {
     var date: [DateComponents] {get set}
     var isPaginating: Bool {get}
     func getDataFromFirestore(_ tableView: UITableView, limit: Int?, pagination: Bool, getNewOnes: Bool, whosePost: String?) async
-    func fetchThumbnail(userMail: String)
     func likeOrLikes(indexRow: Int) -> String
     func uploadDate(indexRow: Int) -> String
     func isOptionsButtonHidden(user: String) -> Bool

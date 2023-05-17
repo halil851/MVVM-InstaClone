@@ -91,11 +91,6 @@ class FeedViewModel: FeedVCProtocol {
         
         print("\(snapshot.count) data called")
         var newLastSnapshot: DocumentSnapshot? = nil
-        
-//        //When pull to refresh run this works, and remove all arrays to make room for refreshing. When paginating this is not running.
-//        if getNewOnes {
-//            self.removeAllArrays()
-//        }
         postNumberBeforeReloading = emails.count
         
         for (index,document) in snapshot.documents.enumerated() {
@@ -114,36 +109,43 @@ class FeedViewModel: FeedVCProtocol {
         
         let id = document.documentID
         
-        //Add items when reloading. Mostly run this part.
-        getPostInfo { postedBy, storageID, comment, like, date in
-            self.ids.append(id)
-            self.emails.append(postedBy)
-            self.storageID.append(storageID)
-            self.comments.append(comment)
-            self.whoLiked.append(like)
-            self.date.append(dateConfig(date))
+        guard let postedBy = document.get(K.Document.postedBy) as? String,
+              let storageID = document.get(K.Document.storageID) as? String,
+              let comment = document.get(K.Document.postComment) as? String,
+              let like = document.get(K.Document.likedBy) as? [String],
+              let date = document.get(K.Document.date) as? Timestamp else {return}
+        
+        guard let image = await fetchThumbnail(who: postedBy) else {return}
+        self.profilePictureSDictionary.updateValue(image, forKey: postedBy)
+        
+        self.ids.append(id)
+        self.emails.append(postedBy)
+        self.storageID.append(storageID)
+        self.comments.append(comment)
+        self.whoLiked.append(like)
+        self.date.append(dateConfig(date))
+        
+        //Reload table, after all data called from Firebase
+        if index == snapshotCount - 1 {
             
-            //Reload table, after all data called from Firebase
-            if index == snapshotCount - 1 {
-                
-                if getNewOnes, self.postNumberBeforeReloading != 0 { // If reloading
-                    for _ in 0..<self.postNumberBeforeReloading {
-                        self.removePosts(index: 0)
-                    }
-                }
-                
-                DispatchQueue.main.async {
-                    tableView.reloadData()
-                    
-                    if FeedViewModel.indexPath != nil {
-                        tableView.scrollToRow(at: FeedViewModel.indexPath!, at: .top, animated: false)
-                        FeedViewModel.indexPath = nil
-                        self.isFirstProfileVisit = false
-                    }
-                    self.isPaginating = false
+            if getNewOnes, self.postNumberBeforeReloading != 0 { // If reloading
+                for _ in 0..<self.postNumberBeforeReloading {
+                    self.removePosts(index: 0)
                 }
             }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
+                tableView.reloadData()
+                
+                if FeedViewModel.indexPath != nil {
+                    tableView.scrollToRow(at: FeedViewModel.indexPath!, at: .top, animated: false)
+                    FeedViewModel.indexPath = nil
+                    self.isFirstProfileVisit = false
+                }
+                self.isPaginating = false
+            })
         }
+        
         
         func dateConfig(_ date: Timestamp) -> DateComponents {
             let uploadDate = Date(timeIntervalSince1970: TimeInterval(date.seconds))
@@ -153,21 +155,6 @@ class FeedViewModel: FeedVCProtocol {
             let timeDifference = calendar.dateComponents([.year, .weekOfMonth, .month, .day, .hour, .minute], from: uploadDate, to: now)
             return timeDifference
         }
-        
-        //Safely Unwrap informations from Firebase
-        func getPostInfo(complation: @escaping(_ postedBy: String, _ storageID: String, _ comment: String, _ like: [String], _ date: Timestamp)->Void){
-            if let postedBy = document.get(K.Document.postedBy) as? String,
-               let storageID = document.get(K.Document.storageID) as? String,
-               let comment = document.get(K.Document.postComment) as? String,
-               let like = document.get(K.Document.likedBy) as? [String],
-               let date = document.get(K.Document.date) as? Timestamp{
-                
-                self.fetchThumbnail(userMail: postedBy)
-                complation(postedBy, storageID, comment, like, date)
-            }
-        }
-        
-        
     }
     
     private func downloadImagesAndAppend(_ imageURL: String) async {
@@ -195,47 +182,32 @@ class FeedViewModel: FeedVCProtocol {
     }
     
     
-    func fetchThumbnail(userMail: String) {
-        
-        getProfilePicture(who: userMail) {  image, _ in
-            self.profilePictureSDictionary.updateValue(image, forKey: userMail)
-        }
-        
-    }
-    
-    
-    func getProfilePicture(who: String = currentUserEmail, isRequestFromProfilePage: Bool = false, completion: @escaping (UIImage, String?)-> Void) {
+    func fetchThumbnail(who: String = currentUserEmail) async -> UIImage? {
         
         let query = db.collection(K.profilePictures)
             .whereField(K.Document.postedBy, isEqualTo: who)
         
-        
-        query.getDocuments { snapshot, err in
-            if err != nil {
-                print(err.debugDescription)
-                return}
-            
-            guard let snapshot = snapshot else {
-                print(err.debugDescription)
-                return}
-            
-            guard let imageUrlString = snapshot.documents.first?.get(K.Document.imageUrl) as? String else {return}
+        do {
+            let snapshot = try await query.getDocuments()
+            guard let imageUrlString = snapshot.documents.first?.get(K.Document.imageUrl) as? String else {return nil}
             let imageURL = URL(string: imageUrlString)
-            
-            guard let id = snapshot.documents.first?.documentID else {return}
-            
-            SDWebImageManager.shared.loadImage(with: imageURL, progress: nil) { image, data, error, cacheType, finished, _ in
-                if let error = error {
-                    print("Error downloading image: \(error.localizedDescription)")
-                    return
+            return await withCheckedContinuation { continuation in
+                SDWebImageManager.shared.loadImage(with: imageURL, progress: nil) { image, data, error, cacheType, finished, _ in
+                    if let error = error {
+                        print("Error downloading image: \(error.localizedDescription)")
+                        return
+                    }
+                    
+                    guard let image1 = image else {return}
+                    continuation.resume(returning: (image1))
                 }
-                
-                guard let image = image else {return}
-                completion(image,id)
-                
             }
+        } catch {
+            print(error.localizedDescription)
+            return nil
         }
     }
+    
     func removePosts(index: Int) {
         self.emails.remove(at: index)
         self.comments.remove(at: index)
@@ -245,7 +217,6 @@ class FeedViewModel: FeedVCProtocol {
         self.date.remove(at: index)
         self.images.remove(at: index)
         self.imagesHeights.remove(at: index)
-        
     }
     
 }
@@ -311,6 +282,3 @@ extension FeedViewModel {
         return true
     }
 }
-
-
-
