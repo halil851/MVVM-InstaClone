@@ -27,6 +27,7 @@ protocol FeedVCProtocol {
     func uploadDate(indexRow: Int) -> String
     func isOptionsButtonHidden(user: String) -> Bool
     var profilePictureSDictionary: [String:UIImage] {get}
+    func removePosts(index: Int)
 }
 
 extension FeedVCProtocol {
@@ -124,9 +125,7 @@ class FeedVC: UIViewController, UIAdaptivePresentationControllerDelegate {
          guard !isProfilVisiting else {
              self.refreshControl.endRefreshing()
              return}
-         
-         self.tableView.setContentOffset(CGPointZero, animated: true)
-         
+                  
          Task{ // Without Task {} You get Error
              // Refresh Data
              await viewModel.getDataFromFirestore(tableView, limit: 5, pagination: false, getNewOnes: true, whosePost: visitedUser)
@@ -143,7 +142,6 @@ class FeedVC: UIViewController, UIAdaptivePresentationControllerDelegate {
 //MARK: - Tableview Operations
 extension FeedVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print("post count: \(viewModel.images.count)")
         return viewModel.images.count
     }
     
@@ -213,22 +211,15 @@ extension FeedVC: UITabBarControllerDelegate {
 //MARK: - FeedCellToFeedVCProtocol
 extension FeedVC: FeedCellToFeedVCProtocol {
     
-    func deleteAIndex(indexPaths: [IndexPath]) {
+    func deleteAIndex(indexPaths: [IndexPath]) async {
         guard let indexPath = indexPaths.first?.row else {return}
         
-        viewModel.comments.remove(at: indexPath)
-        viewModel.date.remove(at: indexPath)
-        viewModel.emails.remove(at: indexPath)
-        viewModel.ids.remove(at: indexPath)
-        viewModel.images.remove(at: indexPath)
-        viewModel.storageID.remove(at: indexPath)
-        viewModel.whoLiked.remove(at: indexPath)
-        viewModel.imagesHeights.remove(at: indexPath)
+        viewModel.removePosts(index: indexPath)
                 
         tableView.beginUpdates()
         tableView.deleteRows(at: indexPaths, with: .left) //Animate to left when deleting
         tableView.endUpdates()
-        tableView.reloadData()
+        await viewModel.getDataFromFirestore(tableView, pagination: true, getNewOnes: false, whosePost: visitedUser)
     }
     
     func manageUIChanges(action: Action,_ indexRow: Int) {
@@ -296,7 +287,7 @@ extension FeedVC: UIScrollViewDelegate {
     // Trigger when scroll down
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard viewModel.emails.count > 0 else {return} // Means there is no post on the screen yet. So avoid Scrolling Down.
-        guard !viewModel.isPaginating else {return} //
+        guard !viewModel.isPaginating else {return}
 
         let position = scrollView.contentOffset.y
         if position > (tableView.contentSize.height - 150 - scrollView.frame.size.height) {

@@ -28,6 +28,7 @@ class FeedViewModel: FeedVCProtocol {
     private let pageSize = 5
     private var lastDocumentSnapshot: DocumentSnapshot? = nil
     private var isFirstProfileVisit = true
+    private var postNumberBeforeReloading = Int()
     
     static var indexPath: IndexPath? = nil
     
@@ -37,7 +38,6 @@ class FeedViewModel: FeedVCProtocol {
         if pagination {
             isPaginating = true
         }
-        
         
         if whosePost != nil { // Visiting Person's Page
             print("PERSON VISIT")
@@ -92,21 +92,22 @@ class FeedViewModel: FeedVCProtocol {
         print("\(snapshot.count) data called")
         var newLastSnapshot: DocumentSnapshot? = nil
         
-        //When pull to refresh run this works, and remove all arrays to make room for refreshing. When paginating this is not running.
-        if getNewOnes {
-            self.removeAllArrays()
-        }
+//        //When pull to refresh run this works, and remove all arrays to make room for refreshing. When paginating this is not running.
+//        if getNewOnes {
+//            self.removeAllArrays()
+//        }
+        postNumberBeforeReloading = emails.count
         
         for (index,document) in snapshot.documents.enumerated() {
             
-            await append(document, tableView, snapshotCount: snapshot.count, index: index)
+            await append(document, tableView, snapshotCount: snapshot.count, index: index, getNewOnes: getNewOnes)
             newLastSnapshot = document
         }
         return newLastSnapshot
     }
     
     
-    private func append(_ document: QueryDocumentSnapshot, _ tableView: UITableView, snapshotCount: Int, index: Int) async {
+    private func append(_ document: QueryDocumentSnapshot, _ tableView: UITableView, snapshotCount: Int, index: Int, getNewOnes: Bool) async {
         guard let imageUrl = document.get(K.Document.imageUrl) as? String  else { return }
         //Appending start first with downloading images. When ONE image downloaded, next others.
         await downloadImagesAndAppend(imageUrl)
@@ -124,7 +125,14 @@ class FeedViewModel: FeedVCProtocol {
             
             //Reload table, after all data called from Firebase
             if index == snapshotCount - 1 {
-                DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
+                
+                if getNewOnes, self.postNumberBeforeReloading != 0 { // If reloading
+                    for _ in 0..<self.postNumberBeforeReloading {
+                        self.removePosts(index: 0)
+                    }
+                }
+                
+                DispatchQueue.main.async {
                     tableView.reloadData()
                     
                     if FeedViewModel.indexPath != nil {
@@ -133,7 +141,7 @@ class FeedViewModel: FeedVCProtocol {
                         self.isFirstProfileVisit = false
                     }
                     self.isPaginating = false
-                })
+                }
             }
         }
         
@@ -228,15 +236,16 @@ class FeedViewModel: FeedVCProtocol {
             }
         }
     }
-    private func removeAllArrays() {
-        self.emails.removeAll()
-        self.comments.removeAll()
-        self.ids.removeAll()
-        self.storageID.removeAll()
-        self.whoLiked.removeAll()
-        self.date.removeAll()
-        self.images.removeAll()
-        self.imagesHeights.removeAll()
+    func removePosts(index: Int) {
+        self.emails.remove(at: index)
+        self.comments.remove(at: index)
+        self.ids.remove(at: index)
+        self.storageID.remove(at: index)
+        self.whoLiked.remove(at: index)
+        self.date.remove(at: index)
+        self.images.remove(at: index)
+        self.imagesHeights.remove(at: index)
+        
     }
     
 }

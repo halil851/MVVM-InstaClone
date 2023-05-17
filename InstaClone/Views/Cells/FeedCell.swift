@@ -19,7 +19,7 @@ protocol FeedCellToFeedVCProtocol {
     func performSegue(cellIndex: Int, likeList: [String], likeCount: String)
     func showAlert(alert: UIAlertController)
     func manageUIChanges(action: Action,_ indexRow: Int)
-    func deleteAIndex(indexPaths: [IndexPath])
+    func deleteAIndex(indexPaths: [IndexPath]) async
     func goToVisitProfile(with userEmail: String?, indexRow: Int)
 }
 
@@ -147,7 +147,9 @@ class FeedCell: UITableViewCell {
             let cancel = UIAlertAction(title: "Cancel", style: .default)
             let delete = UIAlertAction(title: "DELETE", style: .destructive) {_ in
                 self.viewModel.deletePost(id: self.ids[self.indexPath.row], storageID: self.storageID[self.indexPath.row])
-                self.delegate?.deleteAIndex(indexPaths: [self.indexPath])
+                Task{
+                    await self.delegate?.deleteAIndex(indexPaths: [self.indexPath])
+                }
             }
             alert.addAction(delete)
             alert.addAction(cancel)
