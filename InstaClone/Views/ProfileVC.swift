@@ -88,7 +88,7 @@ class ProfileVC: UIViewController {
     
     private func ownerVisiting() async {
         do{
-            let (fetchedImage, id) = try await viewModel.getProfilePicture()
+            let (fetchedImage, id) = try await ProfileViewModel.getProfilePicture()
             self.id = id
             self.reusableView.profilePicture.image = fetchedImage
             self.reusableView.userEmail.text = currentUserEmail
@@ -146,7 +146,7 @@ extension ProfileVC: ReusableViewToProfileVCProtocol {
                 
                 reusableView.profilePicture.image = image
                 await viewModel.addProfilePicture(image: reusableView.profilePicture)
-                let (_, id) = try await viewModel.getProfilePicture()
+                let (_, id) = try await ProfileViewModel.getProfilePicture()
                 self.id = id
             }
         } catch {
@@ -166,7 +166,6 @@ extension ProfileVC: MyPhotosCellToProfileVCProtocol {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "PersonsPosts"{
-//            FeedVC.passedEmail = email ?? currentUserEmail
             
             if let destinationVC = segue.destination as? FeedVC {
                 destinationVC.delegate = self

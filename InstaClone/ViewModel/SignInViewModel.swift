@@ -21,7 +21,7 @@ struct SignInViewModel: SignInVCProtocol {
     func signUpManager(email: String, password: String, completionHandler: @escaping(Error?)->() )  {
         Auth.auth().createUser(withEmail: email, password: password) { authData, err in
             if err == nil {
-                print("hata yok default foto eklenecek")
+                print("Default photo will upload.")
                 addDefaultProfilePicture(userName: email)
             }
             completionHandler(err)
@@ -64,7 +64,7 @@ struct SignInViewModel: SignInVCProtocol {
                     guard err == nil else {
                         return
                     }
-                    print("Default Profile Picture has successfully updated to Firebase server")
+                    print("Default Profile Picture has successfully uploaded to Firebase server")
                 })
                 
             }

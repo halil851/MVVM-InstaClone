@@ -70,7 +70,6 @@ class FeedViewModel: FeedVCProtocol {
         }
         guard var query = query else {return}
         
-        
         //If Firebase datas have been called before, and not refreshing. It gets last post and adds ONLY new ones.
         if let lastSnapshot = lastDocumentSnapshot, !getNewOnes {
             query = query.start(afterDocument: lastSnapshot)
@@ -115,8 +114,12 @@ class FeedViewModel: FeedVCProtocol {
               let like = document.get(K.Document.likedBy) as? [String],
               let date = document.get(K.Document.date) as? Timestamp else {return}
         
-        guard let image = await fetchThumbnail(who: postedBy) else {return}
-        self.profilePictureSDictionary.updateValue(image, forKey: postedBy)
+        do {
+            let (fetchedImage, _) = try await ProfileViewModel.getProfilePicture(who: postedBy)
+            self.profilePictureSDictionary.updateValue(fetchedImage, forKey: postedBy)
+        } catch {
+            print(error.localizedDescription)
+        }
         
         self.ids.append(id)
         self.emails.append(postedBy)
@@ -145,7 +148,6 @@ class FeedViewModel: FeedVCProtocol {
                 self.isPaginating = false
             })
         }
-        
         
         func dateConfig(_ date: Timestamp) -> DateComponents {
             let uploadDate = Date(timeIntervalSince1970: TimeInterval(date.seconds))
@@ -179,33 +181,6 @@ class FeedViewModel: FeedVCProtocol {
         let newHeight = imageSize.height / coefficient
         
         imagesHeights.append(newHeight)
-    }
-    
-    
-    func fetchThumbnail(who: String = currentUserEmail) async -> UIImage? {
-        
-        let query = db.collection(K.profilePictures)
-            .whereField(K.Document.postedBy, isEqualTo: who)
-        
-        do {
-            let snapshot = try await query.getDocuments()
-            guard let imageUrlString = snapshot.documents.first?.get(K.Document.imageUrl) as? String else {return nil}
-            let imageURL = URL(string: imageUrlString)
-            return await withCheckedContinuation { continuation in
-                SDWebImageManager.shared.loadImage(with: imageURL, progress: nil) { image, data, error, cacheType, finished, _ in
-                    if let error = error {
-                        print("Error downloading image: \(error.localizedDescription)")
-                        return
-                    }
-                    
-                    guard let image1 = image else {return}
-                    continuation.resume(returning: (image1))
-                }
-            }
-        } catch {
-            print(error.localizedDescription)
-            return nil
-        }
     }
     
     func removePosts(index: Int) {

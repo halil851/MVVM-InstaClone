@@ -77,8 +77,8 @@ class ProfileViewModel {
         
     }
      
-    func getProfilePicture(who: String = currentUserEmail) async throws -> (UIImage, String) {
-            
+    static func getProfilePicture(who: String = currentUserEmail) async throws -> (UIImage, String) {
+        let db = Firestore.firestore()
         let query = db.collection(K.profilePictures)
             .whereField(K.Document.postedBy, isEqualTo: who)
 
