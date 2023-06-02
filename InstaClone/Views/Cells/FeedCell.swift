@@ -53,9 +53,7 @@ class FeedCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         setups()
-        // Make ImageView Circle
         smallProfilePicture.layer.cornerRadius = smallProfilePicture.frame.size.width / 2
-        smallProfilePicture.clipsToBounds = true
     }
     
     //MARK: - IBActions

@@ -29,12 +29,12 @@ class SettingsVC: UIViewController {
     
     //MARK: - IBActions
     @IBAction private func signOut(_ sender: UIButton) {
-        viewModel.signOut { success, err in
+        viewModel.signOut { [weak self] success, err in
             if err != nil {
-                self.showAlert(mainTitle: "Error!", message: err?.localizedDescription ?? "Error while signing out.", actionButtonTitle: "OK")
+                self?.showAlert(mainTitle: "Error!", message: err?.localizedDescription ?? "Error while signing out.", actionButtonTitle: "OK")
                 return
             }
-            self.performSegue(withIdentifier: "toSignIn", sender: nil)
+            self?.performSegue(withIdentifier: "toSignIn", sender: nil)
             
         }
     }

@@ -37,19 +37,26 @@ struct UploadViewModel {
                 
                 guard let imageUrl = url?.absoluteString else {return}
                 
+                let post = Post(postedBy: currentUserEmail,
+                                comment: comment,
+                                imageUrlString: imageUrl,
+                                likedBy: [],
+                                date: FieldValue.serverTimestamp(),
+                                storageID: "\(uuid).jpg")
+                
                 //DATABASE
                 let firestoreDatabase = Firestore.firestore()
                 var firestoreRef: DocumentReference? = nil
-                let firestorePost: [String: Any] = [K.Document.imageUrl   : imageUrl,
-                                                    K.Document.postedBy   : currentUserEmail,
-                                                    K.Document.postComment: comment,
-                                                    K.Document.date       : FieldValue.serverTimestamp(),
-                                                    K.Document.likedBy    : [],
-                                                    K.Document.storageID  : "\(uuid).jpg"]
+               
+                let firestorePost: [String: Any] = [K.Document.imageUrl   : post.imageUrlString,
+                                                    K.Document.postedBy   : post.postedBy,
+                                                    K.Document.postComment: post.comment,
+                                                    K.Document.date       : post.date,
+                                                    K.Document.likedBy    : post.likedBy,
+                                                    K.Document.storageID  : post.storageID]
                 
                 //Saving to Firestore Database
                 firestoreRef = firestoreDatabase.collection(K.Posts).addDocument(data: firestorePost, completion: { err in
-//                    isFirstRefreshAfterUploading = true
                     guard err == nil else {
                         completionHandler(err)
                         return

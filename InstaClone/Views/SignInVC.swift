@@ -36,14 +36,16 @@ class SignInVC: UIViewController {
         // If Textfields are empty then return with an alert.
         guard textFields().isItEmpty == false else {return}
         
-        viewModel.singInManager(email: textFields().email, password: textFields().password) { err in
+        viewModel.singInManager(email: textFields().user.email,
+                                password: textFields().user.password) { [weak self] err in
             
             if err != nil {
-                self.showAlert(mainTitle: "Error Log In", message: err?.localizedDescription ?? "Error", actionButtonTitle: "OK")
+                self?.showAlert(mainTitle: "Error Log In", message: err?.localizedDescription ?? "Error", actionButtonTitle: "OK")
                 return
             }
-            currentUserEmail = self.textFields().email
-            self.performSegue(withIdentifier: "toFeedVC", sender: nil)
+            guard let email = self?.textFields().user.email else {return}
+            currentUserEmail = email
+            self?.performSegue(withIdentifier: "toFeedVC", sender: nil)
         }
     }
     
@@ -51,13 +53,15 @@ class SignInVC: UIViewController {
         // If Textfields are empty then return with an alert.
         guard textFields().isItEmpty == false else {return}
         
-        viewModel.signUpManager(email: textFields().email, password: textFields().password) { err in
+        viewModel.signUpManager(email: textFields().user.email,
+                                password: textFields().user.password) { [weak self] err in
             if err != nil {
-                self.showAlert(mainTitle: "Error Sign Up", message: err?.localizedDescription ?? "Error", actionButtonTitle: "OK")
+                self?.showAlert(mainTitle: "Error Sign Up", message: err?.localizedDescription ?? "Error", actionButtonTitle: "OK")
                 return
             }
-            currentUserEmail = self.textFields().email
-            self.performSegue(withIdentifier: "toFeedVC", sender: nil)
+            guard let email = self?.textFields().user.email else {return}
+            currentUserEmail = email
+            self?.performSegue(withIdentifier: "toFeedVC", sender: nil)
         }
     }
     
@@ -84,16 +88,19 @@ class SignInVC: UIViewController {
     
     
     // If Textfields are empty then return with an alert.
-    private func textFields() -> (isItEmpty: Bool, email: String, password: String) {
+    private func textFields() -> (isItEmpty: Bool, user: User) {
         guard let email = eMailField.text,
               let password = passwordField.text,
               email != "",
               password != "" else {
             showAlert(mainTitle: "Empty field!", message: "Username or Password is empty.", actionButtonTitle: "OK")
-            return (true, "", "")
+            return (true, User(email: "", password: ""))
         }
-        return (false, email, password)
+        let user = User(email: email, password: password)
+
+        return (false, user)
     }
+    
 }
 
 extension SignInVC: UITextFieldDelegate {

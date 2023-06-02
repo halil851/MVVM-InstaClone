@@ -7,6 +7,7 @@ Instagram clone app.
 * MVVM Design Pattern  
 * UIKit - Storyboard
 * UICollectionView - UITableView
+* Auto Layout
 * Reusable Views
 * Protocols - Delegates
 * Async - Await Functions
