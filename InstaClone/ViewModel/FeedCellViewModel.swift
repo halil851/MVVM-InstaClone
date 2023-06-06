@@ -8,7 +8,7 @@
 import Firebase
 import FirebaseStorage
 
-struct FeedCellViewModel: FeedCellProtocol {
+struct FeedCellViewModel: PostLikeManagerProtocol {
     let db = Firestore.firestore()
     
     func postLikeManager(id: String) {
@@ -29,7 +29,7 @@ struct FeedCellViewModel: FeedCellProtocol {
         
     }
     
-    func isItLiked(likesList: [String]) -> Bool {
+    func isLiked(likesList: [String]) -> Bool {
         
         for user in likesList{
             if user == currentUserEmail{
@@ -46,6 +46,10 @@ struct FeedCellViewModel: FeedCellProtocol {
         return "\(likeCount) like"
     }
     
+}
+
+
+extension FeedCellViewModel: DeletePostProtocol {
     func deletePost(id: String, storageID: String) {
         
         //Delete fields in selected document
@@ -54,7 +58,7 @@ struct FeedCellViewModel: FeedCellProtocol {
                                                         K.Document.postComment: FieldValue.delete(),
                                                         K.Document.date: FieldValue.delete(),
                                                         K.Document.likedBy: FieldValue.delete(),
-                                                        K.Document.storageID: FieldValue.delete(),]) { err in     
+                                                        K.Document.storageID: FieldValue.delete(),]) { err in
             if let err = err {
                 print("Error deleting document: \(err)")
             } else {
@@ -69,9 +73,7 @@ struct FeedCellViewModel: FeedCellProtocol {
             } else {
                 print("Document successfully removed!")
             }
-
         }
-        
         //Delete photo from Firebase storage
         // Get a reference to the storage service using the default Firebase App
         let storage = Storage.storage()
@@ -89,5 +91,4 @@ struct FeedCellViewModel: FeedCellProtocol {
         }
         
     }
-    
 }

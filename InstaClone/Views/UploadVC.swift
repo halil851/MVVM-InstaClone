@@ -8,11 +8,6 @@
 import UIKit
 import YPImagePicker
 
-protocol UploadVCProtocol {
-    func uploadData(image: UIImageView,comment: String , completionHandler: @escaping(Error?)->())
-}
-
-
 class UploadVC: UIViewController {
     //MARK: - IBOutlets
     @IBOutlet weak var commentTextView: UITextView!
@@ -30,8 +25,8 @@ class UploadVC: UIViewController {
         setImageInteractable()
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-        
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         if !isSelectingImage { selectImage() }
     }
@@ -66,9 +61,9 @@ class UploadVC: UIViewController {
             return
         }
         
-        viewModel.uploadData(image: image, comment: commentTextView.text ?? "") { err in
+        viewModel.uploadData(image: image, comment: commentTextView.text ?? "") { [weak self] err in
             if err != nil {
-                self.showAlert(mainTitle: "Error!", message: err?.localizedDescription ?? "Error in metadata", actionButtonTitle: "OK")
+                self?.showAlert(mainTitle: "Error!", message: err?.localizedDescription ?? "Error in metadata", actionButtonTitle: "OK")
             }
         }
         
@@ -132,7 +127,5 @@ extension UploadVC: UITextViewDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         commentTextView.endEditing(true)
     }
-    
-    
 }
 

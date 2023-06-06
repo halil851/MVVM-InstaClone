@@ -7,10 +7,6 @@
 
 import UIKit
 
-protocol SettingVCProtocol {
-    func signOut(completionHandler: @escaping(_ success: Bool, Error?)->())
-}
-
 class SettingsVC: UIViewController {
     //MARK: - IBOutlets
     @IBOutlet weak var currentUser: UILabel!
@@ -41,13 +37,3 @@ class SettingsVC: UIViewController {
     //MARK: - Functions
 
 }
-
-
-
-
-
-
-
-
-
-

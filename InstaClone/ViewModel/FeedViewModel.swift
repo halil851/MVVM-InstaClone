@@ -8,21 +8,15 @@
 import Firebase
 import SDWebImage
 
-class FeedViewModel: FeedVCProtocol {
+class FeedViewModel: FeedVCProtocol, FetchData {
     
-    private let db = Firestore.firestore()
-    
-    var emails = [String]()
-    var comments = [String]()
     var images = [UIImage]()
     var imagesHeights = [CGFloat]()
-    var ids = [String]()
-    var storageID = [String]()
-    var whoLiked = [[String]]()
-    var date = [DateComponents]()
     var profilePictureSDictionary = [String:UIImage]()
     var isPaginating = false
+    var usersPost = [FetchPost]()
     
+    private let db = Firestore.firestore()
     private var query: Query? = nil
     private var firstImageURLAfterUploading = String()
     private let pageSize = 5
@@ -90,18 +84,18 @@ class FeedViewModel: FeedVCProtocol {
         
         print("\(snapshot.count) data called")
         var newLastSnapshot: DocumentSnapshot? = nil
-        postNumberBeforeReloading = emails.count
+        postNumberBeforeReloading = usersPost.count
         
         for (index,document) in snapshot.documents.enumerated() {
             
-            await append(document, tableView, snapshotCount: snapshot.count, index: index, getNewOnes: getNewOnes)
+            await append(with: document, tableView, at: snapshot.count, to: index, getNewOnes: getNewOnes)
             newLastSnapshot = document
         }
         return newLastSnapshot
     }
     
     
-    private func append(_ document: QueryDocumentSnapshot, _ tableView: UITableView, snapshotCount: Int, index: Int, getNewOnes: Bool) async {
+    private func append(with document: QueryDocumentSnapshot, _ tableView: UITableView, at snapshotCount: Int, to index: Int, getNewOnes: Bool) async {
         guard let imageUrl = document.get(K.Document.imageUrl) as? String  else { return }
         //Appending start first with downloading images. When ONE image downloaded, next others.
         await downloadImagesAndAppend(imageUrl)
@@ -111,22 +105,21 @@ class FeedViewModel: FeedVCProtocol {
         guard let postedBy = document.get(K.Document.postedBy) as? String,
               let storageID = document.get(K.Document.storageID) as? String,
               let comment = document.get(K.Document.postComment) as? String,
-              let like = document.get(K.Document.likedBy) as? [String],
-              let date = document.get(K.Document.date) as? Timestamp else {return}
+              let likedBy = document.get(K.Document.likedBy) as? [String],
+              let dateType = document.get(K.Document.date) as? Timestamp else {return}
+        
+        let date = dateConfig(dateType)
+               
+        let fetchedPost = FetchPost(postedBy: postedBy, storageID: storageID, comment: comment, likedBy: likedBy, date: date, id: id)
         
         do {
-            let (fetchedImage, _) = try await ProfileViewModel.getProfilePicture(who: postedBy)
-            self.profilePictureSDictionary.updateValue(fetchedImage, forKey: postedBy)
+            let (fetchedImage, _) = try await ProfileViewModel.getProfilePicture(whose: fetchedPost.postedBy)
+            self.profilePictureSDictionary.updateValue(fetchedImage, forKey: fetchedPost.postedBy)
         } catch {
             print(error.localizedDescription)
         }
         
-        self.ids.append(id)
-        self.emails.append(postedBy)
-        self.storageID.append(storageID)
-        self.comments.append(comment)
-        self.whoLiked.append(like)
-        self.date.append(dateConfig(date))
+        usersPost.append(fetchedPost)
         
         //Reload table, after all data called from Firebase
         if index == snapshotCount - 1 {
@@ -184,12 +177,8 @@ class FeedViewModel: FeedVCProtocol {
     }
     
     func removePosts(index: Int) {
-        self.emails.remove(at: index)
-        self.comments.remove(at: index)
-        self.ids.remove(at: index)
-        self.storageID.remove(at: index)
-        self.whoLiked.remove(at: index)
-        self.date.remove(at: index)
+        
+        self.usersPost.remove(at: index)
         self.images.remove(at: index)
         self.imagesHeights.remove(at: index)
     }
@@ -198,9 +187,9 @@ class FeedViewModel: FeedVCProtocol {
 //MARK: - UI Operations
 extension FeedViewModel {
     //Decide singular or plural
-    func likeOrLikes(indexRow: Int) -> String {
+    func likeOrLikes(at indexRow: Int) -> String {
         
-        let likesCount = whoLiked[indexRow].count
+        let likesCount = usersPost[indexRow].likedBy.count
         if likesCount > 1 {
             return "\(likesCount) likes"
         }
@@ -208,34 +197,34 @@ extension FeedViewModel {
     }
     
     
-    func uploadDate(indexRow: Int) -> String {
+    func uploadDate(at indexRow: Int) -> String {
         //Decide singular or plural and the date
-        guard let year = date[indexRow].year else {return ""}
+        guard let year = usersPost[indexRow].date.year else {return ""}
         if year > 0 {
             return singularPluralDate(date: year, "year")
         }
         
-        guard let month = date[indexRow].month else {return ""}
+        guard let month = usersPost[indexRow].date.month else {return ""}
         if month > 0 {
             return singularPluralDate(date: month, "month")
         }
         
-        guard let week = date[indexRow].weekOfMonth else {return ""}
+        guard let week = usersPost[indexRow].date.weekOfMonth else {return ""}
         if week > 0 {
             return singularPluralDate(date: week, "week")
         }
         
-        guard let day = date[indexRow].day else {return ""}
+        guard let day = usersPost[indexRow].date.day else {return ""}
         if day > 0 {
             return singularPluralDate(date: day, "day")
         }
         
-        guard let hour = date[indexRow].hour else {return ""}
+        guard let hour = usersPost[indexRow].date.hour else {return ""}
         if hour > 0 {
             return singularPluralDate(date: hour, "hour")
         }
         
-        guard let minute = date[indexRow].minute else {return ""}
+        guard let minute = usersPost[indexRow].date.minute else {return ""}
         if minute == 0 {
             return "now"
         }

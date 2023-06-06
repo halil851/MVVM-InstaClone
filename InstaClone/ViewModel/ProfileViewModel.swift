@@ -52,7 +52,7 @@ class ProfileViewModel {
         let imageRef = mediaFolder.child("\(currentUserEmail).jpg")
         
         do{
-            let metaData = try await imageRef.putDataAsync(data)
+            _ = try await imageRef.putDataAsync(data)
             let url = try await imageRef.downloadURL()
             let imageUrl = url.absoluteString
             
@@ -77,10 +77,10 @@ class ProfileViewModel {
         
     }
      
-    static func getProfilePicture(who: String = currentUserEmail) async throws -> (UIImage, String) {
+    static func getProfilePicture(whose: String = currentUserEmail) async throws -> (UIImage, String) {
         let db = Firestore.firestore()
         let query = db.collection(K.profilePictures)
-            .whereField(K.Document.postedBy, isEqualTo: who)
+            .whereField(K.Document.postedBy, isEqualTo: whose)
 
         let snapshot = try await query.getDocuments()
         

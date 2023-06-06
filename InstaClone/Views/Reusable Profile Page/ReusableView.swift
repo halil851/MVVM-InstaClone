@@ -7,11 +7,6 @@
 
 import UIKit
 
-protocol ReusableViewToProfileVCProtocol: AnyObject {
-    func pickerPresent(picker: UIImagePickerController)
-    func addNewProfilePicture(image: UIImage) async
-}
-
 class ReusableView: UIView, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
 
     @IBOutlet weak var userEmail: UILabel!
@@ -23,7 +18,7 @@ class ReusableView: UIView, UIImagePickerControllerDelegate & UINavigationContro
     
     let nibName = "ReusableView"
     
-    weak var delegate: ReusableViewToProfileVCProtocol?
+    weak var delegate: ReusableViewDelegate?
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)

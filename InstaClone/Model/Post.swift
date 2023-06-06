@@ -15,3 +15,12 @@ struct Post {
     let date: FieldValue
     let storageID: String
 }
+
+struct FetchPost {
+    let postedBy: String
+    let storageID: String
+    let comment: String
+    var likedBy: [String]
+    let date: DateComponents
+    let id: String
+}

@@ -7,22 +7,6 @@
 
 import UIKit
 
-protocol FeedCellProtocol {
-    func postLikeManager(id: String)
-    func postDislikeManager(id: String)
-    func isItLiked(likesList: [String]) -> Bool
-    func likeOrLikes(indexRow: Int, likeCount: Int) -> String
-    func deletePost(id: String, storageID: String)
-}
-
-protocol FeedCellToFeedVCProtocol {
-    func performSegue(cellIndex: Int, likeList: [String], likeCount: String)
-    func showAlert(alert: UIAlertController)
-    func manageUIChanges(action: Action,_ indexRow: Int)
-    func deleteAIndex(indexPaths: [IndexPath]) async
-    func goToVisitProfile(with userEmail: String?, indexRow: Int)
-}
-
 class FeedCell: UITableViewCell {
     //MARK: - IBOutlets
     @IBOutlet weak var smallProfilePicture: UIImageView!
@@ -38,16 +22,13 @@ class FeedCell: UITableViewCell {
     @IBOutlet weak var buttons: UIStackView!
     
     //MARK: - Properties
-    private var viewModel: FeedCellProtocol = FeedCellViewModel()
-    private var ids = [String]()
-    private var storageID = [String]()
-    private var indexPath = IndexPath()
-    private var wholiked = [[String]]()
-    var delegate: FeedCellToFeedVCProtocol?
+    private var viewModel = FeedCellViewModel()
+    private var info = GetInfoModel(indexPath: IndexPath(), id: "", whoLiked: [""], storageID: "")
     private var firebaseLikeCount = Int()
     private var temporaryIntArray = [999999]
     private var lastLikeCount = 0
-    private var temporaryLikedList = [String]()
+    private var UILikedList = [String]()
+    var delegate: FeedCellToFeedVCDelegate?
    
     //MARK: - Life Cycles
     override func awakeFromNib() {
@@ -58,38 +39,38 @@ class FeedCell: UITableViewCell {
     
     //MARK: - IBActions
     @IBAction private func likeTap(_ sender: UIButton? = nil) {
-
         for i in temporaryIntArray {
-            if i == indexPath.row {
+            if i == info.indexPath.row {
                 firebaseLikeCount = lastLikeCount
             } else {
-                firebaseLikeCount = wholiked[indexPath.row].count
+                firebaseLikeCount = info.whoLiked.count
             }
         }
-        temporaryLikedList = wholiked[indexPath.row]
+        
+        UILikedList = info.whoLiked
         likeListUIManager()
         
         if likeButtonOutlet.imageView?.image == UIImage(named: K.Images.heartRedFill) {
             likeButtonOutlet.setImage(UIImage(named: K.Images.heartBold), for: .normal)
             likeButtonOutlet.tintColor = .label
-            viewModel.postDislikeManager(id: ids[indexPath.row])
+            viewModel.postDislikeManager(id: info.id)
             firebaseLikeCount -= 1
-            delegate?.manageUIChanges(action: .NoMoreLiking, indexPath.row)
+            delegate?.manageUIChanges(action: .NoMoreLiking, info.indexPath.row)
             
         } else { /// like
             likeButtonOutlet.setImage(UIImage(named: K.Images.heartRedFill), for: .normal)
             likeButtonOutlet.tintColor = .systemRed
-            viewModel.postLikeManager(id: ids[indexPath.row])
+            viewModel.postLikeManager(id: info.id)
             firebaseLikeCount += 1
-            delegate?.manageUIChanges(action: .Like, indexPath.row)
+            delegate?.manageUIChanges(action: .Like, info.indexPath.row)
 
-            temporaryLikedList += [currentUserEmail]
+            UILikedList += [currentUserEmail]
 
         }
         lastLikeCount = firebaseLikeCount
-        likeCounter.text = viewModel.likeOrLikes(indexRow: indexPath.row, likeCount: lastLikeCount)
+        likeCounter.text = viewModel.likeOrLikes(indexRow: info.indexPath.row, likeCount: lastLikeCount)
         
-        temporaryIntArray.append(indexPath.row)        
+        temporaryIntArray.append(info.indexPath.row)
     }
     
     
@@ -101,21 +82,19 @@ class FeedCell: UITableViewCell {
         optionsPopUp()
         pinchToZoomSetup()
     }
-    func getInfo(indexPath: IndexPath, ids: [String], whoLikeIt: [[String]], storageID: [String], demoEmail: String?) {
-        self.indexPath = indexPath
-        self.ids = ids
-        self.wholiked = whoLikeIt
-        self.storageID = storageID
-        self.temporaryLikedList = wholiked[indexPath.row]
-        if demoEmail == nil { clickableUserEmailLabelSetup() }
+    
+    func getInfo(information: GetInfoModel, visitor: String?) {
+        info = information
+        self.UILikedList = info.whoLiked
+        if visitor == nil { clickableUserEmailLabelActivation() }
     }
     
     //Manage like list without Firebase to show user.
     private func likeListUIManager() {
-        for user in temporaryLikedList {
+        for user in UILikedList {
             if user == currentUserEmail {
-                if let deleteIndex = temporaryLikedList.firstIndex(of: user) {
-                    temporaryLikedList.remove(at: deleteIndex)
+                if let deleteIndex = UILikedList.firstIndex(of: user) {
+                    UILikedList.remove(at: deleteIndex)
                 }
             }
         }
@@ -144,9 +123,10 @@ class FeedCell: UITableViewCell {
             let alert = UIAlertController(title: "Would you like to DELETE this post?", message: nil, preferredStyle: .actionSheet)
             let cancel = UIAlertAction(title: "Cancel", style: .default)
             let delete = UIAlertAction(title: "DELETE", style: .destructive) {_ in
-                self.viewModel.deletePost(id: self.ids[self.indexPath.row], storageID: self.storageID[self.indexPath.row])
+
+                self.viewModel.deletePost(id: self.info.id, storageID: self.info.storageID)
                 Task{
-                    await self.delegate?.deleteAIndex(indexPaths: [self.indexPath])
+                    await self.delegate?.deleteAnIndex(indexPaths: [self.info.indexPath])
                 }
             }
             alert.addAction(delete)
@@ -221,18 +201,18 @@ class FeedCell: UITableViewCell {
         let clickLikeCounter = UITapGestureRecognizer(target: self, action: #selector(performSegue))
         likeCounter.addGestureRecognizer(clickLikeCounter)
     }
-    private func clickableUserEmailLabelSetup() {
+    private func clickableUserEmailLabelActivation() {
         userEmailLabel.isUserInteractionEnabled = true
         let clickUserEmailLabel = UITapGestureRecognizer(target: self, action: #selector(visitProfilePage))
         userEmailLabel.addGestureRecognizer(clickUserEmailLabel)
     }
     
     @objc private func visitProfilePage() {
-        delegate?.goToVisitProfile(with: userEmailLabel.text, indexRow: indexPath.row)
+        delegate?.goToVisitProfile(with: userEmailLabel.text, indexRow: info.indexPath.row)
     }
     
     @objc private func performSegue(){
-        delegate?.performSegue(cellIndex: indexPath.row, likeList: temporaryLikedList, likeCount: likeCounter.text ?? "")
+        delegate?.performSegue(cellIndex: info.indexPath.row, likeList: UILikedList, likeCount: likeCounter.text ?? "")
     }
     
     @objc private func doubleTapToLike() {
@@ -256,7 +236,7 @@ class FeedCell: UITableViewCell {
     
     //MARK: Button Image
     func checkIfLiked(likesList: [String]) {
-        if viewModel.isItLiked(likesList: likesList){
+        if viewModel.isLiked(likesList: likesList){
             likeButtonOutlet.setImage(UIImage(named: K.Images.heartRedFill), for: .normal)
             likeButtonOutlet.tintColor = .systemRed
             

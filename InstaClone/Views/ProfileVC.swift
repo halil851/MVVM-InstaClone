@@ -28,16 +28,12 @@ class ProfileVC: UIViewController {
         initialSetup()
 
     }
-
     
     override func viewWillAppear(_ animated: Bool) {
         fetchImages()
         navigationController?.navigationBar.backItem?.title = ""
         email == nil ? isOwnerVisiting = true : ()
         determineProfilePicture()
-    }
-    override func viewWillDisappear(_ animated: Bool) {
-//        FeedVC.passedEmail = nil
     }
     
     //MARK: - IBActions
@@ -138,7 +134,7 @@ extension ProfileVC: UICollectionViewDataSource, UICollectionViewDelegate, UICol
 }
 
 //MARK: - ReusableViewToProfileVCProtocol
-extension ProfileVC: ReusableViewToProfileVCProtocol {
+extension ProfileVC: ReusableViewDelegate {
     
     func addNewProfilePicture(image: UIImage) async {
         do {
@@ -159,7 +155,7 @@ extension ProfileVC: ReusableViewToProfileVCProtocol {
     }
 }
 
-extension ProfileVC: MyPhotosCellToProfileVCProtocol {
+extension ProfileVC: MyPhotosCellToProfileVCDelegate {
     func performSegue() {
         performSegue(withIdentifier: "PersonsPosts", sender: nil)
     }
@@ -169,7 +165,7 @@ extension ProfileVC: MyPhotosCellToProfileVCProtocol {
             
             if let destinationVC = segue.destination as? FeedVC {
                 destinationVC.delegate = self
-                destinationVC.visitedUser = email ?? currentUserEmail
+                destinationVC.visitor = email ?? currentUserEmail
             }
             
         }
@@ -178,7 +174,7 @@ extension ProfileVC: MyPhotosCellToProfileVCProtocol {
     
 }
 
-extension ProfileVC: FeedVCtoProfilVCProtocol {
+extension ProfileVC: ReloadAfterPresentation {
     func reloadAfterDismissModalPresentation() {
         viewWillAppear(true)
     }
@@ -186,18 +182,17 @@ extension ProfileVC: FeedVCtoProfilVCProtocol {
     
 }
 
-//    //MARK: - Header Configurations
-//    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-//        guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: K.HeaderView, for: indexPath) as? MyPhotosHeaderView else {
-//            return UICollectionReusableView()
-//        }
-//        view.delegate = self
-//        return view
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-//        return CGSize(width: collectionView.frame.width, height: collectionView.frame.width / 2) // Height of header
-//    }
-//
-//
+    //MARK: - Header Configurations
+/*
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: K.HeaderView, for: indexPath) as? MyPhotosHeaderView else {
+            return UICollectionReusableView()
+        }
+        view.delegate = self
+        return view
+    }
 
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: collectionView.frame.width, height: collectionView.frame.width / 2) // Height of header
+    }
+*/

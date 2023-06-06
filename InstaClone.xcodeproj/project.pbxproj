@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A905251A2A2DCBFF00BABE6D /* GetInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90525192A2DCBFF00BABE6D /* GetInfoModel.swift */; };
+		A905251C2A2DDC1600BABE6D /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = A905251B2A2DDC1600BABE6D /* Protocols.swift */; };
 		A91B4F9A29BB19EF002CF7E9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91B4F9929BB19EF002CF7E9 /* AppDelegate.swift */; };
 		A91B4F9C29BB19EF002CF7E9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91B4F9B29BB19EF002CF7E9 /* SceneDelegate.swift */; };
 		A91B4FA129BB19EF002CF7E9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A91B4F9F29BB19EF002CF7E9 /* Main.storyboard */; };
@@ -44,6 +46,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A90525192A2DCBFF00BABE6D /* GetInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetInfoModel.swift; sourceTree = "<group>"; };
+		A905251B2A2DDC1600BABE6D /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		A91B4F9629BB19EF002CF7E9 /* InstaClone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InstaClone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A91B4F9929BB19EF002CF7E9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A91B4F9B29BB19EF002CF7E9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -144,6 +148,7 @@
 		A98B96F02A29D9D900350942 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				A905251B2A2DDC1600BABE6D /* Protocols.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -162,6 +167,7 @@
 			children = (
 				A98B96F12A2A0F1700350942 /* User.swift */,
 				A98B96F32A2A11DF00350942 /* Post.swift */,
+				A90525192A2DCBFF00BABE6D /* GetInfoModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -290,6 +296,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A9B5979429C49B2C009ED305 /* FeedCell.swift in Sources */,
+				A905251C2A2DDC1600BABE6D /* Protocols.swift in Sources */,
 				A9BA9D1E29F6EB5C001CF6AB /* ProfileViewModel.swift in Sources */,
 				A9453BE129CC73FC00A62DB0 /* UploadViewModel.swift in Sources */,
 				A9DFEE1029BB7E9D0059C3A7 /* FeedVC.swift in Sources */,
@@ -307,6 +314,7 @@
 				A9453BE329CC8C8B00A62DB0 /* SettingsViewModel.swift in Sources */,
 				A9453BDD29CB3A3D00A62DB0 /* SignInViewModel.swift in Sources */,
 				A9E2B69529D5BEB2008B1118 /* FeedCellViewModel.swift in Sources */,
+				A905251A2A2DCBFF00BABE6D /* GetInfoModel.swift in Sources */,
 				A91B4F9C29BB19EF002CF7E9 /* SceneDelegate.swift in Sources */,
 				A9DFEE1429BB7F010059C3A7 /* SettingsVC.swift in Sources */,
 				A9B597A129C9F9E2009ED305 /* Constants.swift in Sources */,

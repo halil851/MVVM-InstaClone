@@ -12,7 +12,7 @@ import UIKit.UIImage
 var currentUserEmail: String = Auth.auth().currentUser?.email ?? "No One"
 
 struct SignInViewModel: SignInVCProtocol {
-    func singInManager(email: String, password: String, completionHandler: @escaping(Error?)->() ) {
+    func signInManager(email: String, password: String, completionHandler: @escaping(Error?)->() ) {
         Auth.auth().signIn(withEmail: email, password: password) { authData, err in
             completionHandler(err)
         }
