@@ -226,7 +226,7 @@ class FeedCell: UITableViewCell {
         
         UIView.animate(withDuration: 0.4, delay: 0) {
             self.heartImage.alpha = 1
-        }completion: { done in
+        }completion: { _ in
             UIView.animate(withDuration: 0.4, delay: 0.2) {
                 self.heartImage.alpha = 0
             }

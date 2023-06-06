@@ -83,4 +83,3 @@ protocol UploadVCProtocol {
 protocol SettingVCProtocol {
     func signOut(completionHandler: @escaping(_ success: Bool, Error?)->())
 }
-

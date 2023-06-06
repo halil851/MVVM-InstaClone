@@ -119,6 +119,10 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
               viewModel.usersPost.isEmpty == false else {
             return UITableViewCell()
         }
+        let info = GetInfoModel(indexPath: indexPath,
+                                id: viewModel.usersPost[indexPath.row].id,
+                                whoLiked: viewModel.usersPost[indexPath.row].likedBy,
+                                storageID: viewModel.usersPost[indexPath.row].storageID)
         let email = viewModel.usersPost[indexPath.row].postedBy
         cell.delegate = self
         cell.userImage.image = viewModel.images[indexPath.row]
@@ -127,14 +131,8 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         cell.commentLabel.attributedText = boldAndRegularText(at: indexPath.row)
         cell.likeCounter.text = viewModel.likeOrLikes(at: indexPath.row)
         cell.checkIfLiked(likesList: viewModel.usersPost[indexPath.row].likedBy)
-      
-        let info = GetInfoModel(indexPath: indexPath,
-                                id: viewModel.usersPost[indexPath.row].id,
-                                whoLiked: viewModel.usersPost[indexPath.row].likedBy,
-                                storageID: viewModel.usersPost[indexPath.row].storageID)
         cell.getInfo(information: info,
                      visitor: visitor)
-        
         cell.dateLabel.text = viewModel.uploadDate(at: indexPath.row)
         cell.smallProfilePicture.image = viewModel.profilePictureSDictionary[email]
         if isProfilVisiting {cell.optionsOutlet.isHidden = viewModel.isOptionsButtonHidden(user: email)}
@@ -166,7 +164,7 @@ extension FeedVC: UITabBarControllerDelegate {
                 self.tableView.setContentOffset(CGPointZero, animated: true)
             }
         }
-        
+        // If Feed tab selected
         if tabBarController.selectedIndex == 0 {
             visitor = nil
             isProfilVisiting = false

@@ -17,41 +17,24 @@ class UploadVC: UIViewController {
     //MARK: - Properties
     private var viewModel = UploadViewModel()
     private var isSelectingImage = false
+    private var adaptiveView: AdaptiveViewKeyboardSetup?
     
     //MARK: - Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         commentTextView.delegate = self
         setImageInteractable()
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        adaptiveView = AdaptiveViewKeyboardSetup(view: view, button: uploadOutlet)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         if !isSelectingImage { selectImage() }
     }
     
-    @objc func keyboardWillShow(notification: NSNotification) {
-        
-        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {return}
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {return}
-        let screenHeight = windowScene.screen.bounds.size.height
-        let heightOfUploadButtonFromBottom = screenHeight - uploadOutlet.frame.maxY
-        guard heightOfUploadButtonFromBottom < keyboardSize.height else {return}
-        let upValue = keyboardSize.height - heightOfUploadButtonFromBottom + heightOfUploadButtonFromBottom * 0.15
-        
-        if self.view.frame.origin.y == 0 {
-            self.view.frame.origin.y -= upValue
-        }
-        
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.removeObserver(self)
     }
-    
-    @objc func keyboardWillHide(notification: NSNotification) {
-        if self.view.frame.origin.y != 0 {
-            self.view.frame.origin.y = 0
-        }
-    }
-    
     
     //MARK: - IBActions
     @IBAction private func uploadTap(_ sender: UIButton) {
@@ -78,6 +61,8 @@ class UploadVC: UIViewController {
         self.commentTextView.text = ""
     }
     //MARK: - Functions
+    
+    
     
     private func setImageInteractable() {
         image.isUserInteractionEnabled = true
