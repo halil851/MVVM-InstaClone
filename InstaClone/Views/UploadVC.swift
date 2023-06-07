@@ -31,11 +31,6 @@ class UploadVC: UIViewController {
         if !isSelectingImage { selectImage() }
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        NotificationCenter.default.removeObserver(self)
-    }
-    
     //MARK: - IBActions
     @IBAction private func uploadTap(_ sender: UIButton) {
         
@@ -61,9 +56,6 @@ class UploadVC: UIViewController {
         self.commentTextView.text = ""
     }
     //MARK: - Functions
-    
-    
-    
     private func setImageInteractable() {
         image.isUserInteractionEnabled = true
         let imageTap = UITapGestureRecognizer(target: self, action: #selector(selectImage))
@@ -98,8 +90,6 @@ extension UploadVC {
             })
         }
         present(picker, animated: true, completion: nil)
-
-
     }
 
 }
@@ -113,4 +103,3 @@ extension UploadVC: UITextViewDelegate {
         commentTextView.endEditing(true)
     }
 }
-

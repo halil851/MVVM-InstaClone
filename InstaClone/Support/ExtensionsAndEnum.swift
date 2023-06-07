@@ -16,6 +16,13 @@ extension UIViewController {
     }
 }
 
+enum Quality: CGFloat {
+    case Lossless = 1.0
+    case Good = 0.6
+    case Normal = 0.3
+    case Low = 0.1
+}
+
 enum Action {
     case Like
     case NoMoreLiking

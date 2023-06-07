@@ -27,9 +27,7 @@ class LikeListVC: UIViewController {
 
 extension LikeListVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if likedUser.count == 0 {
-            return 1
-        }
+        if likedUser.count == 0 { return 1 }
         return likedUser.count
     }
     

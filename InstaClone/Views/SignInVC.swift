@@ -34,7 +34,7 @@ class SignInVC: UIViewController {
         viewModel.signInManager(email: textFields().user.email,
                                 password: textFields().user.password) { [weak self] err in
             
-            guard err == nil else {self?.showAlert(mainTitle: "Error Log In", message: err?.localizedDescription ?? "Error", actionButtonTitle: "OK"); return}
+            guard err == nil else {self?.showAlert(mainTitle: "Error Sign In", message: err?.localizedDescription ?? "Error", actionButtonTitle: "OK"); return}
             guard let email = self?.textFields().user.email else {return}
             currentUserEmail = email
             self?.performSegue(withIdentifier: "toFeedVC", sender: nil)

@@ -19,7 +19,6 @@ class SettingsVC: UIViewController {
         super.viewDidLoad()
         currentUser.text = currentUserEmail
 
-        // Do any additional setup after loading the view.
     }
     
     

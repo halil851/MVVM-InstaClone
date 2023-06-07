@@ -141,7 +141,8 @@ extension ProfileVC: ReusableViewDelegate {
             if await viewModel.isSuccesDeletingProfilePicture(id: id) {
                 
                 reusableView.profilePicture.image = image
-                await viewModel.addProfilePicture(image: reusableView.profilePicture)
+                let newProfilePicture = Thumbnail(image: image)
+                await newProfilePicture.addNewThumbnail(quality: .Good)
                 let (_, id) = try await ProfileViewModel.getProfilePicture()
                 self.id = id
             }

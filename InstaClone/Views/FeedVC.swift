@@ -26,7 +26,9 @@ class FeedVC: UIViewController, UIAdaptivePresentationControllerDelegate {
     //MARK: - Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
+        setTableView()
         initialSetup()
+        if visitor != nil {isProfilVisiting = true}
         Task{
             await viewModel.getDataFromFirestore(tableView, pagination: true, getNewOnes: true, whosePost: visitor)
         }
@@ -55,29 +57,18 @@ class FeedVC: UIViewController, UIAdaptivePresentationControllerDelegate {
     
     
     //MARK: - Functions
-    private func initialSetup() {
-        if visitor != nil {isProfilVisiting = true }
-        tabBarController?.delegate = self
+    private func setTableView() {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorStyle = .none
+    }
+    private func initialSetup() {
+        tabBarController?.delegate = self
         // Enable Refresh Check
         refreshControl.addTarget(self, action: #selector(refreshTableView), for: .valueChanged)
         tableView.addSubview(refreshControl)
         //Nib register
         tableView.register(UINib(nibName: K.FeedCell , bundle: nil), forCellReuseIdentifier: K.Cell )
-        
-    }
-    
-    private func boldAndRegularText(at indexRow: Int) -> NSMutableAttributedString{
-        let boldAttribute = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 15.0)]
-        let regularAttribute = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 15.0)]
-        let boldText = NSAttributedString(string: viewModel.usersPost[indexRow].postedBy, attributes: boldAttribute)
-        let regularText = NSAttributedString(string:" \(viewModel.usersPost[indexRow].comment)", attributes: regularAttribute)
-        let newString = NSMutableAttributedString()
-        newString.append(boldText)
-        newString.append(regularText)
-        return newString
     }
     
     private func createSpinnerFooter() -> UIView {
@@ -128,7 +119,7 @@ extension FeedVC: UITableViewDelegate, UITableViewDataSource {
         cell.userImage.image = viewModel.images[indexPath.row]
         cell.imageHeight.constant = viewModel.imagesHeights[indexPath.row]
         cell.userEmailLabel.text = email
-        cell.commentLabel.attributedText = boldAndRegularText(at: indexPath.row)
+        cell.commentLabel.attributedText = viewModel.boldAndRegularText(at: indexPath.row)
         cell.likeCounter.text = viewModel.likeOrLikes(at: indexPath.row)
         cell.checkIfLiked(likesList: viewModel.usersPost[indexPath.row].likedBy)
         cell.getInfo(information: info,
@@ -172,6 +163,35 @@ extension FeedVC: UITabBarControllerDelegate {
             dismissButton.isHidden = true
         }
         lastTabBarIndex = tabBarController.selectedIndex
+    }
+}
+
+//MARK: - ScrollView Operations
+extension FeedVC: UIScrollViewDelegate {
+    // Trigger when scroll down
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard !viewModel.usersPost.isEmpty else {return} // Means there is no post on the screen yet. So avoid Scrolling Down.
+        guard !viewModel.isPaginating else {return}
+
+        let position = scrollView.contentOffset.y
+        if position > (tableView.contentSize.height - 150 - scrollView.frame.size.height) {
+
+            guard !isScrollingToBottom else {return}
+            isScrollingToBottom = true
+
+            self.tableView.tableFooterView = self.createSpinnerFooter()
+            Task {
+                await self.viewModel.getDataFromFirestore(self.tableView, limit: 4, pagination: true, whosePost: visitor)
+
+                DispatchQueue.global().asyncAfter(deadline: .now()+2, execute: {
+                    DispatchQueue.main.async { [self] in
+
+                        tableView.tableFooterView = nil
+                    }
+                })
+                isScrollingToBottom = false
+            }
+        }
     }
 }
 
@@ -245,35 +265,6 @@ extension FeedVC: FeedCellToFeedVCDelegate {
             
             destinationVC.likedUser = likeList
             destinationVC.numberOfLikesStr = likeCount
-        }
-    }
-}
-
-//MARK: - ScrollView Operations
-extension FeedVC: UIScrollViewDelegate {
-    // Trigger when scroll down
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard !viewModel.usersPost.isEmpty else {return} // Means there is no post on the screen yet. So avoid Scrolling Down.
-        guard !viewModel.isPaginating else {return}
-
-        let position = scrollView.contentOffset.y
-        if position > (tableView.contentSize.height - 150 - scrollView.frame.size.height) {
-
-            guard !isScrollingToBottom else {return}
-            isScrollingToBottom = true
-
-            self.tableView.tableFooterView = self.createSpinnerFooter()
-            Task {
-                await self.viewModel.getDataFromFirestore(self.tableView, limit: 4, pagination: true, whosePost: visitor)
-
-                DispatchQueue.global().asyncAfter(deadline: .now()+2, execute: {
-                    DispatchQueue.main.async { [self] in
-
-                        tableView.tableFooterView = nil
-                    }
-                })
-                isScrollingToBottom = false
-            }
         }
     }
 }

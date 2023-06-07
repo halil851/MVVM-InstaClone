@@ -196,6 +196,17 @@ extension FeedViewModel {
         return "\(likesCount) like"
     }
     
+    func boldAndRegularText(at indexRow: Int) -> NSMutableAttributedString{
+        let boldAttribute = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 15.0)]
+        let regularAttribute = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 15.0)]
+        let boldText = NSAttributedString(string: usersPost[indexRow].postedBy, attributes: boldAttribute)
+        let regularText = NSAttributedString(string:" \(usersPost[indexRow].comment)", attributes: regularAttribute)
+        let newString = NSMutableAttributedString()
+        newString.append(boldText)
+        newString.append(regularText)
+        return newString
+    }
+    
     
     func uploadDate(at indexRow: Int) -> String {
         //Decide singular or plural and the date

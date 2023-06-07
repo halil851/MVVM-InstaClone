@@ -26,24 +26,23 @@ class AdaptiveViewKeyboardSetup {
     
     @objc private func keyboardWillShow(_ notification: Notification) {
         guard let view = view,
-              let button = button else {
-            return
-        }
-        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {return}
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {return}
+              let button = button,
+              let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+              let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {return}
+        
         let screenHeight = windowScene.screen.bounds.size.height
         let heightOfSignInButtonFromBottom = screenHeight - button.frame.maxY
+        
         guard heightOfSignInButtonFromBottom < keyboardSize.height else {return}
         let upValue = keyboardSize.height - heightOfSignInButtonFromBottom + heightOfSignInButtonFromBottom * 0.15
+        
         if view.frame.origin.y == 0 {
             view.frame.origin.y -= upValue
         }
     }
     
     @objc private func keyboardWillHide(_ notification: Notification) {
-        guard let view = view else {
-            return
-        }
+        guard let view = view else {return}
         if view.frame.origin.y != 0 {
             view.frame.origin.y = 0
         }
