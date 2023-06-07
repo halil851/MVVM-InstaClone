@@ -211,7 +211,7 @@ extension FeedVC: FeedCellToFeedVCDelegate {
     
     func manageUIChanges(action: Action,_ indexRow: Int) {
         
-        if action == .NoMoreLiking {
+        if action == .noMoreLiking {
             for user in viewModel.usersPost[indexRow].likedBy {
                 if user == currentUserEmail {
                     viewModel.usersPost[indexRow].likedBy.removeAll(where: {$0 == currentUserEmail})

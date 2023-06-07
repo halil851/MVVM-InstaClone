@@ -9,11 +9,11 @@ import UIKit.UIImage
 import Firebase
 import FirebaseStorage
 
-struct Thumbnail {
+struct Thumbnail: NewThumbnail, FetchThumbnail {
     
     var image: UIImage? = UIImage(systemName: "person")
     
-    func addNewThumbnail(email: String = currentUserEmail, quality: Quality = .Normal) async {
+    func addNewThumbnail(email: String = currentUserEmail, quality: Quality = .normal) async {
         
         let storage = Storage.storage()
         let storageRef = storage.reference()
@@ -47,4 +47,27 @@ struct Thumbnail {
             print(error.localizedDescription)
         }
     }
+    
+    
+    func fetchThumbnail(email: String = currentUserEmail) async throws -> (UIImage, String) {
+        let db = Firestore.firestore()
+        let query = db.collection(K.profilePictures)
+            .whereField(K.Document.postedBy, isEqualTo: email)
+
+        let snapshot = try await query.getDocuments()
+        
+        guard let imageUrlString = snapshot.documents.first?.get(K.Document.imageUrl) as? String else {
+            throw ErrorTypes.noImageUrl
+        }
+        guard let id = snapshot.documents.first?.documentID else {
+            throw ErrorTypes.noDocumentId
+        }
+        
+        let imageURL = URL(string: imageUrlString)
+        let download: ImageDownload = Download()
+        let image = try await download.image(with: imageURL)
+                
+        return (image, id)
+    }
+    
 }

@@ -113,7 +113,8 @@ class FeedViewModel: FeedVCProtocol, FetchData {
         let fetchedPost = FetchPost(postedBy: postedBy, storageID: storageID, comment: comment, likedBy: likedBy, date: date, id: id)
         
         do {
-            let (fetchedImage, _) = try await ProfileViewModel.getProfilePicture(whose: fetchedPost.postedBy)
+            let thumbnail: FetchThumbnail = Thumbnail()
+            let (fetchedImage, _) = try await thumbnail.fetchThumbnail(email: fetchedPost.postedBy)
             self.profilePictureSDictionary.updateValue(fetchedImage, forKey: fetchedPost.postedBy)
         } catch {
             print(error.localizedDescription)
@@ -155,7 +156,8 @@ class FeedViewModel: FeedVCProtocol, FetchData {
     private func downloadImagesAndAppend(_ imageURL: String) async {
         let imageUrl = URL(string: imageURL)
         do {
-            let image = try await ProfileViewModel.loadImage(with: imageUrl)
+            let download: ImageDownload = Download()
+            let image = try await download.image(with: imageUrl)
             
             // Add the image to the array
             self.images.append(image)
@@ -190,9 +192,7 @@ extension FeedViewModel {
     func likeOrLikes(at indexRow: Int) -> String {
         
         let likesCount = usersPost[indexRow].likedBy.count
-        if likesCount > 1 {
-            return "\(likesCount) likes"
-        }
+        if likesCount > 1 { return "\(likesCount) likes"}
         return "\(likesCount) like"
     }
     
@@ -211,49 +211,33 @@ extension FeedViewModel {
     func uploadDate(at indexRow: Int) -> String {
         //Decide singular or plural and the date
         guard let year = usersPost[indexRow].date.year else {return ""}
-        if year > 0 {
-            return singularPluralDate(date: year, "year")
-        }
+        if year > 0 { return singularPluralDate(date: year, "year")}
         
         guard let month = usersPost[indexRow].date.month else {return ""}
-        if month > 0 {
-            return singularPluralDate(date: month, "month")
-        }
+        if month > 0 { return singularPluralDate(date: month, "month")}
         
         guard let week = usersPost[indexRow].date.weekOfMonth else {return ""}
-        if week > 0 {
-            return singularPluralDate(date: week, "week")
-        }
+        if week > 0 { return singularPluralDate(date: week, "week")}
         
         guard let day = usersPost[indexRow].date.day else {return ""}
-        if day > 0 {
-            return singularPluralDate(date: day, "day")
-        }
+        if day > 0 { return singularPluralDate(date: day, "day")}
         
         guard let hour = usersPost[indexRow].date.hour else {return ""}
-        if hour > 0 {
-            return singularPluralDate(date: hour, "hour")
-        }
+        if hour > 0 { return singularPluralDate(date: hour, "hour")}
         
         guard let minute = usersPost[indexRow].date.minute else {return ""}
-        if minute == 0 {
-            return "now"
-        }
+        if minute == 0 { return "now"}
         return singularPluralDate(date: minute, "min")
     }
     //Decide singular or plural Date
     private func singularPluralDate(date: Int, _ str: String) -> String{
-        if date == 1 {
-            return "\(date) \(str) ago"
-        }
+        if date == 1 { return "\(date) \(str) ago"}
         return "\(date) \(str)s ago"
     }
     
     // User can only edit or delete own post
     func isOptionsButtonHidden(user: String) -> Bool {
-        if user == currentUserEmail {
-            return false
-        }
+        if user == currentUserEmail { return false}
         return true
     }
 }

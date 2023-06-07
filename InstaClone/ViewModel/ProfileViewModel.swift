@@ -7,8 +7,6 @@
 
 import Firebase
 import FirebaseStorage
-import SDWebImage
-
 
 class ProfileViewModel {
     
@@ -27,7 +25,8 @@ class ProfileViewModel {
             
                 guard let imageUrlString = document.get(K.Document.imageUrl) as? String  else {return nil}
                 let imageURL = URL(string: imageUrlString)
-                let image = try await ProfileViewModel.loadImage(with: imageURL)
+                let download: ImageDownload = Download()
+                let image = try await download.image(with: imageURL)
                 images.append(image)
             }
             return images
@@ -37,27 +36,6 @@ class ProfileViewModel {
             return nil
         }
     }
-    
-    static func getProfilePicture(whose: String = currentUserEmail) async throws -> (UIImage, String) {
-        let db = Firestore.firestore()
-        let query = db.collection(K.profilePictures)
-            .whereField(K.Document.postedBy, isEqualTo: whose)
-
-        let snapshot = try await query.getDocuments()
-        
-        guard let imageUrlString = snapshot.documents.first?.get(K.Document.imageUrl) as? String else {
-            throw ErrorTypes.noImageUrl
-        }
-        guard let id = snapshot.documents.first?.documentID else {
-            throw ErrorTypes.noDocumentId
-        }
-        
-        let imageURL = URL(string: imageUrlString)
-        let image =  try await ProfileViewModel.loadImage(with: imageURL)
-                
-        return (image, id)
-    }
-   
 
     func isSuccesDeletingProfilePicture(id: String) async -> Bool {
         
@@ -78,25 +56,5 @@ class ProfileViewModel {
             return false
         }
         // No need to delete the last picture from Firebase storage, because overwriten
-    }
-    
-    static func loadImage(with url: URL?) async throws -> UIImage {
-        guard let url = url else {
-            throw ErrorTypes.invalidUrl
-        }
-        
-        return try await withCheckedThrowingContinuation { continuation in
-            SDWebImageManager.shared.loadImage(with: url, progress: nil) { image, _, error, _, _, _ in
-                
-                switch (image, error) {
-                case let (_, error?):
-                    continuation.resume(throwing: error)
-                case let (image?, _):
-                    continuation.resume(returning: image)
-                default:
-                    continuation.resume(throwing: ErrorTypes.imageLoadFailed)
-                }
-            }
-        }
     }
 }

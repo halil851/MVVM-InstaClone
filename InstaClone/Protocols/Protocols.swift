@@ -83,3 +83,27 @@ protocol UploadVCProtocol {
 protocol SettingVCProtocol {
     func signOut(completionHandler: @escaping(_ success: Bool, Error?)->())
 }
+
+
+protocol NewThumbnail {
+    func addNewThumbnail(email: String, quality: Quality) async
+}
+extension NewThumbnail {
+    func addNewThumbnail(email: String = currentUserEmail, quality: Quality = .normal) async {
+        await addNewThumbnail(email: email, quality: quality)
+    }
+}
+
+
+protocol FetchThumbnail {
+    func fetchThumbnail(email: String) async throws -> (UIImage, String)
+}
+extension FetchThumbnail {
+    func fetchThumbnail(email: String = currentUserEmail) async throws -> (UIImage, String) {
+        try await fetchThumbnail(email: email)
+    }
+}
+
+protocol ImageDownload {
+    func image(with url: URL?) async throws -> UIImage
+}

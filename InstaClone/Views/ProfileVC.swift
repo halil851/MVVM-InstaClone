@@ -20,6 +20,7 @@ class ProfileVC: UIViewController {
     var email: String?
     var id = String()
     var isOwnerVisiting = false
+    let fetchProfilePicture: FetchThumbnail = Thumbnail()
   
     //MARK: - Life Cycles
 
@@ -84,7 +85,8 @@ class ProfileVC: UIViewController {
     
     private func ownerVisiting() async {
         do{
-            let (fetchedImage, id) = try await ProfileViewModel.getProfilePicture()
+//            let (fetchedImage, id) = try await ProfileViewModel.getProfilePicture()
+            let (fetchedImage, id) = try await fetchProfilePicture.fetchThumbnail()
             self.id = id
             self.reusableView.profilePicture.image = fetchedImage
             self.reusableView.userEmail.text = currentUserEmail
@@ -141,9 +143,12 @@ extension ProfileVC: ReusableViewDelegate {
             if await viewModel.isSuccesDeletingProfilePicture(id: id) {
                 
                 reusableView.profilePicture.image = image
-                let newProfilePicture = Thumbnail(image: image)
-                await newProfilePicture.addNewThumbnail(quality: .Good)
-                let (_, id) = try await ProfileViewModel.getProfilePicture()
+                let newProfilePicture: NewThumbnail = Thumbnail(image: image)
+                await newProfilePicture.addNewThumbnail(quality: .good)
+                
+                let (_, id) = try await fetchProfilePicture.fetchThumbnail()
+                
+//                let (_, id) = try await ProfileViewModel.getProfilePicture()
                 self.id = id
             }
         } catch {

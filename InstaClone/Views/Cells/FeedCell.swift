@@ -55,14 +55,14 @@ class FeedCell: UITableViewCell {
             likeButtonOutlet.tintColor = .label
             viewModel.postDislikeManager(id: info.id)
             firebaseLikeCount -= 1
-            delegate?.manageUIChanges(action: .NoMoreLiking, info.indexPath.row)
+            delegate?.manageUIChanges(action: .noMoreLiking, info.indexPath.row)
             
         } else { /// like
             likeButtonOutlet.setImage(UIImage(named: K.Images.heartRedFill), for: .normal)
             likeButtonOutlet.tintColor = .systemRed
             viewModel.postLikeManager(id: info.id)
             firebaseLikeCount += 1
-            delegate?.manageUIChanges(action: .Like, info.indexPath.row)
+            delegate?.manageUIChanges(action: .like, info.indexPath.row)
 
             UILikedList += [currentUserEmail]
 
