@@ -23,7 +23,11 @@ class SignInVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         textFieldDelegationSetup()
-        adaptiveView = AdaptiveViewKeyboardSetup(view: view, button: signInOutlet)
+        
+    }
+    
+    override func viewWillLayoutSubviews() {
+        adaptiveView = AdaptiveViewKeyboardSetup(view: view, position: signInOutlet.frame)
     }
  
     //MARK: - IBActions

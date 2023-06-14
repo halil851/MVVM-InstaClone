@@ -24,11 +24,15 @@ class UploadVC: UIViewController {
         super.viewDidLoad()
         commentTextView.delegate = self
         setImageInteractable()
-        adaptiveView = AdaptiveViewKeyboardSetup(view: view, button: uploadOutlet)
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         if !isSelectingImage { selectImage() }
+    }
+    
+    override func viewWillLayoutSubviews() {
+        adaptiveView = AdaptiveViewKeyboardSetup(view: view, position: uploadOutlet.frame)
     }
     
     //MARK: - IBActions

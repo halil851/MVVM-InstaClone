@@ -4,7 +4,8 @@ Instagram clone app.
 
 # Technologies  
 
-* MVVM Design Pattern  
+* MVVM Design Pattern 
+* Solid Principles 
 * UIKit - Storyboard
 * UICollectionView - UITableView
 * Auto Layout
